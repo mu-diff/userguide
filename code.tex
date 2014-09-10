@@ -1,3 +1,51 @@
+\section{Generalities}
+The authors try to keep the notations between the mathematical background and the \matlab toolbox. In particular, lots of arguments are the same in the different functions and they are here presented once for all. A manual of every function is moreover provided by simply typing in the \matlab command window 
+\begin{verbatim}
+help name\_of\_the\_function
+\end{verbatim}
+In all what follows, and if nothing is specified, then the following arguments refer to the below one. The indices $p$ and $q$ vary from $1$ to $\Nscat$ where $\Nscat$ is the number of obstacles.
+
+\begin{center}
+%\rowcolors{1}{white}{gray}
+\begin{tabular}{|c |c | p{10cm}|}
+\hline Name & Size or Type & Content\\[0.2cm]\hline\hline
+\code{N\_scat} & $[1\times 1]$ & Number of obstacles $\Nscat$.\\\hline
+\code{O} & $[2\times \Nscat]$ & Matrix of the centers of the disks such that \code{O(1,p)} is the x-coordinate of the $p^{th}$ obstacle.\\\hline
+\code{Op} & $[2\times 1]$ & Coordinate of the $p^{th}$ scatterer.\\\hline
+\code{Oq} & $[2\times 1]$ & Coordinate of the $q^{th}$ scatterer.\\\hline
+\code{a} & $[1\times \Nscat]$ & Vector of the radii of the disks such that \code{a(p)} is the radius of the $p^{th}$ scatterer.\\\hline
+\code{ap} & $[1\times 1]$ & Radius of the $p^{th}$ scatterer.\\\hline
+\code{aq} & $[1\times 1]$ & Radius of the $q^{th}$ scatterer.\\\hline
+\code{M\_modes} & $[1\times \Nscat]$ & Vector of index of truncation of the Fourier series, \ie \code{M\_modes(p)}=$\Np$\\\hline
+\code{Np} & $[1\times 1]$ & Corresponds to $\Np$.\\\hline
+\code{Nq} & $[1\times 1]$ & Corresponds to $\Nq$.\\\hline
+\end{tabular}
+\end{center}
+On the parameters
+\begin{center}
+\begin{tabular}{|c |c | p{10cm}|}
+\hline Name & Size or Type & Content\\[0.2cm]\hline\hline
+\code{k} & $[1\times 1]$ & Wavenumber in the vacuum.\\\hline
+\code{k\_int} & $[1\times \Nscat]$ & Wavenumber in the obstacles: \code{k\_int(p)} being the one in obstacle $p$.\\\hline
+\end{tabular}
+\end{center}
+
+The integral operators are indexed by the following table:
+\begin{center}
+\begin{tabular}{|c |c | c | p{9cm}|}
+\hline Index & Letter & Operator & \mudiff abreviation \\\hline\hline
+0 & - & - & Null operator \\
+1 & $I$ & \code{Identity} & Identity\\
+2 & $L$ & \code{SingleLayer} & Trace of the single-layer\\
+3 & $M$ & \code{DoubleLayer} & Trace of the double-layer\\
+4 & $N$  & \code{DnSingleLayer}& Normal derivative of the single-Layer\\
+5 & $D$  & \code{DnDoubleLayer}&Normal derivative of the double-Layer\\ 
+6 & $\hat{L}$  & \code{PrecondDirichlet}& Single-scattering preconditioned trace of the single-layer operator\\
+7 & $\hat{D}$  & \code{PrecondNeumann}& Single-scattering preconditioned normal derivative trace of the double-layer operator\\ \hline
+\end{tabular}
+\end{center}
+
+
 \section{Pre-Processing}
 \subsection{Creating Obstacles}
 \subsection{Incident waves}
@@ -20,7 +68,7 @@ This section is naturally divided in two part, the first being devoted to the de
 The integral operators are numbered as follows
 \begin{enumerate}
 \item Null operator
-\end{itemize}
+\end{enumerate}
 
 
 \subsection{Dense storage}
