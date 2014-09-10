@@ -1,7 +1,7 @@
 \section{Generalities}
 The authors try to keep the notations between the mathematical background and the \matlab toolbox. In particular, lots of arguments are the same in the different functions and they are here presented once for all. A manual of every function is moreover provided by simply typing in the \matlab command window 
 \begin{verbatim}
-help name\_of\_the\_function
+help name_of_the_function
 \end{verbatim}
 In all what follows, and if nothing is specified, then the following arguments refer to the below one. The indices $p$ and $q$ vary from $1$ to $\Nscat$ where $\Nscat$ is the number of obstacles.
 
@@ -47,7 +47,69 @@ The integral operators are indexed by the following table:
 
 
 \section{Pre-Processing}
+
+The pre-processing functions are located in the \code{PreProcessing} folder, which is divided in two parts: the construction of the obstacles in \code{Geometry}, and the computation of the right-hand side, \ie the incident waves on the obstacles, in \code{IncidentWave}.
+
 \subsection{Creating Obstacles}
+
+\subsubsection{Manual placement}
+The disks can be created manually by simply creating the two variables \code{O} and \code{a} containing respectively the coordinates of the disks and their radii. For example, for three obstacles placed on $(-1,2)$, $(5,5)$ and $(-15,10)$ with radii $0.1$, $0.5$ and $10$:
+\begin{verbatim}
+O = [-1, 5, 2 ; -15, 5, 10];
+a = [0.1, 0.5, 10];
+\end{verbatim}
+
+\subsubsection{Periodic placement}
+
+Two build-in functions are available with the toolbox to create disks periodically, with a rectangular or a triangular lattice, as shown on figure \ref{??}. The two functions are called as follows, for the rectangular lattice:
+\begin{verbatim}
+O=RectangularLattice(bx, by, Nx, Ny);
+\end{verbatim}
+and for the triangular lattice:
+\begin{verbatim}
+O = TriangularLattice(bx,by,Nx,Ny);
+\end{verbatim}
+where \code{bx} and \code{by} are the distance separating two centers in the $x$ coordinate and \code{by} the distance between two rows in the $y$-direction. The two other parameter 
+\code{Nx} and \code{Ny} are the number of disks in the $x$direction and the number of rows of disks. For both functions, the vector of radii must be built separately. If the disks are unitary then the following command can be used
+\begin{verbatim}
+a = ones(size(O,2));
+\end{verbatim}
+
+
+\subsubsection{Random placement}
+
+Finally, to place randomly obstacles in a box $[\code{xmin}, \code{xmax}]\times[\code{ymin},\code{ymax}]$ with also a random radius, a function \code{CreateRandomDisks} is very helpful. In its simplest version, the function is called as:
+\begin{verbatim}
+[O, a] = CreateRandomDisks(xmin, xmax, ymin, ymax, N_scat)
+\end{verbatim}
+The function will then create \code{N\_scat} disks in the box with random radii. This is however probably too simple and the function can be called in a more complex form:
+\begin{verbatim}
+[O, a] = CreateRandomDisks(xmin, xmax, ymin, ymax, N_scat, 
+           amin, amax, dmim, dmax, O_avoid, a_avoid, dmin_avoid, dmax_avoid)
+\end{verbatim}
+where
+\begin{itemize}
+\item \code{amin} and \code{amax} are scalar values and respectively the minimal and the maximal radius
+\item \code{dmin} and \code{dmax} are scalar values and respectively the minimal and the maximal distance allowed between two disks (not between the centers!). A special care must be given to \code{dmax}: the verification is done between every disks and hence, the maximal distance is quickly reach! Setting $0$ or negative value will make \code{CreateRandomDisks} ignores these options.
+\item \code{O\_avoid, a\_avoid, dmin\_avoid} and \code{dmax\_avoid}: the arguments corresponds to ``holes'' in the box where the obstacles must not overlap. The notations are the same as for the circular obstacles and have the same size and role as respectively \code{O,a,dmin} and \code{dmax}.
+\end{itemize}
+For example, building 7 obstacles in the box $[-10,10]\times[-10,10]$ with radii between $0.1$ and $0.5$. The disks must be separated at minimum by a distance of $0.1$ and without maximum value. The command is then:
+\begin{verbatim}
+[O, a] = CreateRandomDisks(-10, 10, -10, 10, 7, 0.1, 0.5, 0.1, -1);
+\end{verbatim}
+Now imagine that a point source is located on $(2,2)$ and that the obstacles must be separated from the source from at least $0.3$, then the ``\code{*\_avoid}'' arguments can be used and command can be
+\begin{verbatim}
+[O, a] = CreateRandomDisks(-10, 10, -10, 10, 7, 0.1, 0.5, 0.1, -1, [2;2], 0.3);
+\end{verbatim}
+or by using the minimal distance \code{dmin\_avoid} and setting \code{a\_avoid}:
+\begin{verbatim}
+[O, a] = CreateRandomDisks(-10, 10, -10, 10, 7, 0.1, 0.5, 0.1, -1, [2;2], 0, 0.3);
+\end{verbatim}
+
+\begin{remark}
+To verify if a disk is well placed, \code{CreateRandomDisks} calls \code{CheckPlacement} function, which can also be useful for a user placing obstacles.
+\end{remark}
+
 \subsection{Incident waves}
 
 \section{Integral operators}
