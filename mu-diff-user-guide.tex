@@ -1,0 +1,206 @@
+\documentclass[11pt]{book}
+
+\usepackage{amsmath}
+%\usepackage{showkeys}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{color,graphicx}
+\usepackage{epstopdf}
+\usepackage{graphics}
+\usepackage{subfigure}
+
+\usepackage{pdfsync}
+
+\usepackage{hyperref}
+\textwidth 17cm
+\textheight 21cm
+\setlength{\oddsidemargin}{-1.5mm}
+\setlength{\evensidemargin}{-1.5mm}
+
+
+\usepackage{fullpage}
+\usepackage{xspace}
+
+\newcommand{\ui}{u_{I}}
+\newcommand{\ud}{u_{D}}
+
+\newcommand{\uif}{u_{I}^f}
+\newcommand{\udf}{u_{D}^f}
+\newcommand{\inc}{\textrm{inc}}
+
+\newcommand{\uii}{u_{I}(\cdot\,;\xx_{i})}
+\newcommand{\udi}{u_{D}(\cdot\,;\xx_{i})}
+\newcommand{\uij}{u_{I}(\cdot\,;\xx_{j})}
+\newcommand{\udj}{u_{D}(\cdot\,;\xx_{j})}
+
+\newcommand{\f}{{\rm f}}
+\newcommand{\vrm}{{\rm v}}
+\newcommand{\urm}{{\rm u}}
+
+
+\usepackage{MesCommandes}
+
+
+% Fontes maths
+\usepackage{mathrsfs}        % pour \mathscr{F}, W...
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{stmaryrd}        % pour \llbracket
+\usepackage{array}           % déf largeur colonne et justif, ou mode maths
+\usepackage{epsfig}
+
+\usepackage{color}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+%\usepackage{showkeys}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{subfigure}
+
+\usepackage{import} % pour les .pdf_tex
+
+\usepackage{pdfsync}
+
+
+% ------------------------
+% Environnements maths
+\usepackage{amsthm}          % pour le style des théorèmes /preuves
+
+\theoremstyle{plain} 
+\newtheorem{thm}{Theorem}
+\newtheorem{prop}{Proposition}  % meme compteur que les theoremes
+\newtheorem{lem}{Lemma}     % numerotation repart a zero a chaque chapitre
+\newtheorem{cor}{Corollary}
+\newtheorem{defn}{Definition}
+%\theoremstyle{definition}
+\newtheorem{pro}{Property}
+%\theoremstyle{remark}{remark}
+\newtheorem{rmk}{Remark}
+\newtheorem{appl}{Application}
+\newtheorem{ex}{Example}
+%\renewcommand{\proofname}{Proof}
+\newenvironment{disarray}%
+{\everymath{\displaystyle\everymath{}}\array}%
+{\endarray}
+\makeatletter
+\newenvironment{myalign}{\@fleqntrue\align}{\endalign\@fleqnfalse}
+\makeatother 
+\makeatletter
+\newenvironment{myalign*}{%
+  \@fleqntrue\csname align*\endcsname
+  }{%
+  \csname endalign*\endcsname
+  } 
+\newcommand{\thmcaption}[1]{\addcontentsline{lthm}{theoreme}{#1}}
+\makeatletter
+\let\l@theoreme\l@figure
+\makeatother
+\makeatletter
+\newcommand{\listoftheorems}{%
+\chapter*{Liste des théorèmes et propositions}\@starttoc{lthm}}
+\makeatother
+% ------------------------
+
+
+% ------------------------
+% Opérateurs maths
+\usepackage{amsopn}          % nouvelles fonctions maths tq \sin
+
+\DeclareMathOperator*{\argsinh}{argsinh}
+\DeclareMathOperator*{\sech}{sech}
+\DeclareMathOperator*{\oo}{\mathit{o}}       % notations de Landau (indicées)
+% Symboles pour les matrices rectangulaires, horizontales et verticales
+\newcommand\rectvert{\gensymbole{6}{3}}
+\newcommand\recthorz{\gensymbole{3}{6}}
+\newcommand\gensymbole[2]{{\unitlength=1pt
+\begin{picture}(#1,#1)
+\put(0,0){\line(1,0){#2}}
+\put(#2,0){\line(0,1){#1}}
+\put(0,0){\line(0,1){#1}}
+\put(0,#1){\line(1,0){#2}}
+\end{picture}}}
+
+
+
+\newcommand{\ds}{\displaystyle}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+%
+\newcommand{\esp}{\makebox[2\width][l]{\quad}}          % algorithmes
+% ------------------------
+
+% Couleurs
+\usepackage{xcolor}
+\newcommand{\modified}[1]{{\color{red}   #1  }}
+
+% Largeurs de figures
+\def\MiniLength{0.32\textwidth}
+\def\MiniLengthb{0.46\textwidth}
+\def\MiniLengthc{0.57\textwidth}
+\newcommand{\larg}{10cm}        % largeur d'une figure seule
+\newcommand{\largeurfig}{0.48\textwidth}  % largeur de 2 figures cote a cote
+\newcommand{\largtrois}{0.33\textwidth}  % largeur de  figures cote a cote
+
+
+
+\title{$\mu$-diff Matlab toolbox: user guide}
+
+%\author{X. Antoine\thanks{Institut Elie Cartan Nancy (IECN), Nancy University, INRIA Corida Team, B.P. 239, F-54506
+%    Vandoeuvre-l\`es-Nancy Cedex, France.}, \and
+%  C. Besse\thanks{?} \and P. Klein}
+
+\author{Bertrand Thierry\footnotemark[1] , Xavier Antoine\footnotemark[2] , Chokri Chniti\footnotemark[3]   and 
+Hasan Alzubaidi\footnotemark[3]}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+%\footnotetext[1]{Laboratoire J.L. Lions (LJLL), University of Paris VI, Paris, France. ({\tt bertrand.thierry1@gmail.com}).}
+%\footnotetext[2]{Universit\'e de Lorraine, Institut Elie Cartan de Lorraine, UMR 7502, Vandoeuvre-l\`es-Nancy, F-54506, France. ({\tt xavier.antoine@univ-lorraine.fr}).}
+%\footnotetext[3]{Department of Mathematics, University College in Qunfudah, Umm Al-Qura University, Saudi Arabia.
+% ({\tt cachniti@uqu.edu.sa;hmzubaidi@uqu.edu.sa}).}
+
+
+\renewcommand{\thefootnote}{\arabic{footnote}}
+
+\tableofcontents
+
+\input{copyright}
+
+\chapter{Introduction}
+\input{introduction}
+
+\chapter{Mathematical background}
+\input{math}
+
+\chapter{Toolbox}
+\input{code}
+
+\chapter{Examples}
+\input{examples}
+
+\chapter{Conclusion}
+\input{conclusion}
+
+
+\medskip
+\textbf{Acknowledgments.}
+The second, third and fourth authors would like to thank the Institute of Scientific Research and Revival of Islamic Heritage at Umm Al-Qura University (Project ID 43405027) for the financial support. 
+
+
+\bibliographystyle{plain}
+\bibliography{Biblio_mudiff.bib}
+
+
+
+\end{document}
+

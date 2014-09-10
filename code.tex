@@ -1,0 +1,52 @@
+\section{Pre-Processing}
+\subsection{Creating Obstacles}
+\subsection{Incident waves}
+
+\section{Integral operators}
+
+Two different type of storage are provided with the \mudiff toolbox: dense and sparse. The dense version store the whole matrix in memory whereas the sparse version uses the special structure of the matrix of an integral operator to store it. The sparse storage in \mudiff and this user guide has nothing to deal with the sparse storage provided in \matlab such as \texttt{sparse} function. The dense storage is easier to use and works pretty well for small scale problems. It also presents the advantage of providing the whole matrix of the integral operator, which can be useful for spectrum analysis for example. On the other hand, for a large number of circular obstacles and/or for large frequency, the memory storage becomes too important and the sparse version must be used. One should be however careful: the sparse matrix-vector product, based on the cross-correlation (\texttt{xcorr} \matlab function), is very sensitive to the number of modes chosen in the truncation of the Fourier series. Indeed, if too many modes are kept, the matrix-vector product show to be unstable. The formula (\ref{??}) seems to provide stability.
+
+For both dense and sparse case, let $\Ab$ be a generic matrix representing the matrix of one of the four boundary integral operator, $\Lb,\Mb,\Nb$ and $\Db$. As highlighted in previous chapter, $\Ab$ has the following structure, for $p,q=1,\ldots,\Nscat$ and $p\neq q$:
+\begin{itemize}
+\item $\Abpp$ is diagonal.
+\item $\Abpq$ is full and can be divided as $\Abpq = \AbpqL\Tbpq\AbpqR$ where $\AbpqL$ and $\AbpqR$ are diagonal and called respectively the left and right part, and $\Tbpq = (\Tbpqmn))$, with $\Tbpqmn = i\pi e^{??}H_0^{(1)}(k\bpq)$, is a Toeplitz matrix.
+\end{itemize}
+In the sparse version, diagonal submatrices $\Abpp,\AbpqL$ and $\AbpqR$  are stored as a vector of size respectively $2\Np+1$, $2\Np+1$ and $2\Nq+1$, and the Toeplitz matrices $\Tbpq$ are stored as vectors of size $2\Np+2\Nq-1$.
+
+This section is naturally divided in two part, the first being devoted to the dense storage and the second to the sparse version.
+
+\subsection{Available integral operators}
+
+The integral operators are numbered as follows
+\begin{enumerate}
+\item Null operator
+\end{itemize}
+
+
+\subsection{Dense storage}
+\subsubsection{Block structures}
+
+A matrix $\Ab$ is created by blocks using \texttt{BlockIntegralOperator} function, which has the following syntax
+\begin{verbatim}
+	Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, TypeOfOperator)
+\end{verbatim}
+where:
+\begin{itemize}
+\item \texttt{Op}(resp. \texttt{Oq}): \texttt{2$\times$1}, vector containing the centers of the disk such that \texttt{Op(1,p)}$=x_{\OOp}$ and \texttt{Op(2,p)}$=y_{\OOp}$ (resp. \texttt{Oq(1)}$=x_{\OOq}$ and \texttt{Oq(2)}$=y_{\OOq}$)
+\item \texttt{ap}(resp. \texttt{aq}): \texttt{1$\times$1}, Radius of the disks $\OOp$ (resp. $\OOq$)
+\item \texttt{Np} (resp. \texttt{Nq}): \texttt{1$\times$1}, Index of truncation $\Np$ (resp. $\Nq$)
+\item \texttt{k}: \texttt{1$\times$1}, Wavenumber in the vacuum
+\item \texttt{TypeOfOperator}: \texttt{Variable size}, Type of integral operator to be computed.
+\end{itemize}
+
+\subsubsection{Full matrix}
+
+\subsection{Sparse storage}
+\subsubsection{Block structures}
+\subsubsection{Full matrix}
+
+\section{Post-Processing}
+\subsubsection{Near field}
+\subsubsection{Far field and Radar Cross Section (RCS)}
+\subsubsection{Plot and display}
+
