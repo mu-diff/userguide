@@ -1,0 +1,1407 @@
+\NeedsTeXFormat{LaTeX2e}
+ 
+%\ProvidesPackage{MesCommandes}[03/03/2009 commandes usuelles]
+ 
+% extensions
+ 
+%\RequirePackage[latin1]{inputenc}
+%\RequirePackage[T1]{fontenc}
+%\RequirePackage{lmodern}
+%\RequirePackage{graphicx}
+%\RequirePackage[french]{babel}
+%\RequirePackage{color}
+%\RequirePackage{footnpag}
+%\RequirePackage{amsthm}
+%\RequirePackage{amsmath}
+%\RequirePackage{amsfonts}
+%\RequirePackage{amssymb}
+%\RequirePackage{fullpage}
+%\RequirePackage{graphicx}
+%\RequirePackage{graphics}
+
+
+% pour faire des fleches type left-right-arrow avec du texte par dessus.
+% codes repris du Package extarrows-test
+\def\xleftrightarrowfill@{\arrowfill@\leftarrow\relbar\rightarrow}
+\providecommand{\xleftrightarrow}[2][]{%
+	\ext@arrow 0099\xleftrightarrowfill@{#1}{#2}}
+
+% commandes personnelles
+ 
+%\renewcommand{\theequation}{\thesection.\arabic{equation}}
+%\makeatletter
+%\renewcommand\theequation{\thesection.\arabic{equation}}
+%\@addtoreset{equation}{section}
+%\makeatother
+%
+   
+ %Numérotation liée
+%\newtheorem{thm}{Theorem}[chapter]
+%\newtheorem{theoreme}[thm]{Théorème}
+%\newtheorem{dfn}[thm]{Definition}
+%\newtheorem{lemme}[thm]{Lemme}
+%\newtheorem{pro}[thm]{Property}
+%\newtheorem{cor}[thm]{Corollary}
+%\newtheorem{rmq}[thm]{Remark}
+%\newtheorem{prop}[thm]{Proposition}
+%\newtheorem{remarque}[thm]{Remarque}
+%\newtheorem{corollaire}[thm]{Corollaire}
+%\newcommand{\rfb}[1]{\mbox{\rm
+%   (\ref{#1})}\ifx\undefined\stillediting\else:\fbox{$#1$}\fi}
+%
+%\newtheorem{theorem}[thm]{Theorem}
+%\newtheorem{proposition}[thm]{Property}
+%\newtheorem{corollary}[thm]{Corollary}
+%\newtheorem{remark}[thm]{Remark}
+%
+
+\newcommand{\ie}{\textit{i.e.}\xspace}
+
+%% MU DIFF
+\newcommand{\mudiff}{$\mu$-diff\xspace}
+\newcommand{\matlab}{Matlab\xspace}
+\newcommand{\Nscat}{N_{scat}}
+
+
+%TEXTCOLOR
+
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+
+% \MATHBB
+\newcommand{\Ab} {{\mathbb{A}}}
+\newcommand{\Bb} {{\mathbb{B}}}
+\newcommand{\Cb} {{\mathbb{C}}}
+\newcommand{\Db} {{\mathbb{D}}}
+\newcommand{\Eb} {{\mathbb{E}}}
+\newcommand{\Fb} {{\mathbb{F}}}
+\newcommand{\Hb} {{\mathbb{H}}}
+\newcommand{\Ib} {{\mathbb{I}}}
+\newcommand{\Jb} {{\mathbb{J}}}
+\newcommand{\Kb} {{\mathbb{K}}}
+\newcommand{\Lb} {{\mathbb{L}}}
+\newcommand{\Mb} {{\mathbb{M}}}
+\newcommand{\Nb} {{\mathbb{N}}}
+\newcommand{\Pb} {{\mathbb{P}}}
+\newcommand{\Qb} {{\mathbb{Q}}}
+\newcommand{\Rb} {{\mathbb{R}}}
+\newcommand{\Sb} {{\mathbb{S}}}
+\newcommand{\Tb} {{\mathbb{T}}}
+\newcommand{\Ub} {{\mathbb{U}}}
+\newcommand{\Yb} {{\mathbb{Y}}}
+\newcommand{\Zb} {{\mathbb{Z}}}
+
+% \scr
+\newcommand{\Ascr} {{\mathscr A}}
+\newcommand{\Bscr} {{\mathscr B}}
+\newcommand{\Cscr} {{\mathscr C}}
+\newcommand{\Dscr} {{\mathscr D}}
+\newcommand{\Escr} {{\mathscr E}}
+\newcommand{\Fscr} {{\mathscr F}}
+\newcommand{\Gscr} {{\mathscr G}}
+\newcommand{\Hscr} {{\mathscr H}}
+\newcommand{\Iscr} {{\mathscr I}}
+\newcommand{\Jscr} {{\mathscr J}}
+\newcommand{\Kscr} {{\mathscr K}}
+\newcommand{\Lscr} {{\mathscr L}}
+\newcommand{\Mscr} {{\mathscr M}}
+\newcommand{\Nscr} {{\mathscr N}}
+\newcommand{\Oscr} {{\mathscr O}}
+\newcommand{\Pscr} {{\mathscr P}}
+\newcommand{\Qscr} {{\mathscr Q}}
+\newcommand{\Rscr} {{\mathscr R}}
+\newcommand{\Sscr} {{\mathscr S}}
+\newcommand{\Tscr} {{\mathscr T}}
+\newcommand{\Uscr} {{\mathscr U}}
+\newcommand{\Vscr} {{\mathscr V}}
+\newcommand{\Wscr} {{\mathscr W}}
+
+% \CAL
+\newcommand{\Acal} {{\cal A}}
+\newcommand{\Bcal} {{\cal B}}
+\newcommand{\Ccal} {{\cal C}}
+\newcommand{\Dcal} {{\cal D}}
+\newcommand{\Ecal} {{\cal E}}
+\newcommand{\Fcal} {{\cal F}}
+\newcommand{\Gcal} {{\cal G}}
+\newcommand{\Hcal} {{\cal H}}
+\newcommand{\Ical} {{\cal I}}
+\newcommand{\Jcal} {{\cal J}}
+\newcommand{\Kcal} {{\cal K}}
+\newcommand{\Lcal} {{\cal L}}
+\newcommand{\Mcal} {{\cal M}}
+\newcommand{\Ncal} {{\cal N}}
+\newcommand{\Ocal} {{\cal O}}
+\newcommand{\Pcal} {{\cal P}}
+\newcommand{\Qcal} {{\cal Q}}
+\newcommand{\Rcal} {{\cal R}}
+\newcommand{\Scal} {{\cal S}}
+\newcommand{\Tcal} {{\cal T}}
+\newcommand{\Ucal} {{\cal U}}
+\newcommand{\Vcal} {{\cal V}}
+\newcommand{\Wcal} {{\cal W}}
+
+
+% GRAS / Boldsymbol
+\newcommand{\Alpha} {{\boldsymbol{\alpha}}}
+\newcommand{\Beta} {{\boldsymbol{\beta}}}
+\newcommand{\xxi} {{\boldsymbol{\xi}}}
+\newcommand{\Eta} {{\boldsymbol{\eta}}}
+\newcommand{\gammab} {{\boldsymbol{\gamma}}}
+\newcommand{\lambdab} {{\boldsymbol{\lambda}}}
+\newcommand{\Nu} {{\boldsymbol{\nu}}}
+\newcommand{\Varphi} {{\boldsymbol{\varphi}}}
+\newcommand{\Rho}{\boldsymbol{\rho}}
+\newcommand{\Phib} {{\boldsymbol{\Phi}}}
+\newcommand{\Psib} {{\boldsymbol{\Psi}}}
+\newcommand{\thetab} {{\boldsymbol{\theta}}}
+
+%Mathbf minuscule
+\newcommand{\aab} {{\mathbf{a}}}
+\newcommand{\bb} {{\mathbf{b}}}
+\newcommand{\cc} {{\mathbf{c}}}
+\newcommand{\ddb} {{\mathbf{d}}}
+\newcommand{\ee} {{\mathbf{e}}}
+\newcommand{\eej} {{\mathbf{e}_j}}
+\newcommand{\ff} {{\mathbf{f}}}
+\newcommand{\ggb} {{\mathbf{g}}}
+\newcommand{\hh} {{\mathbf{h}}}
+\newcommand{\jj} {{\mathbf{j}}}
+\newcommand{\mm} {{\mathbf{m}}}
+\newcommand{\mmh} {\hat{\mathbf{m}}}
+\newcommand{\nn} {{\mathbf{n}}}
+\newcommand{\pp} {{\mathbf{p}}}
+\newcommand{\pph} {\hat{\mathbf{p}}}
+\newcommand{\qq} {{\mathbf{q}}}
+\newcommand{\qqh} {\hat{\mathbf{q}}}
+\newcommand{\rr}{{\mathbf r}}
+\newcommand{\ssb} {{\mathbf{s}}}
+\newcommand{\uu} {{\mathbf{u}}}
+\newcommand{\xx} {{\mathbf{x}}}
+\newcommand{\xxh} {{\hat{\mathbf{x}}}}
+\newcommand{\yy} {{\mathbf{y}}}
+\newcommand{\yyh} {{\mathbf{y}}}
+\newcommand{\zz} {{\mathbf{z}}}
+
+
+%Mathbf Majuscule
+% Lettre + Lettre
+% ex : \BB
+% OU
+% Lettre + Lettre + bf
+% ex : \AAbf
+
+\newcommand{\Abf} {{\mathbf{A}}}
+\newcommand{\BB}{{\mathbf{B}}}
+\newcommand{\CC} {{\mathbf{C}}}
+\newcommand{\DD} {{\mathbf{D}}}
+\newcommand{\EE} {{\mathbf{E}}}
+\newcommand{\FF} {{\mathbf{F}}}
+\newcommand{\HH} {{\mathbf{H}}}
+\newcommand{\II} {{\mathbf{I}}}
+\newcommand{\ID} {{\mathbf{\rm{I}}}}
+\newcommand{\JJ} {{\mathbf{J}}}
+\newcommand{\LL} {{\mathbf{L}}}
+\newcommand{\MM} {{\mathbf{M}}}
+\newcommand{\NN} {{\mathbf{N}}}
+\newcommand{\OO} {{\mathbf{O}}}
+\newcommand{\PP} {{\mathbf{P}}}
+\newcommand{\QQ} {{\mathbf{Q}}}
+\newcommand{\RR} {{\mathbf{R}}}
+\newcommand{\UU} {{\mathbf{U}}}
+\newcommand{\TT} {{\mathbf{T}}}
+\newcommand{\VV} {{\mathbf{V}}}
+\newcommand{\XX} {{\mathbf{X}}}
+\newcommand{\YY} {{\mathbf{Y}}}
+
+%Boldsymbol Majuscules
+% Lettre + Lettre + b
+% ex : \AAb
+
+\newcommand{\AAb} {{\boldsymbol{A}}}
+\newcommand{\BBb}{{\boldsymbol{B}}}
+\newcommand{\CCb} {{\boldsymbol{C}}}
+\newcommand{\DDb} {{\boldsymbol{D}}}
+\newcommand{\EEb} {{\boldsymbol{E}}}
+\newcommand{\FFb} {{\boldsymbol{F}}}
+\newcommand{\HHb} {{\boldsymbol{H}}}
+\newcommand{\IIb} {{\boldsymbol{I}}}
+\newcommand{\IDb} {{\boldsymbol{\rm{I}}}}
+\newcommand{\JJb} {{\boldsymbol{J}}}
+\newcommand{\LLb} {{\boldsymbol{L}}}
+\newcommand{\MMb} {{\boldsymbol{M}}}
+\newcommand{\OOb} {{\boldsymbol{O}}}
+\newcommand{\PPb} {{\boldsymbol{P}}}
+\newcommand{\RRb} {{\boldsymbol{R}}}
+\newcommand{\UUb} {{\boldsymbol{U}}}
+\newcommand{\TTb} {{\boldsymbol{T}}}
+\newcommand{\VVb} {{\boldsymbol{V}}}
+
+%Boldsymbol Majuscules + cal
+\newcommand{\MMcal} {{\boldsymbol{\Mcal}}}
+\newcommand{\PPcal} {{\boldsymbol{\Pcal}}}
+
+
+% Tilde + Majuscule
+\newcommand{\Ot}{\widetilde{O}}
+
+% Tilde + Majuscule + Gras/boldsymbol
+\newcommand{\BBt}{\widetilde{\BB}}
+\newcommand{\CCt}{\widetilde{\CC}}
+\newcommand{\FFt}{\widetilde{\FF}}
+\newcommand{\OOt} {\widetilde{{\mathbf{O}}}}
+\newcommand{\UUt} {\widetilde{{\mathbf{U}}}}
+
+
+% Tilde + minuscule
+\newcommand{\bt}{\widetilde{b}}
+\newcommand{\dt}{\widetilde{d}}
+\newcommand{\ft}{\widetilde{f}}
+\newcommand{\rt}{\widetilde{r}}
+\newcommand{\rhot}{\widetilde{\rho}}
+\newcommand{\mut}{\widetilde{\mu}}
+\newcommand{\psit}{\widetilde{\psi}}
+
+
+% Tilde + minuscule + boldsymbol
+\newcommand{\Rhot}{\widetilde{\Rho}}
+\newcommand{\lambdabt}{\widetilde{\lambdab}}
+\newcommand{\aabt}{\widetilde{\aab}}
+\newcommand{\bbt}{\widetilde{\bb}}
+\newcommand{\fft}{\widetilde{\ff}}
+\newcommand{\rrt}{\widetilde{\rr}}
+\newcommand{\ssbt}{\widetilde{\ssb}}
+\newcommand{\yyt}{\widetilde{\yy}}
+\newcommand{\Psit}{\widetilde{\Psi}}
+\newcommand{\xxit}{\widetilde{\xxi}}
+\newcommand{\Phit}{\widetilde{\Phi}}
+
+%Tilde + mathbb
+\newcommand{\Abt}{\widetilde{\mathbb{A}}}
+\newcommand{\Cbt}{\widetilde{\mathbb{C}}}
+\newcommand{\Fbt}{\widetilde{\mathbb{F}}}
+\newcommand{\Hbt}{\widetilde{\mathbb{H}}}
+\newcommand{\Ibt}{\widetilde{\mathbb{I}}}
+\newcommand{\Jbt}{\widetilde{\mathbb{J}}}
+\newcommand{\Lbt}{\widetilde{\mathbb{L}}}
+\newcommand{\Sbt}{\widetilde{\mathbb{S}}}
+\newcommand{\Tbt}{\widetilde{\mathbb{T}}}
+
+
+%Hat + mathbb
+\newcommand{\Lbh}{\widehat{\mathbb{L}}}
+\newcommand{\Jbh}{\widehat{\mathbb{J}}}
+\newcommand{\Hbh}{\widehat{\mathbb{H}}}
+\newcommand{\Sbh}{\widehat{\mathbb{S}}}
+
+\newcommand{\etah}{\widehat{\eta}}
+
+%Rm (droit) + minuscule
+\newcommand{\n}{{\rm n}}
+\newcommand{\s}{{\rm s}}
+\newcommand{\x}{{\rm x}}
+\newcommand{\y}{{\rm y}}
+\newcommand{\dd}{{\rm d}}
+
+% \rm (droit) + majuscule
+\newcommand{\F}{{\rm F}}
+
+
+
+%Hat + majucule (+ possible boldsymbol)
+
+\newcommand{\FFh}{\widehat{\FF}}
+
+%Hat + minusucle  (+ possible boldsymbol)
+
+\newcommand{\fh}{\widehat{f}}
+\newcommand{\ffh}{\widetilde{\ff}}
+
+\newcommand{\rhoh}{\widehat{\rho}}
+\newcommand{\Rhoh}{\widehat{\Rho}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Divers
+\newcommand{\e} {{\varepsilon}}
+
+
+\newcommand{\et}      {{\rm e}}
+\newcommand{\dy}{{\dd y}}
+\newcommand{\dx}{{\dd \xx}}
+\newcommand{\dm}   {{\frac{1}{2}}}
+\newcommand{\FORALL} {{\hbox{$\hskip 11mm \forall \;$}}}
+\newcommand{\kasten} {{\hfill \rule{2.5mm}{2.5mm}}}
+\newcommand{\rarrow} {{\,\rightarrow\,}}
+
+\newcommand{\eme} {^{ème}}
+
+
+% ESPACES FONCTIONNELS
+\newcommand{\ldo}     {L^2(\Omega)}
+\newcommand{\ldg}     {L^2(\Gamma)}
+\newcommand{\ldm}     {L^2(\p\Mscr)}
+\newcommand{\hun}     {H^1(\Omega)}
+\newcommand{\hunz}     {H^1_0(\Omega)}
+\newcommand{\hde}     {H^2(\Omega)}
+\newcommand{\hm}     {H^m(\Omega)}
+\newcommand{\hdemi}     {H^{1/2}(\Gamma)}
+\newcommand{\hmdemi}     {H^{-1/2}(\Gamma)}
+
+%\renewcommand{\Re}   {{\rm Re\hskip 0.6mm}}
+%\renewcommand{\Im}   {{\rm Im\hskip 0.6mm}}
+
+\newcommand{\dsp}{\displaystyle}
+\newcommand{\ima}{\Im{\rm m}\,}
+\newcommand{\ree}{\Re{\rm e}\,}
+%\newcommand{\ke}{{\rm Ker}}
+
+
+% INTEGRALES  
+\newcommand{\into} {\dsp \int_\Omega}
+\newcommand{\intoz} {\dsp \int_{\Omega_0}}
+\newcommand{\intg} {\dsp \int_\Gamma}
+\newcommand{\intgd} {\dsp \int_{\Gamma^\delta}}
+\newcommand{\intgp} {\dsp \int_{\Gamma_p}}
+\newcommand{\intgq} {\dsp \int_{\Gamma_q}}
+\newcommand{\intgdp} {\dsp \int_{\Gamma^\delta_p}}
+\newcommand{\intgdq} {\dsp \int_{\Gamma^\delta_q}}
+
+
+
+% DIFF
+\newcommand{\p} {\partial}
+\newcommand{\ddiv} {{\rm  {div}}} 
+\newcommand{\dive} {{\rm  {\bf div}}} 
+\newcommand{\divb} {{\rm {\bf div}}_\Beta}
+\newcommand{\rot} {{\rm  {\bf curl}}}
+\newcommand{\rotb} {{\rm {\bf curl}}_\Beta}  
+\newcommand{\dnu} {\dsp \frac{\partial u}{\partial n}}
+\newcommand{\dnui} {\dsp \frac{\partial u_I}{\partial n}}
+\newcommand{\dnud} {\dsp \frac{\partial u_D}{\partial n}}
+\newcommand{\gu} {\dsp\nabla u}
+\newcommand{\gv} {\dsp\nabla v}
+\newcommand{\gwi} {\dsp\nabla w_I}
+\newcommand{\gwj} {\dsp\nabla w_J}
+\newcommand{\intouv} {\dsp \into u\,  v\, \dx}
+\newcommand{\intoduv} {\dsp \into \Delta u \, v\, \dx}
+\newcommand{\intoguv} {\dsp \into \nabla u \cdot \nabla v\, \dx}
+\newcommand{\intgdnuv} {\dsp \intg \dnu\, v\, \dx}
+
+% GREEN
+\newcommand{\dngi} {\dsp \frac{\partial G_I}{\partial n}}
+\newcommand{\dngD} {\dsp \frac{\partial G_D}{\partial n}}
+
+
+%Permet de numéroter les équations par section
+%\renewcommand{\theequation}{{\arabic{section}.\arabic{equation}}}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\newcommand{\secp}{{\hbox{\hskip -5.9mm.\hskip 4mm}}}
+%%%%%%%%%+%%%%%%%%%+%%%%%%%%%+%%%%%%%%%+%%%%%%%%%+%%%%%%%%%+%%%%%%%%%+
+
+
+
+%Matrices par bloc :
+\newcommand{\Lbpp}{\mathbb{L}^{p,p}}
+\newcommand{\Lbpq}{\mathbb{L}^{p,q}}
+\newcommand{\Lbppmm}{\mathbb{L}^{p,p}_{m,m}}
+\newcommand{\Lbppmn}{\mathbb{L}^{p,p}_{m,n}}
+\newcommand{\Lbpqmn}{\mathbb{L}^{p,q}_{m,n}}
+\newcommand{\Lbpqnm}{\mathbb{L}^{p,q}_{n,m}}
+\newcommand{\Lbqpnm}{\mathbb{L}^{q,p}_{n,m}}
+
+\newcommand{\Mbpp}{\mathbb{M}^{p,p}}
+\newcommand{\Mbpq}{\mathbb{M}^{p,q}}
+\newcommand{\Mbppmm}{\mathbb{M}^{p,p}_{m,m}}
+\newcommand{\Mbppmn}{\mathbb{M}^{p,p}_{m,n}}
+\newcommand{\Mbpqmn}{\mathbb{M}^{p,q}_{m,n}}
+
+\newcommand{\Nbpp}{\mathbb{N}^{p,p}}
+\newcommand{\Nbpq}{\mathbb{N}^{p,q}}
+\newcommand{\Nbppmm}{\mathbb{N}^{p,p}_{m,m}}
+\newcommand{\Nbppmn}{\mathbb{N}^{p,p}_{m,n}}
+\newcommand{\Nbpqmn}{\mathbb{N}^{p,q}_{m,n}}
+
+\newcommand{\Dbpp}{\mathbb{D}^{p,p}}
+\newcommand{\Dbpq}{\mathbb{D}^{p,q}}
+\newcommand{\Dbppmm}{\mathbb{D}^{p,p}_{m,m}}
+\newcommand{\Dbppmn}{\mathbb{D}^{p,p}_{m,n}}
+\newcommand{\Dbpqmn}{\mathbb{D}^{p,q}_{m,n}}
+
+\newcommand{\Abpp}{\mathbb{A}^{p,p}}
+\newcommand{\Abpq}{\mathbb{A}^{p,q}}
+\newcommand{\Abppmm}{\mathbb{A}^{p,p}_{m,m}}
+\newcommand{\Abppmn}{\mathbb{A}^{p,p}_{m,n}}
+\newcommand{\Abpqmn}{\mathbb{A}^{p,q}_{m,n}}
+
+\newcommand{\AbL}{\Ab_L}
+\newcommand{\AbppL}{\AbL^{p,p}}
+\newcommand{\AbpqL}{\AbL^{p,q}}
+\newcommand{\AbR}{\Ab_R}
+\newcommand{\AbppR}{\AbR^{p,p}}
+\newcommand{\AbpqR}{\AbR^{p,q}}
+
+\newcommand{\Tbpp}{\mathbb{T}^{p,p}}
+\newcommand{\Tbpq}{\mathbb{T}^{p,q}}
+\newcommand{\Tbppmm}{\mathbb{T}^{p,p}_{m,m}}
+\newcommand{\Tbppmn}{\mathbb{T}^{p,p}_{m,n}}
+\newcommand{\Tbpqmn}{\mathbb{T}^{p,q}_{m,n}}
+
+
+\newcommand{\Sbpp}{\mathbb{S}^{p,p}}
+\newcommand{\Sbpq}{\mathbb{S}^{p,q}}
+\newcommand{\Sbppmm}{\mathbb{S}^{p,p}_{m,m}}
+\newcommand{\Sbppmn}{\mathbb{S}^{p,p}_{m,n}}
+\newcommand{\Sbpqmn}{\mathbb{S}^{p,q}_{m,n}}
+
+\newcommand{\Jbp}{\Jb^{p}}
+\newcommand{\Jbq}{\Jb^{q}}
+\newcommand{\Hbp}{\Hb^{p}}
+\newcommand{\Hbq}{\Hb^{q}}
+
+\newcommand{\dJb}{(\dd\Jb)}
+\newcommand{\dJbp}{(\dd\Jb)^{p}}
+\newcommand{\dJbq}{(\dd\Jb)^{q}}
+\newcommand{\dHbp}{(\dd\Hb)^{p}}
+\newcommand{\dHbq}{(\dd\Hb)^{q}}
+
+\newcommand{\Ibp}{\Ib^{p}}
+\newcommand{\Ibq}{\Ib^{q}}
+
+% Avec un chapeau
+\newcommand{\Lbhpp}{\Lbh^{p,p}}
+\newcommand{\Lbhpq}{\Lbh^{p,q}}
+\newcommand{\Lbhppmm}{\Lbh^{p,p}_{m,m}}
+\newcommand{\Lbhppmn}{\Lbh^{p,p}_{m,n}}
+\newcommand{\Lbhpqmn}{\Lbh^{p,q}_{m,n}}
+
+\newcommand{\Sbhpp}{\Sbh^{p,p}}
+\newcommand{\Sbhpq}{\Sbh^{p,q}}
+\newcommand{\Sbhppmm}{\Sbh^{p,p}_{m,m}}
+\newcommand{\Sbhppmn}{\Sbh^{p,p}_{m,n}}
+\newcommand{\Sbhpqmn}{\Sbh^{p,q}_{m,n}}
+
+\newcommand{\Jbhp}{\Jbh^{p}}
+\newcommand{\Jbhq}{\Jbh^{q}}
+\newcommand{\Hbhp}{\Hbh^{p}}
+
+
+%Avec un tilde
+
+\newcommand{\Lbtpp}{\widetilde{\mathbb{L}}^{p,p}}
+\newcommand{\Lbtpq}{\widetilde{\mathbb{L}}^{p,q}}
+\newcommand{\Lbtppmm}{\widetilde{\mathbb{L}}^{p,p}_{m,m}}
+\newcommand{\Lbtppmn}{\widetilde{\mathbb{L}}^{p,p}_{m,n}}
+\newcommand{\Lbtpqmn}{\widetilde{\mathbb{L}}^{p,q}_{m,n}}
+
+\newcommand{\Mbt}{\widetilde{\mathbb{M}}}
+\newcommand{\Mbtpp}{\widetilde{\mathbb{M}}^{p,p}}
+\newcommand{\Mbtpq}{\widetilde{\mathbb{M}}^{p,q}}
+\newcommand{\Mbtppmm}{\widetilde{\mathbb{M}}^{p,p}_{m,m}}
+\newcommand{\Mbtppmn}{\widetilde{\mathbb{M}}^{p,p}_{m,n}}
+\newcommand{\Mbtpqmn}{\widetilde{\mathbb{M}}^{p,q}_{m,n}}
+
+\newcommand{\Nbt}{\widetilde{\mathbb{N}}}
+\newcommand{\Nbtpp}{\widetilde{\mathbb{N}}^{p,p}}
+\newcommand{\Nbtpq}{\widetilde{\mathbb{N}}^{p,q}}
+\newcommand{\Nbtppmm}{\widetilde{\mathbb{N}}^{p,p}_{m,m}}
+\newcommand{\Nbtppmn}{\widetilde{\mathbb{N}}^{p,p}_{m,n}}
+\newcommand{\Nbtpqmn}{\widetilde{\mathbb{N}}^{p,q}_{m,n}}
+
+\newcommand{\Dbt}{\widetilde{\mathbb{D}}}
+\newcommand{\Dbtpp}{\widetilde{\mathbb{D}}^{p,p}}
+\newcommand{\Dbtpq}{\widetilde{\mathbb{D}}^{p,q}}
+\newcommand{\Dbtppmm}{\widetilde{\mathbb{D}}^{p,p}_{m,m}}
+\newcommand{\Dbtppmn}{\widetilde{\mathbb{D}}^{p,p}_{m,n}}
+\newcommand{\Dbtpqmn}{\widetilde{\mathbb{D}}^{p,q}_{m,n}}
+
+\newcommand{\Cbtpp}{\widetilde{\mathbb{C}}^{p,p}}
+\newcommand{\Cbtpq}{\widetilde{\mathbb{C}}^{p,q}}
+\newcommand{\Cbtppmm}{\widetilde{\mathbb{C}}^{p,p}_{m,m}}
+\newcommand{\Cbtppmn}{\widetilde{\mathbb{C}}^{p,p}_{m,n}}
+\newcommand{\Cbtpqmn}{\widetilde{\mathbb{C}}^{p,q}_{m,n}}
+
+\newcommand{\Abtpp}{\widetilde{\mathbb{A}}^{p,p}}
+\newcommand{\Abtpq}{\widetilde{\mathbb{A}}^{p,q}}
+\newcommand{\Abtppmm}{\widetilde{\mathbb{A}}^{p,p}_{m,m}}
+\newcommand{\Abtppmn}{\widetilde{\mathbb{A}}^{p,p}_{m,n}}
+\newcommand{\Abtpqmn}{\widetilde{\mathbb{A}}^{p,q}_{m,n}}
+
+
+\newcommand{\Sbtpp}{\Sbt^{p,p}}
+\newcommand{\Sbtpq}{\Sbt^{p,q}}
+\newcommand{\Sbtppmm}{\Sbt^{p,p}_{m,m}}
+\newcommand{\Sbtppmn}{\Sbt^{p,p}_{m,n}}
+\newcommand{\Sbtpqmn}{\Sbt^{p,q}_{m,n}}
+
+\newcommand{\Jbtp}{\Jbt^{p}}
+\newcommand{\Jbtq}{\Jbt^{q}}
+\newcommand{\Hbtp}{\Hbt^{p}}
+\newcommand{\Hbtq}{\Hbt^{q}}
+\newcommand{\Ibtp}{\Ibt^{p}}
+\newcommand{\Ibtq}{\Ibt^{q}}
+
+\newcommand{\dJbt}{(\dd\Jbt)}
+\newcommand{\dJbtp}{(\dd\Jbt)^{p}}
+\newcommand{\dJbtq}{(\dd\Jbt)^{q}}
+\newcommand{\dHbtp}{(\dd\Hbt)^{p}}
+\newcommand{\dHbtq}{(\dd\Hbt)^{q}}
+
+\newcommand{\uut}{\widetilde{\uu}}
+\newcommand{\duut}{\widetilde{\dd \uu}}
+
+\newcommand{\Btmp}{\widetilde{B}_m^p}
+
+% Systeme tronqué
+\newcommand{\Atronq}{\widetilde{\Ab}}
+\newcommand{\xitronq}{\widetilde{\xxi}}
+\newcommand{\gtronq}{\widetilde{\G}}
+
+% Vecteur entre les centres O_p et O_q et entre l'origine O et Op
+\newcommand{\bbpq}{{\mathbf{b}_{pq}}}
+\newcommand{\bpq}{b_{pq}}
+\newcommand{\alphapq}{\alpha_{pq}}
+
+\newcommand{\bp}{b_{p}}
+\newcommand{\bbp}{{\mathbf b}_{p}}
+\newcommand{\alphap}{\alpha_{p}}
+
+\newcommand{\Oscrp}{{\cal O}_p}
+\newcommand{\Oscrq}{{\cal O}_q}
+
+\newcommand{\OOp}{\OO_p}
+\newcommand{\OOq}{\OO_q}
+
+\newcommand{\Op}{O_p}
+\newcommand{\Oq}{O_q}
+
+\newcommand{\thetap}{\theta_{p}}
+\newcommand{\thetaq}{\theta_{q}}
+
+\newcommand{\ap}{a_p}
+\newcommand{\aq}{a_q}
+
+% Coordonnées polaires centrés sur un obstacle
+
+\newcommand{\rp}{r_p}
+
+\newcommand{\rrp}{{\mathbf r}_p}
+\newcommand{\rrq}{{\mathbf r}_q}
+
+%coef du second membre (Fourier)
+\newcommand{\dmp}{d_m^p}
+
+% Equations intégrales
+
+\newcommand{\EFIED}{L}
+\newcommand{\MFIED}{\left(\frac{1}{2}I + N \right)}
+\newcommand{\MFIEDext}{\left(-\frac{1}{2}I + N \right)}
+\newcommand{\CFIED}{\left[(1-\alpha) \MFIED + \alpha \eta L\right]}
+
+\newcommand{\MFIEN}{\left(\frac{1}{2}I + M \right)}
+\newcommand{\MFIENext}{\left(-\frac{1}{2}I + M \right)}
+\newcommand{\CFIEN}{\left[(1-\alpha)D  + \alpha \eta \MFIEN\right]}
+
+\newcommand{\BWD}{\left[ -\eta L -M + \frac{1}{2}I \right]}
+
+\newcommand{\CFIEDSecond}{- \left[ (1-\alpha) \dn\uinc|_\Gamma + \alpha \eta \uinc|_\Gamma \right]}
+\newcommand{\CFIENSecond}{- \left[(1-\alpha) \duincg + \alpha\eta \uincg \right]}
+
+
+\newcommand{\OpEFIED}{\Ascr_{EFIE}}
+\newcommand{\OpMFIED}{\Ascr_{MFIE}}
+\newcommand{\OpCFIED}{\Ascr_{CFIE}}
+\newcommand{\OpBWD}{\Ascr_{BW}}
+
+%Vecteur blocs et second membre d'équations intégrales
+\newcommand{\df}{{\mathbf{df}}}
+
+\newcommand{\fq}{{\mathbf{f}}^q}
+\newcommand{\fnq}{{\mathbf{f}}^q_n}
+\newcommand{\fmp}{{\mathbf{f}}_m^p}
+\newcommand{\dfmp}{({\mathbf{df}})_m^p}
+
+\newcommand{\duu}{{\mathbf{du}}}
+
+\newcommand{\uup}{{\mathbf{u}}^p}
+\newcommand{\duup}{({\mathbf{du}})^p}
+\newcommand{\uump}{{\mathbf{u}}_m^p}
+\newcommand{\duump}{({\mathbf{du}})_m^p}
+
+\newcommand{\ggp}{{\mathbf{g}}^p}
+\newcommand{\ggmp}{{\mathbf{g}}_m^p}
+
+\newcommand{\qqp}{{\mathbf{q}}^p}
+\newcommand{\qqmp}{{\mathbf{q}}_m^p}
+ 
+\newcommand{\uuinc}{\boldsymbol{u}^{inc}}
+\newcommand{\duuinc}{\boldsymbol{du}^{inc}}
+
+\newcommand{\Fmp}{F_{m}^p}
+\newcommand{\FFmp}{\FF_m^p}
+
+\newcommand{\dFmp}{(\dd \F)_m^p}
+\newcommand{\dFFmp}{({\mathbf{dF}})_m^p}
+
+\newcommand{\dUUt} {\dd \UUt}
+\newcommand{\dUUtp} {(\dd \UUt)^{p}}
+\newcommand{\dUUtmp} {(\dd \UUt)_{m}^{p}}
+
+\newcommand{\CCtp}{\CCt^{p}}
+\newcommand{\CCtmp}{\CCt^{p}_{m}}
+
+%Ensembles
+\newcommand{\Gammap}{\Gamma_p}
+\newcommand{\Gammaq}{\Gamma_q}
+
+\newcommand{\Omegap}{\Omega_p}
+\newcommand{\Omegaq}{\Omega_q}
+
+\newcommand{\Omegam}{\Omega^-}
+\newcommand{\Omegaps}{\Omega^+}
+
+\newcommand{\Omegamp}{\Omega_p^-}
+\newcommand{\Omegamq}{\Omega_q^-}
+
+%\newcommand{\Omegab}{\Omega_{b}}
+
+\newcommand{\Omegae}{\Omega_{e}}
+
+\newcommand{\OmegaRE}{\Omega_{RE}}
+
+
+
+
+%Hankel
+\newcommand{\Hm}{H_m^{(1)}}
+\newcommand{\Hmp}{H_m^{(1)'}}
+\newcommand{\Hz}{H_0^{(1)}}
+\newcommand{\Hminf}{H_{m_\infty}^{(1)}}
+\newcommand{\Hmmoins}{H_{-m}^{(1)}}
+\newcommand{\Hmn}{H_{m-n}^{(1)}}
+\newcommand{\Hnm}{H_{n-m}^{(1)}}
+
+\newcommand{\Hn}{H_n^{(1)}}
+\newcommand{\Hnmoins}{H_{-n}^{(1)}}
+
+\newcommand{\hmm}{h_m^{(1)}}
+\newcommand{\hmmp}{h_m^{(1)'}}
+
+%Bessel
+\newcommand{\Jm}{J_m}
+\newcommand{\Jmmoins}{J_{-m}}
+\newcommand{\Jmp}{J'_{m}}
+
+\newcommand{\Jmn}{J_{m-n}}
+\newcommand{\Jnm}{J_{n-m}}
+
+\newcommand{\Jn}{J_n}
+\newcommand{\Jnmoins}{J_{-n}}
+\newcommand{\Jnp}{J'_{n}}
+
+% S_{mn}
+\newcommand{\Smn}{S_{mn}}
+\newcommand{\Snm}{S_{nm}}
+\newcommand{\Smnbpq}{S_{mn}(\bbpq)}
+\newcommand{\Snmbpq}{S_{nm}(\bbpq)}
+
+% S_{mn} chapeau
+\newcommand{\Smnchap}{\widehat{S}_{mn}}
+\newcommand{\Snmchap}{\widehat{S}_{nm}}
+\newcommand{\Smnbpqchap}{\widehat{S}_{mn}(\bbpq)}
+\newcommand{\Snmbpqchap}{\widehat{S}_{nm}(\bbpq)}
+
+%Base de Fourier : phi_{m}^p
+\newcommand{\phim}{\varphi_m}
+\newcommand{\phimmoins}{\varphi_{-m}}
+\newcommand{\phimp}{\varphi_m^p}
+\newcommand{\phimq}{\varphi_m^q}
+
+\newcommand{\phin}{\varphi_n}
+\newcommand{\phinmoins}{\varphi_{-n}}
+\newcommand{\phinp}{\varphi_n^p}
+\newcommand{\phinq}{\varphi_n^q}
+
+\newcommand{\phimn}{\varphi_{m-n}}
+\newcommand{\phinm}{\varphi_{n-m}}
+
+%Densités décomposées
+\newcommand{\rhom}{\rho_{m}}
+\newcommand{\rhomp}{\rho_{m}^p}
+
+\newcommand{\rhon}{\rho_{n}}
+\newcommand{\rhonq}{\rho_{n}^q}
+
+\newcommand{\lambdam}{\lambda_{m}}
+\newcommand{\lambdamp}{\lambda_{m}^p}
+
+\newcommand{\lambdan}{\lambda_{n}}
+\newcommand{\lambdanq}{\lambda_{n}^q}
+
+\newcommand{\psim}{\psi_{m}}
+\newcommand{\psimp}{\psi_{m}^p}
+
+\newcommand{\psin}{\psi_{n}}
+\newcommand{\psinq}{\psi_{n}^q}
+
+\newcommand{\xim}{\xi_{m}}
+\newcommand{\ximp}{\xi_{m}^p}
+
+\newcommand{\xin}{\xi_{n}}
+\newcommand{\xinq}{\xi_{n}^q}
+
+
+% coef serie de mie
+\newcommand{\cmp}{c_{m}^{p}}
+
+
+
+%Base de Fourier : Grand Phi
+
+\newcommand{\Phim}{\Phi_m}
+\newcommand{\Phimmoins}{\Phi_{-m}}
+\newcommand{\Phimp}{\Phi_m^p}
+\newcommand{\Phimq}{\Phi_m^q}
+
+\newcommand{\Phin}{\Phi_n}
+\newcommand{\Phinmoins}{\Phi_{-n}}
+\newcommand{\Phinp}{\Phi_n^p}
+\newcommand{\Phinq}{\Phi_n^q}
+
+\newcommand{\Phimn}{\Phi_{m-n}}
+\newcommand{\Phinm}{\Phi_{n-m}}
+
+\newcommand{\Phimt}{\Phit_m}
+\newcommand{\Phimmoinst}{\Phit_{-m}}
+\newcommand{\Phimpt}{\Phit_m^p}
+\newcommand{\Phinpt}{\Phit_n^p}
+\newcommand{\Phimqt}{\Phit_m^q}
+
+% Theoreme d'addition
+
+\newcommand{\rrun}{\rrt_1}
+\newcommand{\run}{\rt_1}
+
+\newcommand{\rrdeux}{\rr_2}
+\newcommand{\rdeux}{\rt_2}
+
+\newcommand{\rri}{\rr_i}
+\newcommand{\ri}{\rt_i}
+
+\newcommand{\Oun}{\OOt_1}
+\newcommand{\Odeux}{\OOt_2}
+\newcommand{\OOi}{\OOt_i}
+
+\newcommand{\bbundeux}{\bbt_{12}}
+\newcommand{\bundeux}{\bt_{12}}
+
+
+
+%Problemes internes
+\newcommand{\Pkd}{(P_{k,D})}
+\newcommand{\Pkn}{(P_{k,N})}
+
+%R^2, R^3
+\newcommand{\Rbb}{\mathbb{R}^2}
+\newcommand{\Rbbb}{\mathbb{R}^3}
+
+%Dérivées :
+\newcommand{\dn}{\partial_{\mathbf{n}}}
+\newcommand{\dny}{\partial_{\mathbf{n}_{\yy}}}
+\newcommand{\dnx}{\partial_{\mathbf{n}_{\xx}}}
+\newcommand{\dnz}{\partial_{\mathbf{n}_{\zz}}}
+
+%Vecteur
+\newcommand{\V}{\overrightarrow}
+
+\newcommand{\Tq}{T_{q}}
+\newcommand{\Tpq}{T_{pq}}
+
+
+
+\newcommand{\br}{{\mathbf r}}
+
+
+%onde totale et onde incidentes
+\newcommand{\utm}{u_T^-}
+\newcommand{\ut}{u_T}
+
+\newcommand{\vt}{v_T}
+\newcommand{\vtm}{v_T^{-}}
+
+\newcommand{\uinc}{u^{\textrm{inc}}}
+\newcommand{\uincg}{u^{\textrm{inc}}|_\Gamma}
+
+\newcommand{\duincg}{\dn u^{\textrm{inc}}|_\Gamma}
+
+\newcommand{\uialpha}{u_I^{\Alpha}}
+\newcommand{\udalpha}{u_D^{\Alpha}}
+\newcommand{\ualpha}{u^{\Alpha}}
+\newcommand{\utalpha}{u_T^{\Alpha}}
+
+\newcommand{\uibeta}{u_I^{\Beta}}
+\newcommand{\udbeta}{u_D^{\Beta}}
+\newcommand{\ubeta}{u^{\Beta}}
+\newcommand{\utbeta}{u_T^{\Beta}}
+
+%Disque Gershgorin
+\newcommand{\Rmp}{R_m^p}
+\newcommand{\Cmp}{C_m^p}
+\newcommand{\Ai}{\text{Ai}}
+\newcommand{\Bi}{\text{Bi}}
+\newcommand{\Rmpt}{\widetilde{R_m^p}}
+
+%conditionnement
+\newcommand{\cond}{\text{cond}}
+
+
+% Ker, Imag, Trace, Signe
+\newcommand{\Ker}{{\rm Ker}}
+\newcommand{\Imag}{{\rm Im}}
+\newcommand{\tr}{{\rm tr}}
+\newcommand{\sg}{{\rm sgn}}
+
+%Comparaison de fonctions, Valeur Absolue,
+\newcommand{\GrandO}[1]{O\left( #1 \right)}
+\newcommand{\petito}[1]{o\left( #1 \right)}
+\newcommand{\Abs}[1]{\left| #1 \right|}
+\newcommand{\abs}[1]{| #1 |}
+
+% fonctions
+
+\newcommand{\sinc}{{\rm sinc}}
+
+% Valeurs propres max, min, ... (estimation de conditionnement)
+
+\newcommand{\lmax}{\Val{\lambda_{max}}}
+\newcommand{\lmin}{\Val{\lambda_{min}}}
+
+\newcommand{\mumin}{\mu_{min}}
+\newcommand{\muminz}{\mumin^0}
+\newcommand{\muminu}{\mumin^1}
+
+\newcommand{\mumax}{\mu_{max}}
+\newcommand{\mumaxz}{\mumax^0}
+\newcommand{\mumaxu}{\mumax^1}
+
+\newcommand{\mumaxapp}{\mumax^{app}}
+\newcommand{\muminapp}{\mumin^{app}}
+
+\newcommand{\mumaxh}{\mumax^{h}}
+\newcommand{\muminh}{\mumin^{h}}
+
+% pas equivalent et a equivalent
+
+\newcommand{\heq}{h_{\rm eqv}}
+\newcommand{\aeq}{a_{\rm eqv}}
+
+% Produit scalaire
+
+\newcommand{\PS}[2]{\left< #1,  #2 \right>}
+\newcommand{\PSLS}[2]{\left( #1,  #2 \right)_{L^2(S^2)}}
+\newcommand{\PSLM}[2]{\left( #1,  #2 \right)_{L^2(\Mrt)}}
+\newcommand{\PSGamma}[2]{\left( #1,  #2 \right)_{L^2(\Gamma)}}
+\newcommand{\PSGammap}[2]{\left( #1,  #2 \right)_{L^2(\Gammap)}}
+\newcommand{\PSGammah}[2]{\left( #1,  #2 \right)_{L^2(\Gamma_{h})}}
+\newcommand{\PSdemi}[2]{\left< #1,  #2 \right>_{H^{-1/2},H^{1/2}}}
+
+% Equations intégrales
+
+\newcommand{\vm}{v^-}
+\newcommand{\vmp}{v^-_p}
+\newcommand{\vmq}{v^-_q}
+
+\newcommand{\Lpp}{L^{p,p}}
+\newcommand{\Lpq}{L^{p,q}}
+\newcommand{\Lqp}{L^{q,p}}
+
+\newcommand{\Mpp}{M_{pp}}
+\newcommand{\Mpq}{M_{pq}}
+
+\newcommand{\Npp}{N_{pp}}
+\newcommand{\Npq}{N_{pq}}
+
+\newcommand{\Dpp}{D_{pp}}
+\newcommand{\Dpq}{D_{pq}}
+
+
+%Opérateurs intégraux volumiques et divers commandes liées aux équations intégrales
+\newcommand{\dwg}{\dn \omega |_\Gamma}
+\newcommand{\wg}{\omega |_\Gamma}
+
+\newcommand{\dnwun}{\dn \omega |_{\Gamma_1}}
+\newcommand{\wgun}{\omega |_{\Gamma_1}}
+
+\newcommand{\Lop}{\Lscr}
+\newcommand{\Mop}{\Mscr}
+
+
+\newcommand{\Mopp}{\Mop_p}
+\newcommand{\Lopp}{\Lop_p}
+
+\newcommand{\Mopq}{\Mop_q}
+\newcommand{\Lopq}{\Lop_q}
+
+\newcommand{\Iop}{\Iscr}
+
+\newcommand{\rhop}{\rho_p}
+\newcommand{\rhoq}{\rho_q}
+
+\newcommand{\mup}{\mu_p}
+\newcommand{\muq}{\mu_q}
+
+\newcommand{\psip}{\psi_p}
+\newcommand{\psiq}{\psi_q}
+
+
+\newcommand{\rhoe}{\rho^*}
+
+\newcommand{\lambdap}{\lambda_p}
+\newcommand{\lambdaq}{\lambda_q}
+
+% Vecteurs particulier (utilisés dans l'estimation du conditionnement)
+\newcommand{\XXpm}{\XX^{(p,m)}}
+\newcommand{\XXpmm}{\XX^{(p,-m)}}
+\newcommand{\XXpmq}{\XX^{(p,m)}_{q}}
+\newcommand{\XXpmqn}{X^{(p,m)}_{q,n}}
+\newcommand{\XXpmp}{\XX^{(p,m)}_{p}}
+\newcommand{\XXpmpn}{X^{(p,m)}_{p,n}}
+
+\newcommand{\YYpm}{\YY^{(p,m)}}
+\newcommand{\YYpmq}{\YY^{(p,m)}_{q}}
+\newcommand{\YYpmqn}{Y^{(p,m)}_{q,n}}
+\newcommand{\YYpmp}{\YY^{(p,m)}_{p}}
+\newcommand{\YYpmpn}{Y^{(p,m)}_{p,n}}
+
+\newcommand{\YYt}{\widetilde{\YY}}
+\newcommand{\Yt}{\widetilde{Y}}
+
+\newcommand{\YYtpm}{\YYt^{(p,m)}}
+\newcommand{\YYtpmq}{\YYt^{(p,m)}_{q}}
+\newcommand{\YYtpmqn}{\Yt^{(p,m)}_{q,n}}
+\newcommand{\YYtpmp}{\YY^{(p,m)}_{p}}
+\newcommand{\YYtpmpn}{\Yt^{(p,m)}_{p,n}}
+
+%Matrice limite
+%matrice L^0
+\newcommand{\Lbz}{\Lb^0}
+\newcommand{\Lbzpp}{(\mathbb{L}^0)^{p,p}}
+\newcommand{\Lbzqq}{(\mathbb{L}^0)^{q,q}}
+\newcommand{\Lbzpq}{(\mathbb{L}^0)^{p,q}}
+\newcommand{\Lbzppmm}{(\mathbb{L}^0)^{p,p}_{m,m}}
+\newcommand{\Lbzppmn}{(\mathbb{L}^0)^{p,p}_{m,n}}
+\newcommand{\Lbzpqmn}{(\mathbb{L}^0)^{p,q}_{m,n}}
+\newcommand{\Lbzpqnm}{(\mathbb{L}^0)^{p,q}_{n,m}}
+\newcommand{\Lbzqpnm}{(\mathbb{L}^0)^{q,p}_{n,m}}
+
+\newcommand{\muz}{(\mu^0)}
+\newcommand{\muzmp}{(\mu^0)_{m}^p}
+
+\newcommand{\Lbu}{\Lb^1}
+\newcommand{\Lbupp}{\mathbb{L}^1_{p,p}}
+\newcommand{\Lbuqq}{\mathbb{L}^1_{q,q}}
+\newcommand{\Lbupq}{\mathbb{L}^1_{p,q}}
+
+\newcommand{\muu}{(\mu^1)}
+\newcommand{\muump}{(\mu^1)_{m}^p}
+
+%% Chap 1 : RT
+
+% COORDONNEES - Points
+
+\newcommand{\xxz}{\xx_{0}}
+\newcommand{\xu}{\x_{1}}
+\newcommand{\xuu}{\x_{2}}
+\newcommand{\xuuu}{\x_{3}}
+
+\newcommand{\xxc}{\xx^{c}}
+\newcommand{\xcu}{\x^{c}_{1}}
+\newcommand{\xcuu}{\x^{c}_{2}}
+\newcommand{\xcuuu}{\x^{c}_{3}}
+
+\newcommand{\yu}{\y_{1}}
+\newcommand{\yuu}{\y_{2}}
+\newcommand{\yuuu}{\y_{3}}
+
+\newcommand{\su}{\s_{1}}
+\newcommand{\suu}{\s_{2}}
+\newcommand{\suuu}{\s_{3}}
+
+\newcommand{\aj}{a_{j}}
+
+% Fonction Phi_{y}...
+\newcommand{\phiy}{\phi_{\yy}}
+\newcommand{\psiy}{\psi_{\yy}}
+
+\newcommand{\phiyt}{\phi_{\yyt}}
+\newcommand{\psiyt}{\psi_{\yyt}}
+
+
+\newcommand{\phiyxu}{\phi_{\yy;\xuuu}}
+\newcommand{\psiyxu}{\psi_{\yy;\xuuu}}
+
+\newcommand{\Phiy}{\Phi_{\yy}}
+\newcommand{\Psiy}{\Psi_{\yy}}
+
+% Champ rétro-propagé
+\newcommand{\ue}{u_{E}}
+\newcommand{\ve}{v_{E}}
+
+\newcommand{\ure}{u_{RE}}
+\newcommand{\vre}{v_{RE}}
+
+\newcommand{\uet}{\widetilde{\ue}}
+\newcommand{\vet}{\widetilde{\ve}}
+
+\newcommand{\uret}{\widetilde{\ure}}
+\newcommand{\vret}{\widetilde{\vre}}
+
+\newcommand{\UE}{\Uscr_{E}}
+\newcommand{\URE}{\Uscr_{RE}}
+
+\newcommand{\ureh}{\widehat{u}_{RE}}
+\newcommand{\vreh}{\widehat{v}_{RE}}
+
+\newcommand{\Ve}{\Vscr_{E}}
+\newcommand{\Vre}{\Vscr_{RE}}
+
+\newcommand{\Ue}{\Uscr_{E}}
+\newcommand{\Ure}{\Uscr_{RE}}
+%intégrale J(k,\yy)
+\newcommand{\Jy}{J_{\yy}}
+\newcommand{\Jyt}{J_{\yyt}}
+\newcommand{\Jky}{J_{\yy}(k)}
+\newcommand{\Jkyxu}{J_{\yy}(k,\xuu)}
+
+\newcommand{\Iy}{I_{\yy}}
+\newcommand{\Iky}{I_{\yy}(k)}
+\newcommand{\Ikyxu}{I_{\yy}(k,\xuu)}
+
+% DROITE
+
+\newcommand{\Dys}{\Dcal_{\yy\ssb}}
+\newcommand{\Dyst}{\Dcal_{\yy\ssbt}}
+
+\newcommand{\Dsa}{\Dcal_{\ssb\Abf}}
+
+\newcommand{\Dxs}{\Dcal_{\xx\ssb}}
+\newcommand{\Dxps}{\Dcal_{\xx'\ssb}}
+\newcommand{\Dxpst}{\Dcal_{\xx'\ssbt}}
+\newcommand{\Dxst}{\Dcal_{\xx\ssbt}}
+
+% Pas artificiel, Rayon moyen...
+\newcommand{\htt}{\tilde{h}}
+\newcommand{\att}{\tilde{a}}
+
+%Unité
+\newcommand{\rad}{{\rm rad}}
+
+% Nombre d'onde, longueur d'onde, ...
+
+\newcommand{\kref}{k_{{\rm ref}}}
+\newcommand{\lambdaref}{\lambda_{{\rm ref}}}
+
+\newcommand{\kgeo}{k_{{\rm geo}}}
+\newcommand{\lambdageo}{\lambda_{{\rm geo}}}
+
+\newcommand{\kdis}{k_{{\rm dis}}}
+\newcommand{\lambdadis}{\lambda_{{\rm dis}}}
+
+\newcommand{\kz}{k_{0}}
+\newcommand{\lambdaz}{\lambda_{0}}
+
+\newcommand{\kmin}{k_{{\rm min}}}
+\newcommand{\lambdamin}{\lambda_{{\rm min}}}
+
+\newcommand{\kmax}{k_{{\rm max}}}
+\newcommand{\lambdamax}{\lambda_{{\rm max}}}
+
+% RT champ proche
+
+\newcommand{\Mrt}{\Mcal}
+\newcommand{\Mrtc}{\overline{\Mrt}}
+
+\newcommand{\intM}{\int_{\Mrt}}
+
+
+\newcommand{\deltaM}{\delta_{\Mrt}}
+
+\newcommand{\dmin}{d_{{\rm min}}}
+\newcommand{\dsmin}{d_{\ssb,{\rm min}}}
+\newcommand{\dMmin}{d_{\Mrt,{\rm min}}}
+
+\newcommand{\amin}{a_{{\rm min}}}
+\newcommand{\amax}{a_{{\rm max}}}
+
+\newcommand{\Deltatheo}{\Delta_{{\rm theo}}}
+
+\newcommand{\Deltaobs}{\Delta_{{\rm obs}}^{num}}
+
+\newcommand{\Deltahom}{\Delta_{{\rm hom}}^{num}}
+
+\newcommand{\Deltainh}{\Delta_{{\rm diff}}^{num}}
+
+\newcommand{\Deltahet}{\Delta_{{\rm diff}}^{num}}
+
+% PML : ondes, ensembles, ...
+
+\newcommand{\upml}{u_{\PML}}
+\newcommand{\upmlt}{\tilde{u}_{\PML}}
+
+
+\newcommand{\PML}{{\rm PML}}
+\newcommand{\OmegaPML}{\Omega_{\PML}}
+\newcommand{\Sigmaint}{\Sigma_{int}}
+\newcommand{\SigmaPML}{\Sigma_{\PML}}
+\newcommand{\deltaPML}{\delta^{{\rm PML}}}
+
+
+%Transformée de Fourier
+\newcommand{\TF}{{\rm TF}}
+
+\newcommand{\UEh}{\widehat{\Uscr}_{E}}
+\newcommand{\UREh}{\widehat{\Uscr}_{RE}}
+
+% Discrétisation en k
+
+\newcommand{\deltak}{\delta_{k}}
+\newcommand{\Deltak}{\Delta_{k}}
+\newcommand{\dk}{d_{k}}
+\newcommand{\Nk}{N_{k}}
+\newcommand{\hk}{h_{k}}
+
+% Green
+
+\newcommand{\Gk}{G_{k}}
+
+% Chapitre : estimation conditionnement
+
+\newcommand{\ax}{a_{x}}
+\newcommand{\ay}{a_{y}}
+\newcommand{\axu}{a_{x_{1}}}
+\newcommand{\axuu}{a_{x_{2}}}
+
+% Chapitre : preconditionnement
+
+\newcommand{\LA}{L_{A}}
+\newcommand{\LB}{L_{B}}
+\newcommand{\LBW}{L_{BW}}
+
+\newcommand{\LBWpp}{L_{BW}^{p,p}}
+\newcommand{\LBWpq}{L_{BW}^{p,q}}
+\newcommand{\LBWqp}{L_{BW}^{q,p}}
+
+\newcommand{\gammaz}{\gamma_{0}}
+\newcommand{\gammazp}{\gamma_{0}^{p}}
+\newcommand{\gammazm}{\gamma_{0}^{-}}
+\newcommand{\gammazps}{\gamma_{0}^{+}}
+
+\newcommand{\gammau}{\gamma_{1}}
+\newcommand{\gammaup}{\gamma_{1}^{p}}
+\newcommand{\gammaum}{\gamma_{1}^{-}}
+\newcommand{\gammaups}{\gamma_{1}^{+}}
+
+\newcommand{\LAsgl}{\widehat{L}_{A}}
+\newcommand{\LBsgl}{\widehat{L}_{B}}
+\newcommand{\LBWsgl}{\widehat{L}_{BW}}
+\newcommand{\Lsgl}{\widehat{L}}
+
+
+\newcommand{\LApp}{\LA^{p,p}}
+\newcommand{\LAqq}{\LA^{q,q}}
+\newcommand{\LApq}{\LA^{p,q}}
+\newcommand{\LAqp}{\LA^{q,p}}
+
+\newcommand{\LBpp}{\LB^{p,p}}
+\newcommand{\LBqq}{\LB^{q,q}}
+\newcommand{\LBpq}{\LB^{p,q}}
+\newcommand{\LBqp}{\LB^{q,p}}
+
+\newcommand{\Ap}{A_{p}}
+\newcommand{\Aq}{A_{q}}
+
+\newcommand{\Bp}{B_{p}}
+\newcommand{\Bq}{B_{q}}
+
+\newcommand{\LAuu}{\LA^{1,1}}
+\newcommand{\LAud}{\LA^{1,2}}
+\newcommand{\LAuM}{\LA^{1,M}}
+\newcommand{\LAdu}{\LA^{2,1}}
+\newcommand{\LAdd}{\LA^{2,2}}
+\newcommand{\LAdM}{\LA^{2,M}}
+\newcommand{\LAMu}{\LA^{M,1}}
+\newcommand{\LAMd}{\LA^{M,2}}
+\newcommand{\LAmM}{\LA^{M-1,M}}
+\newcommand{\LAMM}{\LA^{M,M}}
+
+
+\newcommand{\LAsgluu}{\LAsgl^{1,1}}
+\newcommand{\LAsglud}{\LAsgl^{1,2}}
+\newcommand{\LAsgluM}{\LAsgl^{1,M}}
+\newcommand{\LAsgldu}{\LAsgl^{2,1}}
+\newcommand{\LAsgldd}{\LAsgl^{2,2}}
+\newcommand{\LAsgldM}{\LAsgl^{2,M}}
+\newcommand{\LAsglMu}{\LAsgl^{M,1}}
+\newcommand{\LAsglMd}{\LAsgl^{M,2}}
+\newcommand{\LAsglmM}{\LAsgl^{M-1,M}}
+\newcommand{\LAsglMM}{\LAsgl^{M,M}}
+
+
+\newcommand{\LBuu}{\LB^{1,1}}
+\newcommand{\LBud}{\LB^{1,2}}
+\newcommand{\LBuM}{\LB^{1,M}}
+\newcommand{\LBdu}{\LB^{2,1}}
+\newcommand{\LBdd}{\LB^{2,2}}
+\newcommand{\LBdM}{\LB^{2,M}}
+\newcommand{\LBMu}{\LB^{M,1}}
+\newcommand{\LBMd}{\LB^{M,2}}
+\newcommand{\LBmM}{\LB^{M-1,M}}
+\newcommand{\LBMM}{\LB^{M,M}}
+
+
+\newcommand{\LAt}{\widetilde{L}_{A}}
+\newcommand{\LBt}{\widetilde{L}_{B}}
+
+\newcommand{\LAtpp}{\LAt^{p,p}}
+\newcommand{\LAtqq}{\LAt^{q,q}}
+\newcommand{\LAtpq}{\LAt^{p,q}}
+\newcommand{\LAtqp}{\LAt^{q,p}}
+
+\newcommand{\Np}{N_{p}}
+\newcommand{\Nq}{N_{q}}
+\newcommand{\Ntot}{N_{\textrm{tot}}}
+\newcommand{\Nref}{N_{ref}}
+
+\newcommand{\Id}{{\rm Id}}
+
+\newcommand{\diag}{{\rm diag}}
+
+\newcommand{\dFF}{\mathbf{\dd F}}
+\newcommand{\dFFt}{\mathbf{\dd}\FFt}
+
+\newcommand{\dUU}{\mathbf{\dd \UU}}
+
+
+
+\newcommand{\Angle}{{\rm Angle}}
+
+\newcommand{\AEFIED}{\Ab_{\rm EFIE}}
+\newcommand{\AMFIED}{\Ab_{\rm MFIE}}
+\newcommand{\ACFIED}{\Ab_{\rm CFIE}}
+\newcommand{\ABWD}{\Ab_{\rm BW}}
+\newcommand{\AMieD}{\Ab_{\rm Mie}}
+
+\newcommand{\AEFIEDt}{\Abt_{\rm EFIE}}
+\newcommand{\AMFIEDt}{\Abt_{\rm MFIE}}
+\newcommand{\ACFIEDt}{\Abt_{\rm CFIE}}
+\newcommand{\ABWDt}{\Abt_{\rm BW}}
+\newcommand{\AMieDt}{\Abt_{\rm Mie}}
+
+\newcommand{\MatEFIEDt}{\Lbt}
+\newcommand{\MatMFIEDt}{\frac{1}{2}\Ibt + \Nbt}
+\newcommand{\MatCFIEDt}{ \alpha\eta\Lbt + (1-\alpha) \left(\frac{1}{2}\Ibt + \Nbt\right)}
+\newcommand{\MatBWDt}{-\eta\Lbt - \Mbt + \frac{1}{2}\Ibt}
+
+\newcommand{\MatEFIED}{\Lb}
+\newcommand{\MatMFIED}{\frac{1}{2}\Ib + \Nb}
+\newcommand{\MatCFIED}{ \alpha\eta\Lb + (1-\alpha) \left(\frac{1}{2}\Ib + \Nb\right)}
+\newcommand{\MatBWD}{-\eta\Lb - \Mb + \frac{1}{2}\Ib}
+
+\newcommand{\AEFIEDpp}{\AEFIED^{p,p}}
+\newcommand{\AMFIEDpp}{\AMFIED^{p,p}}
+\newcommand{\ACFIEDpp}{\ACFIED^{p,p}}
+\newcommand{\ABWDpp}{\ABWD^{p,p}}
+\newcommand{\AMieDpp}{\AMieD^{p,p}}
+
+\newcommand{\AEFIEDpq}{\AEFIED^{p,q}}
+\newcommand{\AMFIEDpq}{\AMFIED^{p,q}}
+\newcommand{\ACFIEDpq}{\ACFIED^{p,q}}
+\newcommand{\ABWDpq}{\ABWD^{p,q}}
+\newcommand{\AMieDpq}{\AMieD^{p,q}}
+
+\newcommand{\AEFIEDtpp}{\AEFIEDt^{p,p}}
+\newcommand{\AMFIEDtpp}{\AMFIEDt^{p,p}}
+\newcommand{\ACFIEDtpp}{\ACFIEDt^{p,p}}
+\newcommand{\ABWDtpp}{\ABWDt^{p,p}}
+\newcommand{\AMieDtpp}{\AMieDt^{p,p}}
+
+\newcommand{\AEFIEDtpq}{\AEFIEDt^{p,q}}
+\newcommand{\AMFIEDtpq}{\AMFIEDt^{p,q}}
+\newcommand{\ACFIEDtpq}{\ACFIEDt^{p,q}}
+\newcommand{\ABWDtpq}{\ABWDt^{p,q}}
+\newcommand{\AMieDtpq}{\AMieDt^{p,q}}
+
+\newcommand{\AEFIEDdiag}{\widehat{\Ab}_{\rm EFIE}}
+\newcommand{\AMFIEDdiag}{\widehat{\Ab}_{\rm MFIE}}
+\newcommand{\ACFIEDdiag}{\widehat{\Ab}_{\rm CFIE}}
+\newcommand{\ABWDdiag}{\widehat{\Ab}_{\rm BW}}
+\newcommand{\AMieDdiag}{\widehat{\Ab}_{\rm Mie}}
+
+\newcommand{\AEFIEDtdiag}{\widehat{\Abt}_{\rm EFIE}}
+\newcommand{\AMFIEDtdiag}{\widehat{\Abt}_{\rm MFIE}}
+\newcommand{\ACFIEDtdiag}{\widehat{\Abt}_{\rm CFIE}}
+\newcommand{\ABWDtdiag}{\widehat{\Abt}_{\rm BW}}
+\newcommand{\AMieDtdiag}{\widehat{\Abt}_{\rm Mie}}
+
+\newcommand{\AEFIEDtpre}{\Abt_{\rm EFIE}^{precond}}
+\newcommand{\AMFIEDtpre}{\Abt_{\rm MFIE}^{precond}}
+\newcommand{\ACFIEDtpre}{\Abt_{\rm CFIE}^{precond}}
+\newcommand{\ABWDtpre}{\Abt_{\rm BW}^{precond}}
+
+
+\newcommand{\Lbdiag}{\Lbh}
+\newcommand{\Lbdiagpq}{\Lbh^{p,q}}
+\newcommand{\Mbdiag}{\Mbh}
+\newcommand{\Nbdiag}{\Nbh}
+\newcommand{\Dbdiag}{\Dbh}
+
+\newcommand{\Lbtdiag}{\Lbt^{single}}
+\newcommand{\Lbtdiagpq}{(\Lbt^{single})^{p,q}}
+\newcommand{\Mbtdiag}{\Mbt^{single}}
+\newcommand{\Mbtdiagpq}{(\Mbt^{single})^{p,q}}
+\newcommand{\Nbtdiag}{\Nbt^{single}}
+\newcommand{\Nbtdiagpq}{(\Nbt^{single})^{p,q}}
+\newcommand{\Dbtdiag}{\Dbt^{single}}
+\newcommand{\Dbtdiagpq}{(\Dbt^{single})^{p,q}}
+
+
+%base de fourier
+\newcommand{\BF}{\Bscr}
+
+% champ lointain et ser
+
+\newcommand{\aLop}{a_{\Lop}}
+\newcommand{\aMop}{a_{\Mop}}
+\newcommand{\dB}{{\rm dB}}
+
+% solveur
+
+\newcommand{\GMRES}{{\rm GMRES}}
+
+%%%%% Article siam
+
+\newcommand{\Fop} {{\rm{\bf{F}}}}
+\newcommand{\Rop} {{\rm{\bf{R}}}}
+\newcommand{\Top} {{\rm{\bf{T}}}}
+
+%Ondes incidentes, diffractes, totales...
+\newcommand{\EIalphaf} {{\EE_I^{\Alpha,\ff}}}
+\newcommand{\HIalphaf} {{\HH_I^{\Alpha,\ff}}}
+
+\newcommand{\Ealphaf} {{\EE^{\Alpha,\ff}}}
+\newcommand{\Halphaf} {{\HH^{\Alpha,\ff}}}
+
+\newcommand{\ETalphaf} {{\EE_T^{\Alpha,\ff}}}
+\newcommand{\HTalphaf} {{\HH_T^{\Alpha,\ff}}}
+
+\newcommand{\EIf} {{\EE_I^{\ff}}}
+\newcommand{\HIf} {{\HH_I^{\ff}}}
+
+\newcommand{\Ef} {{\EE^{\ff}}}
+\newcommand{\Hf} {{\HH^{\ff}}}
+
+% RT
+
+\newcommand{\Ccalz}{\Ccal_0}
+\newcommand{\Ccalu}{\Ccal_1}
+
