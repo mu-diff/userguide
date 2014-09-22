@@ -162,10 +162,14 @@ Remove all the disk with radius a1, a2, ..., or aN
 set VERBOSITY to 0 to avoid display message, to 1 to only show results, and to $>1$ to see everything (default).
 \end{itemize}
 
-For example, to remove every obstacle on the row of $x-$abscissa $1$ and $y-$ordinate $2.5$:\\
-\code{  [O,a] = RemoveDisk(O\_old, a\_old, 'X', 1, 'Y', 2.5);}\\
-Or, to remove the obstacles centered on $(2,5)$ and (3,4):\\
-\code{  [O,a] = RemoveDisk(O\_old, a\_old, 'XY', [2,3;5,4]);}\\
+For example, to remove every obstacle on the row of $x-$abscissa $1$ and $y-$ordinate $2.5$:
+\begin{verbatim}
+[O,a] = RemoveDisk(O\_old, a\_old, 'X', 1, 'Y', 2.5);
+\end{verbatim}
+Or, to remove the obstacles centered on $(2,5)$ and (3,4):
+\begin{verbatim}
+[O,a] = RemoveDisk(O\_old, a\_old, 'XY', [2,3;5,4]);
+\end{verbatim}
 
 \subsection{Incident waves}
 
@@ -173,10 +177,41 @@ Two different incident waves, plane wave and point source wave, are available in
 
 \subsubsection{\code{BlockIncidentWave}}
 
+This functions computes the block vector of \textbf{the opposite of} the coefficients of an incident wave, either the trace of the normal derivative trace, on one of the obstacles, in the Fourier bases. Its syntax is
+\begin{verbatim}
+Bp = BlockIncidentWave(Op, ap, Np, k, TypeOfWave, Param);
+\end{verbatim}
+where \code{TypeOfWave} is a scalar value specifying the incident wave (see below) and \code{Param} is the parameter of the wave, that is the angle of direction or the position of a point source. The returned value \code{Bp} is a column vector of length 2\code{Np}+1. Below is listed the possible value of \code{TypeOfWave}, the interface function name, the associated parameter and the resulting wave:
+\begin{center}
+\begin{tabular}{|c| c |c| p{9cm}| }
+\hline Value & \mudiff name & Param & Type\\\hline
+1 & \code{PlaneWave} & \code{beta\_inc} & Trace of a plane wave of angle of direction \code{beta\_inc}. A plane wave is defined by $e^{ik(\cos(\beta)x + \sin(\beta)y}$.\\\hline
+2 & \code{DnPlaneWave} & \code{beta\_inc} & Normal derivative of a plane wave of angle of direction \code{beta\_inc}.\\\hline
+3 & \code{PointSource} & \code{XS} & Trace of the wave emitted by a point source placed on \code{XS}. Such a wave is defined in \mudiff by $i/4\Hz(k\|\xx-\xx_s\|)$.\\\hline
+4 & \code{DnPointSource} & \code{XS} & Normal derivative of the trace of the wave emitted by a point source placed on \code{XS}.\\\hline
+5 & \code{PlaneWavePrecond} & \code{beta\_inc} & Same as \code{PlaneWave} but multiplied by the inverse diagonal of the single-layer diagonal block operator (see section \ref{} on single scattering preconditioner). \\\hline
+6 & \code{DnPlaneWavePrecond} & \code{beta\_inc} & Same as \code{DnPlaneWave} but multiplied by the inverse diagonal of the double-layer diagonal block operator. \\\hline
+\end{tabular}\end{center}
 
+\subsubsection{\code{IncidentWave}}
 
+\begin{verbatim}
+B = IncidentWave(O, a, M_modes, k, TypeOfWave, Param)
+\end{verbatim}
+The resulting vector \code{B} is of size $\sum_{p=1}^{\Nscat}(2\code{M\_modes}(p)+1)$. The value \code{Param} is the same as for \code{BlockIncidentWave} whereas \code{TypeOfWave} is a vector of size $\Nscat$ where \code{TypeOfWave}(p) is the desired choice for the block $b_p$. In other word, the block $b_p$ will be built by calling \code{BlockIncidentWave(Op, ap, Np, k, TypeOfWave, Param);}. To simplify, if \code{TypeOfWave} is a scalar value, then it is considered as a vector of the same scalar value.
 
+For example, building a vector associated to the trace of an incident plane wave of direction \code{beta\_inc} is done thanks to the following command:
+\begin{verbatim}
+B = IncidentWave(O, a, M_modes, k,  1, beta\_inc);
+\end{verbatim}
+For two obstacles and a point source centered on $(1,2)$, if $b_1$ is the trace of the wave and $b_2$ is the normal derivative trace, then
+\begin{verbatim}
+B = IncidentWave(O, a, M_modes, k,  [3;4],[1;2]);
+\end{verbatim}
 
+\begin{remark}
+Remember that the resulting vector corresponds to the opposite of the trace or normal derivative trace!
+\end{remark}
 
 
 \section{Integral operators}
