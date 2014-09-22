@@ -3,7 +3,9 @@ The authors try to keep the notations between the mathematical background and th
 \begin{verbatim}
 help name_of_the_function
 \end{verbatim}
-In all what follows, and if nothing is specified, then the following arguments refer to the below one. The indices $p$ and $q$ vary from $1$ to $\Nscat$ where $\Nscat$ is the number of obstacles.
+In all what follows, and if nothing is specified, then the following arguments refer to the below ones. The indices $p$ and $q$ vary from $1$ to $\Nscat$ where $\Nscat$ is the number of obstacles.
+
+\paragraph{Geometry:}
 
 \begin{center}
 %\rowcolors{1}{white}{gray}
@@ -16,21 +18,32 @@ In all what follows, and if nothing is specified, then the following arguments r
 \code{a} & $[1\times \Nscat]$ & Vector of the radii of the disks such that \code{a(p)} is the radius of the $p^{th}$ scatterer.\\\hline
 \code{ap} & $[1\times 1]$ & Radius of the $p^{th}$ scatterer.\\\hline
 \code{aq} & $[1\times 1]$ & Radius of the $q^{th}$ scatterer.\\\hline
-\code{M\_modes} & $[1\times \Nscat]$ & Vector of index of truncation of the Fourier series, \ie \code{M\_modes(p)}=$\Np$\\\hline
-\code{Np} & $[1\times 1]$ & Corresponds to $\Np$.\\\hline
-\code{Nq} & $[1\times 1]$ & Corresponds to $\Nq$.\\\hline
-\end{tabular}
-\end{center}
-On the parameters
-\begin{center}
-\begin{tabular}{|c |c | p{10cm}|}
-\hline Name & Size or Type & Content\\[0.2cm]\hline\hline
-\code{k} & $[1\times 1]$ & Wavenumber in the vacuum.\\\hline
-\code{k\_int} & $[1\times \Nscat]$ & Wavenumber in the obstacles: \code{k\_int(p)} being the one in obstacle $p$.\\\hline
 \end{tabular}
 \end{center}
 
-The integral operators are indexed by the following table:
+\paragraph{Parameters (wavenumbers, incident waves, fourier series,\ldots):}
+\begin{center}
+\begin{tabular}{|c |c | p{10cm}|}
+\hline Name & Size or Type & Content\\[0.2cm]\hline\hline
+\code{beta\_inc} & $[1\times 1]$ & Angle of direction of a plane wave $e^{ik (\cos(\beta)x + \sin(\beta)y)}$.\\\hline
+\code{XS} & $[2\times 1]$ & Center $(x_s,y_s)$ of a point source: $x_s=$\code{XS(1)} and $y_s=$\code{XS(2)}. A point source wave is then given by $i/4\Hz(k\|\xx-\xx_s\|)$, with $\xx=(x,y)$ and $\xx_s=(x_s,y_s)$ and $\Hz$ the zeroth order Hankel function of first kind.\\\hline
+\code{k} & $[1\times 1]$ & Wavenumber $k$ in the vacuum.\\\hline
+\code{k\_int} & $[1\times \Nscat]$ & Wavenumber in the obstacles: $\kintp=$\code{k\_int(p)}. If \code{k\_int} is a scalar then $\kintp$ = \code{k\_int} for all $p$.\\\hline
+\code{M\_modes} & $[1\times \Nscat]$ & Vector of index of truncation of the Fourier series, \ie \code{M\_modes(p)}=$\Np$\\\hline
+\code{Np} & $[1\times 1]$ & Corresponds to $\Np$, the truncation index in the Fourier serie.\\\hline
+\code{Nq} & $[1\times 1]$ & Corresponds to $\Nq$, the truncation index in the Fourier serie.\\\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Incident wave:}
+\begin{center}
+\begin{tabular}{|c |c | p{10cm}|}
+\hline Name & Size or Type & Content\\[0.2cm]\hline\hline
+\code{PlaneWave} & $[1\times 1]$ & Wavenumber in the vacuum.\\\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Integral operators:} they are indexed and named by the following table:
 \begin{center}
 \begin{tabular}{|c |c | c | p{9cm}|}
 \hline Index & Letter & Operator & \mudiff abreviation \\\hline\hline
@@ -63,14 +76,19 @@ a = [0.1, 0.5, 10];
 
 Two build-in functions are available with the toolbox to create disks periodically, with a rectangular or a triangular lattice, as shown on figure \ref{??}. The two functions are called as follows, for the rectangular lattice:
 \begin{verbatim}
-O=RectangularLattice(bx, by, Nx, Ny);
+O = RectangularLattice(bx, by, Nx, Ny);
 \end{verbatim}
 and for the triangular lattice:
 \begin{verbatim}
 O = TriangularLattice(bx,by,Nx,Ny);
 \end{verbatim}
-where \code{bx} and \code{by} are the distance separating two centers in the $x$ coordinate and \code{by} the distance between two rows in the $y$-direction. The two other parameter 
-\code{Nx} and \code{Ny} are the number of disks in the $x$direction and the number of rows of disks. For both functions, the vector of radii must be built separately. If the disks are unitary then the following command can be used
+where :
+\begin{itemize}
+\item \code{bx} and \code{by} are the distance separating two centers in the $x$ coordinate and \code{by} the distance between two rows in the $y$-direction. The two other parameter 
+\item \code{Nx}: number of disks in a row
+\item \code{Ny}: number of rows
+\end{itemize}
+For both functions, the vector of radii must be built separately. If the disks are unitary then the following command can be used
 \begin{verbatim}
 a = ones(size(O,2));
 \end{verbatim}
@@ -80,19 +98,32 @@ a = ones(size(O,2));
 
 Finally, to place randomly obstacles in a box $[\code{xmin}, \code{xmax}]\times[\code{ymin},\code{ymax}]$ with also a random radius, a function \code{CreateRandomDisks} is very helpful. In its simplest version, the function is called as:
 \begin{verbatim}
-[O, a] = CreateRandomDisks(xmin, xmax, ymin, ymax, N_scat)
+[O, a] = CreateRandomDisks(xmin, xmax, ymin, ymax, N_scat);
 \end{verbatim}
-The function will then create \code{N\_scat} disks in the box with random radii. This is however probably too simple and the function can be called in a more complex form:
+The function will then create \code{N\_scat} disk with unit radius in the desired box. This is however probably too simple and the function can be called in a more complex form:
 \begin{verbatim}
 [O, a] = CreateRandomDisks(xmin, xmax, ymin, ymax, N_scat, 
-           amin, amax, dmim, dmax, O_avoid, a_avoid, dmin_avoid, dmax_avoid)
+           amin, amax, dmim, dmax, O_avoid, a_avoid, dmin_avoid, dmax_avoid);
 \end{verbatim}
 where
-\begin{itemize}
-\item \code{amin} and \code{amax} are scalar values and respectively the minimal and the maximal radius
-\item \code{dmin} and \code{dmax} are scalar values and respectively the minimal and the maximal distance allowed between two disks (not between the centers!). A special care must be given to \code{dmax}: the verification is done between every disks and hence, the maximal distance is quickly reach! Setting $0$ or negative value will make \code{CreateRandomDisks} ignores these options.
-\item \code{O\_avoid, a\_avoid, dmin\_avoid} and \code{dmax\_avoid}: the arguments corresponds to ``holes'' in the box where the obstacles must not overlap. The notations are the same as for the circular obstacles and have the same size and role as respectively \code{O,a,dmin} and \code{dmax}.
-\end{itemize}
+\begin{center}
+\begin{tabular}{|c |c|c | p{10cm}|}
+\hline Variable & Type & Default & Action\\\hline
+\code{amin} & scalar  & 1 & Minimal (random) radius of the obstacles allowed \\\hline
+\code{amax} & scalar  & 1 & Maximal (random) radius of the obstacles  allowed\\\hline
+\code{dmin} & scalar & \code{realmin} & Minimal distance allowed between two obstacle (not between the centers!). Setting $\leq 0$  value will set \code{dmin} to \code{realmin} (\ie ignore it)\\\hline
+\code{dmax} & scalar & \code{realmax} & Maximal distance allowed between two obstacle (not between the centers!). The maximal distance is quickly reached! Setting $\leq 0$  value will set \code{dmax} to \code{realmax} (\ie ignore it).\\\hline
+\code{O\_avoid} & \code{[2 x N]} & \code{[]} & Center of \code{N} hole(s) where the obstacles must not overlap. Usefull for example for point source location.\\\hline
+\code{a\_avoid} & \code{[1 x N]} & \code{[]} & Radii of the \code{N} holes\\\hline
+\code{dmin\_avoid} & \code{[1 x N]} & \code{[]} & Minimal distance between an obstacle and a hole\\\hline
+\end{tabular}
+\end{center}
+These optional arguments are not mandatory in the function call. For example:
+\begin{verbatim}
+[O, a] = CreateRandomDisks(xmin, xmax, ymin, ymax, N_scat, amin, amax);
+\end{verbatim}
+will create random disks with random radii without taking into account the distances between the disks (except obviously the overlapping).
+
 For example, building 7 obstacles in the box $[-10,10]\times[-10,10]$ with radii between $0.1$ and $0.5$. The disks must be separated at minimum by a distance of $0.1$ and without maximum value. The command is then:
 \begin{verbatim}
 [O, a] = CreateRandomDisks(-10, 10, -10, 10, 7, 0.1, 0.5, 0.1, -1);
@@ -101,16 +132,52 @@ Now imagine that a point source is located on $(2,2)$ and that the obstacles mus
 \begin{verbatim}
 [O, a] = CreateRandomDisks(-10, 10, -10, 10, 7, 0.1, 0.5, 0.1, -1, [2;2], 0.3);
 \end{verbatim}
-or by using the minimal distance \code{dmin\_avoid} and setting \code{a\_avoid}:
+the disk centered on $(2,2)$ with radius $0.3$ will then be avoided. A second option is to set \code{a\_void} to zero and set the minimal distance \code{dmin\_avoid} to $0.3$:
 \begin{verbatim}
 [O, a] = CreateRandomDisks(-10, 10, -10, 10, 7, 0.1, 0.5, 0.1, -1, [2;2], 0, 0.3);
 \end{verbatim}
+
 
 \begin{remark}
 To verify if a disk is well placed, \code{CreateRandomDisks} calls \code{CheckPlacement} function, which can also be useful for a user placing obstacles.
 \end{remark}
 
+\subsubsection{Removing disks}
+
+The function \code{RemoveDisk} aims to remove some disks of the geometrical configuration, either disk by disk, by row or by column or by radius. Here is its syntax
+\begin{verbatim}
+[O,a] = RemoveDisk(O_old, a_old, ...);
+\end{verbatim}
+where \code{O\_old} and \code{a\_old} are the centers and radii of the current geometry. Without optional argument, the function will return \code{[O\_old, a\_old]} and the available arguments are:
+\begin{itemize}
+\item \code{[O,a] = RemoveDisk(..., 'X', [X1, X2, ..., XN]);}\\
+Remove all the points with X abscissa X1, X2, ..., or XN
+\item \code{[O,a] = RemoveDisk(...,  'Y', [Y1, Y2, ..., YN]);}\\
+Remove all the points with Y ordinate Y1, Y2, ..., or YN
+\item \code{[O,a] = RemoveDisk(..., 'XY', [[X1;Y1], [X2;Y2], ..., [XN;YN]]);}\\
+Remove all the points [X1;Y1], [X2;Y2], ..., and [XN;YN]
+\item \code{[O,a] = RemoveDisk(..., 'Radius', [a1, a2, ..., aN]);}\\
+Remove all the disk with radius a1, a2, ..., or aN
+\item \code{[O,a] = RemoveDisk(..., 'Verbosity', VERBOSITY);}\\
+set VERBOSITY to 0 to avoid display message, to 1 to only show results, and to $>1$ to see everything (default).
+\end{itemize}
+
+For example, to remove every obstacle on the row of $x-$abscissa $1$ and $y-$ordinate $2.5$:\\
+\code{  [O,a] = RemoveDisk(O\_old, a\_old, 'X', 1, 'Y', 2.5);}\\
+Or, to remove the obstacles centered on $(2,5)$ and (3,4):\\
+\code{  [O,a] = RemoveDisk(O\_old, a\_old, 'XY', [2,3;5,4]);}\\
+
 \subsection{Incident waves}
+
+Two different incident waves, plane wave and point source wave, are available in the \mudiff toolbox, but it should be highlighted that the user can build his/her own incident wave. A right-hand side $b$ is decomposed by blocks, each of these representing one obstacle: $b= (b_p)_{p=1,\ldots,\Nscat}$. As a different condition can be applied on an obstacle or a different integral equation can be considered on it, each block can be specified separately. Depending on the type of desired right-hand side, the block function \code{BlockIncidentWave} will compute the vector $b_p$. The frontal function \code{IncidentWave}, which compute the whole vector $b$, consists on calling  \code{BlockIncidentWave} for each obstacle and assembling the vector. Interfaced functions are available to compute directly some incident wave, such as \code{PlaneWave}, \code{PointSource} or \code{DnPlaneWave} and \code{DnPointSource}. They call \code{IncidentWave} with the right argument. There is no need here to described these functions, however their help is helpful and contains the mathematical description of the incident wave.
+
+\subsubsection{\code{BlockIncidentWave}}
+
+
+
+
+
+
 
 \section{Integral operators}
 
