@@ -489,7 +489,7 @@ Now that the system has been solved, the next step is to display the results. Th
 
 \subsubsection{Far field}
 
-The far field of a potential $\eta\Lop\rho + \gamma\Mop\lambda$ is computed thanks to the \code{FarField} function:
+The far field of a potential $\eta\Lop\rho + \gamma\Mop\lambda$, given by formul\ae{} (\ref{??}) and (\ref{??}), is computed thanks to the \code{FarField} function:
 \begin{verbatim}
 F = FarField(O, a, M_modes, k, theta, Density, Weight);
 \end{verbatim}
@@ -524,6 +524,12 @@ where the arguments are exactly the same as for the far field. In fact, \code{RC
 
 \subsubsection{Near field}
 
+The near field of a potential is given by equations (\ref{??}) and (\ref{??}) outside the obstacles and by (\ref{??}) and (\ref{??}) inside. In the same way, \mudiff separates the outside and the inside computation.
+
+\paragraph{Outside the obstacles}
+
 \subsubsection{Incident wave}
 
 \subsubsection{Obstacles}
+
+\section{Full Examples}
