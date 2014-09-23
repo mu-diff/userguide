@@ -160,6 +160,8 @@ Remove all the points [X1;Y1], [X2;Y2], ..., and [XN;YN]
 Remove all the disk with radius a1, a2, ..., or aN
 \item \code{[O,a] = RemoveDisk(..., 'Verbosity', VERBOSITY);}\\
 set VERBOSITY to 0 to avoid display message, to 1 to only show results, and to $>1$ to see everything (default).
+\item \code{[O,a] = RemoveDisk(..., 'Tol', TOL);}\\
+Tolerance used for the conditional statement (default $10^{-10}$).
 \end{itemize}
 
 For example, to remove every obstacle on the row of $x-$abscissa $1$ and $y-$ordinate $2.5$:
@@ -218,46 +220,273 @@ Remember that the resulting vector corresponds to the opposite of the trace or n
 
 Two different type of storage are provided with the \mudiff toolbox: dense and sparse. The dense version store the whole matrix in memory whereas the sparse version uses the special structure of the matrix of an integral operator to store it. The sparse storage in \mudiff and this user guide has nothing to deal with the sparse storage provided in \matlab such as \texttt{sparse} function. The dense storage is easier to use and works pretty well for small scale problems. It also presents the advantage of providing the whole matrix of the integral operator, which can be useful for spectrum analysis for example. On the other hand, for a large number of circular obstacles and/or for large frequency, the memory storage becomes too important and the sparse version must be used. One should be however careful: the sparse matrix-vector product, based on the cross-correlation (\texttt{xcorr} \matlab function), is very sensitive to the number of modes chosen in the truncation of the Fourier series. Indeed, if too many modes are kept, the matrix-vector product show to be unstable. The formula (\ref{??}) seems to provide stability.
 
-For both dense and sparse case, let $\Ab$ be a generic matrix representing the matrix of one of the four boundary integral operator, $\Lb,\Mb,\Nb$ and $\Db$. As highlighted in previous chapter, $\Ab$ has the following structure, for $p,q=1,\ldots,\Nscat$ and $p\neq q$:
+To explain how the code works, let us take an example of one of the four boundary integral operator $L,M,N$ or $D$ being discretized as a generic matrix $\Ab = (\Abpq)_{1\leq p,q\leq \Nscat}$. Let us highlight that \mudiff can manage more complexe matrices, where two different blocks are not the discretization of the same operators or can even be a linear combination of operators. Nevertheless, if $\Ap$ is one of the four boundary integral operators, then as highlighted in previous chapter, $\Ab$ has the following structure, for $p,q=1,\ldots,\Nscat$ and $p\neq q$:
 \begin{itemize}
 \item $\Abpp$ is diagonal.
 \item $\Abpq$ is full and can be divided as $\Abpq = \AbpqL\Tbpq\AbpqR$ where $\AbpqL$ and $\AbpqR$ are diagonal and called respectively the left and right part, and $\Tbpq = (\Tbpqmn))$, with $\Tbpqmn = i\pi e^{??}H_0^{(1)}(k\bpq)$, is a Toeplitz matrix.
 \end{itemize}
 In the sparse version, diagonal submatrices $\Abpp,\AbpqL$ and $\AbpqR$  are stored as a vector of size respectively $2\Np+1$, $2\Np+1$ and $2\Nq+1$, and the Toeplitz matrices $\Tbpq$ are stored as vectors of size $2\Np+2\Nq-1$.
 
-This section is naturally divided in two part, the first being devoted to the dense storage and the second to the sparse version.
+This section is naturally divided in two part, the first being devoted to the dense storage and the second to the sparse version. The assembly, the storage and the usage of the matrices being significantly different.
 
-\subsection{Available integral operators}
+\subsection{Available integral operators and numbering}
+\label{seccode:IntOp}
 
-The integral operators are numbered as follows
-\begin{enumerate}
-\item Null operator
-\end{enumerate}
+\mudiff can build the four boundary integral operators $L,M,N$ and $D$ described in the previous chapter, and also the single-scattering version of the EFIE, that is $??$ (Dirichlet) and $??$ (Neumann). As for the incident wave, in \mudiff, a unique number is assigned to every operator.
 
+\begin{center}\begin{tabular}{|c| c| c|c|}
+\hline Int. Op. & Number & \mudiff Name & Value for $\xx\in\Gamma$\\\hline
+- & 0 & \code{Zero} & Zero operator (null matrix)\\\hline
+$I$ & 1 & \code{Identity} & Identity\\\hline
+$L$ & 2 & \code{SingleLayer} & $\dsp L\rho(\xx) = \int_{\Gamma} G(\xx,\yy) \rho(\yy)\dd\yy$\\\hline
+$M$ & 3 & \code{DoubleLayer} & $\dsp M\lambda(\xx) = -\int_{\Gamma} \dny G(\xx,\yy) \lambda(\yy)\dd\yy$\\\hline
+$N$ & 4 & \code{DnSingleLayer} & $\dsp N\rho(\xx) = \dnx\int_{\Gamma} G(\xx,\yy) \rho(\yy)\dd\yy$\\\hline
+$D$ & 5 & \code{DnDoubleLayer} & $\dsp D\lambda(\xx) = -\dnx\int_{\Gamma} \dny G(\xx,\yy) \lambda(\yy)\dd\yy$\\\hline
+$\hat{L}L$ & 6 & \code{PrecondDirichlet} & Single-Layer preconditioned by its diagonal\\\hline
+$\hat{D}D$& 7 & \code{PrecondNeumann} & Dn Double-Layer preconditioned by its diagonal\\\hline
+\end{tabular}\end{center}
 
 \subsection{Dense storage}
-\subsubsection{Block structures}
+\subsubsection{Building a block $\Abpq$}
 
-A matrix $\Ab$ is created by blocks using \texttt{BlockIntegralOperator} function, which has the following syntax
+A block is created thanks to \texttt{BlockIntegralOperator} function, which has the following syntax
 \begin{verbatim}
-	Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, TypeOfOperator)
+	Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, TypeOfOperator, Weight);
 \end{verbatim}
-where:
+The \code{Weight} argument is optional and set to $1$ by default. The quantity \code{TypeOfOperator} specifies the integral operator to compute, thanks to the numbering of section \ref{seccode:IntOp}. If \code{TypeOfOperator} is a scalar (\eg $=2$) then the resulting matrix \code{Apq} is the submatrix of the associated operator (\eg $\Lbpq$). If \code{TypeOfOperator} is a row (\eg \code{[1,3]}) then the sum of the two operators is done (\eg $\Ibpq+\Mbpq$). Finally the \code{Weight} quantity, of the same size as \code{TypeOfOperator}, is the constant to multiply the block with.
+
+An example being more precise than a huge speak, let us build some blocks:
 \begin{itemize}
-\item \texttt{Op}(resp. \texttt{Oq}): \texttt{2$\times$1}, vector containing the centers of the disk such that \texttt{Op(1,p)}$=x_{\OOp}$ and \texttt{Op(2,p)}$=y_{\OOp}$ (resp. \texttt{Oq(1)}$=x_{\OOq}$ and \texttt{Oq(2)}$=y_{\OOq}$)
-\item \texttt{ap}(resp. \texttt{aq}): \texttt{1$\times$1}, Radius of the disks $\OOp$ (resp. $\OOq$)
-\item \texttt{Np} (resp. \texttt{Nq}): \texttt{1$\times$1}, Index of truncation $\Np$ (resp. $\Nq$)
-\item \texttt{k}: \texttt{1$\times$1}, Wavenumber in the vacuum
-\item \texttt{TypeOfOperator}: \texttt{Variable size}, Type of integral operator to be computed.
+\item The single-layer block $\Lbpq$:
+\begin{verbatim}
+Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, 1);
+\end{verbatim}
+\item The block $0.5\Ibpq + \Mbpq$, appearing in the MFIE (\ref{??}):
+\begin{verbatim}
+Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, [1, 3], [0.5, 1]);
+\end{verbatim}
+\item The sum of the four integral operator $0.5\Lbpq + 1.5\Mbpq + 2.5\Nbpq + 3.5\Dbpq$:
+\begin{verbatim}
+Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, [2, 3, 4, 5], 
+[0.5, 1.5, 2.5, 3.5]);
+\end{verbatim}
 \end{itemize}
 
-\subsubsection{Full matrix}
+\subsubsection{Assemble the matrix $\Ab$}
+
+Now that the construction of a block is well understood, building a matrix is very easy thanks to the frontal function
+\begin{verbatim}
+A = IntegralOperator(O, a, M_modes, k, TypeOfOperator, Weight);
+\end{verbatim}
+As for \code{BlockIntegralOperator}, the quantity \code{Weight} is optional and set to $1$ by default. Roughly speaking, \code{IntegralOperator} will loop on every obstacle $p$ and $q$ and launch the following command
+\begin{verbatim}
+Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, Tpq, Wpq);
+\end{verbatim}
+where \code{Tpq} and \code{Wpq} are given by \code{TypeOfOperator} and \code{Weight} such that (\code{Weight} is of the same size of \code{TypeOfOperator} and so \code{Wpq} follows the same rules as \code{Tpq}):
+\begin{itemize}
+\item If \code{TypeOfOperator} is a scalar then \code{Tpq} = \code{TypeOfOperator}. 
+\item If \code{TypeOfOperator} is a row or a column vector then \code{Tpq} is an array given by \code{Tpq} = \code{TypeOfOperator}. 
+\item If \code{TypeOfOperator} is a matrix then \code{Tpq} = \code{TypeOfOperator(p,q)}. 
+\item If \code{TypeOfOperator} is a $3D-$array then \code{Tpq} is an array and is given by \code{Tpq(:)} = \code{TypeOfOperator(p,q,:)}. 
+\end{itemize}
+
+For example, building \ldots 
+\begin{itemize}
+\item The single-layer potential $L$
+\begin{verbatim}
+L = IntegralOperator(O, a, M_modes, k, 2);
+\end{verbatim}
+\item The operator of the MFIE for a Dirichlet boundary condition (\ref{??}), $0.5I + N$:
+\begin{verbatim}
+A_MFIE = IntegralOperator(O, a, M_modes, k, [1,4], [0.5,1]);
+\end{verbatim}
+\item The following operator
+$$
+\left(\begin{array}{c c}
+0.5 I_{1,1}+ M_{1,1} & L_{1,2}\\
+D_{2,1} & 0.5 I_{2,2}+N_{2,2}
+\end{array}\right)
+$$
+can be done using also the null operator:
+\begin{verbatim}
+TypeOfOp = zeros(2,2,2); Weight = zeros(2,2,2);
+TypeOfOp(1,1, :) = [1, 3]; Weight(1,1, :) = [0.5, 1]; %block A_{1,1}
+TypeOfOp(1,2, :) = [2, 0]; Weight(1,2, :) = [1, 0]; %block A_{1,2}
+TypeOfOp(2,1, :) = [5, 0]; Weight(2,1, :) = [1, 0]; %block A_{2,1}
+TypeOfOp(2,2, :) = [1, 4]; Weight(2,2, :) = [0.5, 1]; %block A_{2,2}
+A = IntegralOperator(O, a, M_modes, k, TypeOfOp, Weight);
+\end{verbatim}
+\end{itemize}
 
 \subsection{Sparse storage}
-\subsubsection{Block structures}
-\subsubsection{Full matrix}
+
+Storing the matrices in a sparse way lead to a significant reduction in memory storage and a faster matrix-vector product. The linear system must then however be solved using an iterative solver only, as the matrix is no more fully stored. Combining linearly the matrices is still possible but is done during the matrix-vector product, indeed, summing two matrices of two different integral operators is not guaranteed to keep the special structure. If the problem involves (at least) two different integral operators, they must hence be computed separately.
+
+\subsubsection{Storage: generalities}
+
+To explain how the matrix is stored using \mudiff sparse storage, let $\Ab$ be the matrix of one of the four integral operators $L,M,N$ or $D$. The matrix $\Ab$ has the following special structure
+\begin{itemize}
+\item $\Abpp$ is diagonal
+\item $\Abpq$ is full and can be divided as $\Abpq = \AbpqL\Tbpq\AbpqR$ where $\AbpqL$ and $\AbpqR$ are diagonal and called respectively the left and right part, and $\Tbpq = (\Tbpqmn))$, with $\Tbpqmn = i\pi e^{??}H_0^{(1)}(k\bpq)$, is a Toeplitz matrix.
+\end{itemize}
+
+Let $\AbL$ and $\AbR$ be two $3D$ arrays such that
+$$
+\AbL(:,p,q) = \begin{cases}
+\diag(\Abpp) & \text{ if }p=q,\\
+\AbpqL & \text{ otherwise,}
+\end{cases}\qquad
+\AbR(:,p,q) = \begin{cases}
+0 & \text{ if }p=q,\\
+\AbpqR & \text{ otherwise.}
+\end{cases}
+$$
+There is only $\Tbpq$, of size $(2\Np+1) \times (2\Nq+1)$ to be stored sparsely. A Toeplitz matrix has the following structure
+$$
+\Tbpq = \left(\begin{array}{c c c c c}
+t_1 & t_2 & t_3 & \ldots & t_{(2\Nq+1)} \\
+t_{(2\Nq+1)+1} & t_{1} & t_{2} & \ldots & t_{(2\Nq+1)-1}\\
+t_{(2\Nq+1)+2} & t_{(2\Nq+1)+1} & t_{1} & \ldots & t_{(2\Nq+1)-2}\\
+\vdots & \ddots & \ddots& \ddots& \vdots\\
+%t_{(2\Nq+1)+(2\Np+1)-2} & t_{(2\Nq+1)+(2\Np+1)-3} & t_{(2\Nq+1)+(2\Np+1)-4} &   \ldots & t_{(2\Np+1)+1}\\
+t_{(2\Nq+1)+(2\Np+1)-1} & t_{(2\Nq+1)+(2\Np+1)-2} & t_{(2\Nq+1)+(2\Np+1)-3} &   \ldots  & t_{(2\Nq+1)-(2\Np+1)+1}
+\end{array}\right)
+$$
+Clearly, only the first row and the first column are necessary to build the matrix and hence $\Tbpq$ can be stored as a root vector $\AbpqM$ of size $(2\Np+1)+ (2\Nq+1)-1 = 2\Np +2\Nq+1$ and such that:
+$$
+\AbpqM = \left(\begin{array}{c}
+t_{(2\Nq+1)+(2\Np+1)-1}\\
+t_{(2\Nq+1)+(2\Np+1)-2}\\
+\vdots\\
+t_{(2\Nq+1)+2}\\
+t_{(2\Nq+1)+1}\\
+t_{1}\\
+t_{2}\\
+t_{3} \\
+\vdots\\
+t_{(2\Nq+1), 1}\\
+\end{array}\right).
+$$
+Finally, the $3D$ array $\AbM$ will store every sub-vectors $\AbpqM$:
+$$
+\AbM(:,p,q) = \begin{cases}
+0 & \text{ if }p=q,\\
+\AbpqM & \text{ otherwise.}
+\end{cases}
+$$
+
+The whole matrix $\Ab$ is thus stored in three different part: $\AbL$, $\AbM$ and $\AbR$. In the computer point of view, as a $3D$ array has a fix size in each direction, hence, in Matlab, the sizes of the arrays are given by
+\begin{center}
+\begin{tabular}{| l | l |}
+\hline$\AbL$ & $\dsp \max_p(2\Np+1)$\\[0.2cm]\hline
+$\AbM$ & $\dsp \max_{p}\max_{q\neq p}\left[(2\Np+1)+(2\Nq+1)-1\right]$\\[0.2cm]\hline
+$\AbR$ & $\dsp \max_p(2\Np+1)$\\[0.2cm]\hline
+\end{tabular}\end{center}
+With this constraint, the vector $\AbL(:,p,q)$ can be larger than $2\Np+1$ and thus $\AbpqL$ must be extracted: $\AbpqL = \AbL(1:2\Np+1,p)$. The same occurs for $\AbM$ and $\AbR$. 
+
+Finally, these $3D$ arrays are merged into a cell \code{A}, representing the matrix $\Ab$, such that, using the Matlab notations:
+$$
+\code{A}\{1\} = \AbL,\qquad \code{A}\{2\} = \AbM,\qquad\code{A}\{3\} = \AbR.
+$$
+
+\subsubsection{Matrix-vector product}
+
+The matrix vector product between \code{A} and a vector $X$ is divided in different parts. Let us look at $Y=\Ab X$ and more particularly at the $p^{th}$ component
+$$
+Y_p = \sum_{q} \Abpq X_q.
+$$
+Using the previous notations, it comes that
+$$
+Y_p = \AbppL X_p + \sum_{q\neq p} \AbpqL (\AbpqM (\AbpqR X_q)).
+$$
+As $\AbppL$, $\AbpqL$ and $\AbpqR$ are all diagonal (and stored as a vector), these matrix-vector products are easy to compute. The only difficulty is located in $\AbpqM Z_q$ (where $Z_q=\AbpqR X_q$), but it can be achieved in a fast way. Indeed, the discrete cross correlation product (\code{xcorr}) between $\AbpqM$ and $Z_q$ gives
+$$
+\widetilde{W}_q = \code{xcorr}(Z_q, \overline{\AbpqM}),
+$$
+where the over bar denotes a complex conjugation. And the result $W_q$ is then extracted from $\widetilde{W}_q$ by
+$$
+W_q = \widetilde{W}_q(2\Nq+1:2\Nq+1+2\Np).
+$$
+The matrix vector product between $\Ab$ and $X$ is then done in a fast way (cross correlation is fast using Fourier).
+
+
+\subsubsection{Assembly: Matlab functions}
+
+The assembly process is very similar to the dense one, the difference being the prefix \code{Sp}. The block function is then called by
+\begin{verbatim}
+SpBlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, Nmax, k, TypeOfOperator, Weight);
+\end{verbatim}
+The major difference here is that \textbf{no linear combination of operators can be done during the assembly process} for the sparse representation. The quantity \code{TypeOfOperator} cannot hence be a vector but only a scalar. On the other hand, the full assembly of a matrix can be done through
+\begin{verbatim}
+A = SpIntegralOperator(O, a, M_modes, k, TypeOfOperator, Weight);
+\end{verbatim}
+where \code{TypeOfOperator} can be a scalar or a matrix (not a $3D$ array nor a vector!). If \code{TypeOfOperator} is a matrix, then the block $\Abpq$ is assumed to be of type \code{TypeOfOperator(p,q)}. The linear combination of operators can still be done, but must be specified in the matrix-vector product (see below). Note that a function exists to add the (weighted-)identity to a sparse operator (see below).
+
+Here is an example of the creation of \mudiff sparse matrix of the single-layer operator $L$
+\begin{verbatim}
+L = SpIntegralOperator(O, a, M_modes, k, 2);
+\end{verbatim}
+
+\subsubsection{Assembly: adding the identity}
+
+It is possible to add the identity multiplied by a constant to a sparse operator, thanks to
+\begin{verbatim}
+A = SpAddIdentity(A, alpha, M_modes);
+\end{verbatim}
+which simply returns $A = A+\alpha I$.
+
+\subsubsection{Linear combination of operator}
+
+A matrix vector product $Y = \Ab X$ is done thanks to 
+\begin{verbatim}
+Y = SpMatVec(X, M_modes, ListOfOperators, Weight);
+\end{verbatim}
+where \code{Weight} is optional. \code{ListOfOperators} is a \textbf{Matlab cell} (not an array!) containing every sparse matrix that the user want to multiply. For example, computing $\Lb X$ is done as follows:
+\begin{verbatim}
+SpL = SpIntegralOperator(O, a, M_modes, k, 2);
+Y = SpMatVec(X, M_modes, SpL);
+\end{verbatim}
+And computing $Y =(0.5*I + N)X$, where $I$ is the identity (\textbf{Beware the $\{\cdot\}$ !}):
+\begin{verbatim}
+[SpN{1}, SpN{2}, SpN{3}] = SpDnSingleLayer(O, a, M_modes, k);
+[I{1},I{2},I{3}] = SpIdentity(O, a, M_modes);
+Y = SpMatVec(X, M_modes, {I,A}, [0.5, 1]);
+\end{verbatim}
+This could also be done using \code{SpAddIdentity} function:
+\begin{verbatim}
+[SpN{1}, SpN{2}, SpN{3}] = SpDnSingleLayer(O, a, M_modes, k);
+[A{1},A{2},A{3}] = SpAddIdentity(SpN, 0.5, M_modes);
+Y = SpMatVec(X, M_modes, A);
+\end{verbatim}
+
+\subsubsection{Solving a linear system}
+
+Now that the matrices and the right hand side have been assembled, the sparse linear system can solved iteratively. Using for example the GMRES solver \cite{??}, the syntax to solve the EFIE (\ref{??}) would be
+\begin{verbatim}
+SpL = SpIntegralOperator(O, a, M_modes, k, 2);
+Uinc = PlaneWave(O, a, M_modes, k, beta_inc);
+rho = gmres(@(X)SpMatVec(X, M_modes, SpL), Uinc);
+\end{verbatim}
+Solving the MFIE (\ref{}) can be done as
+\begin{verbatim}
+[SpN{1}, SpN{2}, SpN{3}] = SpDnSingleLayer(O, a, M_modes, k);
+[I{1},I{2},I{3}] = SpIdentity(O, a, M_modes);
+DnUinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
+lambda = gmres(@(X)SpMatVec(X, M_modes,{I,SpN}, [0.5,1]), DnUinc);
+\end{verbatim}
+or using the \code{SpAddIdentity} function
+\begin{verbatim}
+[SpAMFIE{1}, SpAMFIE{2}, SpAMFIE{3}] = SpDnSingleLayer(O, a, M_modes, k);
+[SpAMFIE{1}, SpAMFIE{2}, SpAMFIE{3}] = SpAddIdentity(SpAMFIE, 0.5, M_modes);
+DnUinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
+lambda = gmres(@(X)SpMatVec(X, M_modes, SpAMFIE, ), DnUinc);
+\end{verbatim}
+
 
 \section{Post-Processing}
+
+
+
 \subsubsection{Near field}
 \subsubsection{Far field and Radar Cross Section (RCS)}
 \subsubsection{Plot and display}
