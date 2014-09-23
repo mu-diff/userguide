@@ -211,13 +211,41 @@ $\lambdabt_{m}^{p} = \lambdamp$ and $\Psit_{m}^{p} = \psimp$.
 
 
 
+\subsection{Single-scattering preconditioned integral equations}
+
+The EFIE preconditioned by its single scattering component (see Section \ref{??}), given by,
+$$
+\Lsgl^{-1} L \rho = \Lsgl^{-1}\uinc|_{\Gamma},
+$$
+can also be computed analytically in the Fourier bases. Indeed, let $\widehat{\Lb}^{-1}\Lb$ be the matrix associated to the operator $\Lsgl^{-1}L$, then
+$$
+\forall p,q=1,\ldots,\Nscat, \qquad
+(\widehat{\Lb}^{-1}\Lb)^{p,q} = \begin{cases}
+\Ib^{p} & \text{ if } p=q,\\
+\dsp \sqrt{\frac{a_q}{a_p}}(\Hb^p)^{-1}(\Sbpq)^{T}\Jb^{q}&\text{otherwise}.
+\end{cases}
+$$
+And for the Neumann case, the preconditioned integral equation (EFIE) reads as:
+$$
+\widehat{D}^{-1}D\lambda = \widehat{D}^{-1}\dn\uinc|_{\Gamma}.
+$$ 
+The matrix $\widehat{\Db}^{-1}\Db$ of $\widehat{D}^{-1}D$ is then given by
+$$
+\forall p,q=1,\ldots,\Nscat, \qquad
+(\widehat{\Db}^{-1}\Db)^{p,q} = \begin{cases}
+\Ib^{p} & \text{ if } p=q,\\
+-\dsp \sqrt{\frac{a_q}{a_p}}(\dHbtp)^{-1}(\Sbpq)^{T}\dJb^{q}&\text{otherwise}.
+\end{cases}
+$$
+As highlighted in Section \ref{??}, there is no need to compute the preconditioned versions of the other integral equations as they lead to the same operator (up to an invertible operators, for BWIE). To solve sound-hard or sound-soft scattering, using the above integral equations is an excellent choice.
+
 %=================================================================
         \subsection{Projection of the incident waves in the Fourier basis}\label{secEqInt:SecondMembre}
 %=================================================================
 
 To fully solve one of the integral equations (EFIE, MFIE, CFIE or BWIE), we need to compute the Fourier coefficients of the
 trace and normal derivative traces of the incident wave. We give the results  for both an incident plane wave 
-and a pointwise source term (Green's function).
+and a point wise source term (Green's function).
 
 For an incident plane wave, the following proposition holds \cite{AntChnRam08}.
 \begin{prop}\label{propEqInt:UincFourier}
@@ -257,15 +285,17 @@ $$
 
 
 %==============================================================================
-	\subsection{Near- and far-fields evaluations}\label{secEqInt:quantite}
+%	\subsection{Near- and far-fields evaluations}\label{secEqInt:quantite}
 %==============================================================================
 
 %==============================================================================
-%	\subsubsection{Near-field evaluation}\label{secEqInt:evaluation}
+	\subsection{Near-field evaluation}\label{secEqInt:evaluation}
 %==============================================================================
+
+	\subsubsection{Outside the obstacles}
 
 By using the Graf's addition theorem \cite{Mar06,ThierryThesis}, we can compute the expression of the single- and double-layer potentials
-at a point  $\xx$ located in the propagation domain $\Omegaps$.
+at a point  $\xx$ located in the propagation domain $\Omegaps$:
 \begin{prop}\label{propEqInt:LMphi}%[Evaluation des potentiels à l'extérieur des obstacles]
 Let $\rho\in L^{2}(\Gamma)$ and $\mu\in H^{1/2}(\Gamma)$ be two densities admitting the following decompositions in the Fourier basis $\BF$ 
 $$
@@ -285,8 +315,31 @@ $$
  u(\xx) = \Lop\rho(\xx) + \Mop\lambda(\xx) = \sum_{p=1}^M\sum_{m\in\Zb}\frac{i\pi a_p}{2} \left[\rhomp  J_m(ka_p) + \lambdamp \Jmp(k\ap)\right]\Hm(kr_p(\xx)) \Phimpt(\xx).
 $$
 
+	\subsubsection{Inside the obstacles}
+
+In the same way, the potentials can be computed inside the obstacles, which is useful for penetrable obstacles for instance. In that case however, only the contribution of the current obstacle is taken into account:
+$$
+\um(\xx) = \Lop_p\rho_p + \Mop_p\lambda_p,\qquad\forall\xx\in\Omega_p.
+$$
+
+\begin{prop}\label{propEqInt:Inside}
+Let $\rho\in L^{2}(\Gamma)$ and $\mu\in H^{1/2}(\Gamma)$ be two densities admitting the following decompositions in the Fourier basis $\BF$ 
+$$
+\rho = \sum_{p=1}^{M}\sum_{m\in\Zb} \rhomp\Phimp \qquad\text{ and }\qquad \lambda = \sum_{p=1}^{M}\sum_{m\in\Zb} \lambdamp\Phimp.
+$$
+Then, for any point $\xx$ inside the obstacle $\Omegap$, the single-layer potential reads
+$$
+\Lop\rho(\xx) = \sum_{m\in\Zb}\rhomp \Lop \Phimp(\xx) =\sum_{p=1}^M\sum_{m\in\Zb}\rhomp \frac{i\pi a_p}{2} H_m^{(1)}(ka_p)J_m(kr_p(\xx)) \Phimpt(\xx),
+$$
+and the double-layer potential can be expressed as
+$$
+\Mop\lambda(\xx) = \sum_{p=1}^M\sum_{m\in\Zb}\lambdamp\Mop \Phimp(\xx) = -\sum_{p=1}^M\sum_{m\in\Zb} \lambdamp\frac{i\pi ka_p}{2} \Hmp(ka_p)J_m(kr_p(\xx)) \Phimpt(\xx).
+$$
+\end{prop}
+
+
 %==============================================================================
-%	\subsubsection{Far-field and Radar Cross Section (RCS) evaluations}\label{secEqInt:SER}
+	\subsection{Far-field and Radar Cross Section (RCS)}\label{secEqInt:SER}
 %==============================================================================
 
 For computing the far-field pattern, let us recall that the scattered field $u$ admits the following Helmholtz's integral representation:
