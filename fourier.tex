@@ -1,0 +1,422 @@
+\section{Spectral formulation used in $\mu$-diff}\label{MuDiffFormulation}
+\label{secEqInt:disque}
+
+We consider now  circular cylinders as scatterers. In this situation, we can explicitly compute  the boundary integral
+equations in a Fourier basis,  leading therefore to an efficient computational spectral method when used in conjunction
+with numerical linear algebra methods (direct or iterative solvers).
+%====================================
+        \subsection{Notations and Fourier basis}\label{secEqInt:BaseFourier}
+%====================================
+
+Let us consider an orthonormal system $(\OO,\V{\OO x_{1}},\V{\OO x_{2}})$. We assume that the scattering obstacle
+ $\Omegam$ is the union of  $M$ disks $\Omegamp$, for $p = 1,\ldots,M$, of radius $a_p$ and center $\OOp$.
+ We define $\Gamma_p$ as the boundary of  $\Omegamp$ and by $\dsp{\Gamma = \cup_{p=1 \ldots M}\Gamma_p}$ the boundary of
+  $\Omegam$.  The unit normal vector $\nn$ to $\Omegam$ is outgoing. An illustration of the notations is reported on
+  Figure \ref{figEqInt:schemanotations}.
+  
+  \begin{figure}[h!]
+\begin{center}
+\def\svgwidth{10cm}
+\import{./img/ChapEqInt/disques/}{schema.pdf_tex}
+\end{center}
+\caption{Illustration of the notations for two disks $\Omegamp$ and $\Omegamq$ and a point $\xx \in \Omegaps$.}
+\label{figEqInt:schemanotations}
+\end{figure}
+  
+For any $p=1, \ldots, M$, we introduce $\bbp $ as the vector between the center $\OOp$ and the origin $\OO$
+$$%\begin{equation}\label{eqEqInt:bp}
+\bbp = \OO \OOp, \qquad \qquad b_p= \left\|\bbp\right\|, \qquad\qquad \alpha_p=Angle(\V{\OO x_{1}}, \bbp),
+$$%\end{equation}
+and, for $q = 1,\ldots,M$, with $q \neq p$, $\bbpq$ as the vector between the centers $\OOq$ and $\OOp$ 
+$$%\begin{equation}\label{eqEqInt:bpq}
+\bbpq = \OOq\OOp, \qquad \qquad b_{pq}=\left\|\bbpq  \right\|, \qquad\qquad
+\alpha_{pq}=Angle(\V{\OO x_{1}},\bbpq ).
+$$%\end{equation}
+Furthermore, any point $\xx$ is described by its global polar coordinates
+$$
+\rr (\xx)= \OO \xx,  \qquad \qquad r (\xx)=\left\|\rr(\xx) \right\|,  \qquad\qquad
+\theta(\xx)=Angle(\V{\OO x_{1}},\br(\xx)),
+$$
+or by its polar coordinates in the orthonormal system associated with the obstacle $\Omegamp$, with $p =1, \ldots, M$, 
+$$%\begin{equation}\label{eqEqInt:PolaireLocal}
+\rrp (\xx)= \OOp \xx, \qquad \qquad r_p(\xx)  = \left\|\rrp(\xx)\right\|,  \qquad
+\qquad \theta_p(\xx) = Angle(\V{\OOp x_{1}}, \rrp(\xx)).
+$$%\end{equation}
+
+
+Let us now build a basis of  $L^2(\Gamma)$ to approximate the integral operators. To this end, we first construct
+ a basis of $L^2(\Gamma_p)$ associated with $\Omegamp$, for
+ $p=1,\ldots,M$. If the circle $\Gamma_p$ has a radius one and is centered
+ at the origin, then a suitable basis of $L^{2}(\Gammap)$ is the spectral Fourier basis of functions $(e^{im\theta})_{m \in \Zb}$.
+ We adapt this basis to the general case where $\ap \neq 1$ by introducing, on one hand, the functions $(\phim)_{m\in\Zb}$ defined on $\Rb^{2}$ by: 
+$\forall m\in\Zb$, $\forall \xx \in \Rbb$, $\varphi_m(\xx) = e^{im\theta(\xx)}$,
+and, on the other hand,  the functions  $(\phimp)_{1\leqslant p \leqslant M, \; m\in\Zb}$  given by
+$$%\begin{equation}\label{eqEqInt:phimp}
+\forall p=1,\ldots,M, \forall m\in\Zb, 
+\forall \xx \in \Gamma_p, \qquad\varphi_m^p(\xx) = \frac{\varphi_m(\rr_p(\xx))}{\sqrt{2 \pi a_p}} = \frac{e^{im\theta_p(\xx)}}{\sqrt{2 \pi a_p}}.
+$$%\end{equation}
+For $p=1,\ldots,M$, the family $\dsp{\left( \varphi_m^p \right)_{m \in \Zb}}$ forms an orthonormal basis of
+ $L^2(\Gamma_p)$ for the hermitian inner product $\PSGammap{\cdot}{\cdot}$
+$$
+\forall f,g\in L^{2}(\Gammap),\qquad \PSGammap{f}{g} = \int_{\Gammap} f(\xx) \overline{g(\xx)} \dd\Gammap(\xx).
+$$
+To build a basis of $L^2(\Gamma)$, we introduce the functions $\Phi_m^p$ of $L^2(\Gamma)$ as the union of these $M$ families 
+$$%\begin{equation}\label{eqEqInt:Phimp}
+\forall p,q = 1,\ldots, M, \forall m\in\Zb, \qquad \Phi_m^p |_{\Gamma_q} = 
+\begin{cases}
+        0 & \text{if } q \neq p, \\
+        \varphi_m^p & \text{if } q = p.
+\end{cases}
+$$%\end{equation}
+The family $\BF = \{ \Phi_m^p, \, m \in \Zb, p =1, \ldots, M\}$, also called Fourier or spectral basis, is a Hilbert basis of
+ $L^2(\Gamma)$ for the usual scalar product $(\cdot,\cdot)_{L^{2}(\Gamma)}$. 
+
+
+\subsection{Integral operators - integral equations for a cluster of circular cylinders}\label{integralinfinite}
+
+
+In view of a numerical procedure, $\mu$-diff uses the weak formulation of the EFIE (\ref{EFIED}) in 
+ $L^{2}(\Gamma)$ based on the Fourier basis $\BF$ 
+$$
+\begin{cases}
+\text{Find $\rho \in H^{-1/2}(\Gamma)$ such that for any $p=1,\ldots,M,$ and $m\in\Zb$,} & \\
+\PSGamma{L\rho}{\Phimp} = -\PSGamma{\uincg}{\Phimp}. &
+\end{cases}
+$$
+Since $\uinc$ is assumed to be smooth enough (typically $\Cscr^{\infty}$) and that $\Gamma$ is $\Cscr^{\infty}$, then
+the scattered wavefield is also $\Cscr^{\infty}(\Omegaps)$ and the density  $\rho$ is (at least) in
+ $H^{1/2}(\Gamma)$. Therefore, $\rho$ can be expanded in  $\BF$ as 
+$$
+\rho = \sum_{q=1}^{M}\sum_{n\in\Zb}\rhonq\Phinq$$ and the weak form of the EFIE  is 
+$$
+\begin{cases}
+\text{Find the Fourier coefficients $\rhonq\in\Cb$, for $q=1,\ldots,M$, and $n\in\Zb$, such that,} & \\
+\dsp{\forall p=1,\ldots,M, \;\forall m\in\Zb, \qquad \sum_{q=1}^{M}\sum_{n\in\Zb}\rhonq\PSGamma{L\Phinq}{\Phimp} = -\PSGamma{\uincg}{\Phimp}}. &
+\end{cases}
+$$
+This formulation can be written under the following matrix form $
+\Lbt\Rhot = \UUt$,
+where the infinite matrix representation
+ $\Lbt =(\Lbtpq)_{1\leqslant p,q\leqslant M}$ and the infinite vectors
+  $\Rhot=(\Rhot^{p})_{1\leqslant p\leqslant M}$ and
+   $\UUt=(\UUt^{p})_{1\leqslant p\leqslant M}$ are defined by blocks   as
+\begin{equation}\label{eqEqInt:MatLbt}
+\Lbt =
+\left[
+\begin{array}{c c c c}
+\Lbt^{1,1} & \Lbt^{1,2} & \ldots & \Lbt^{1,M} \\
+\Lbt^{2,1} & \Lbt^{2,2} & \ldots & \Lbt^{2,M} \\
+\vdots & \vdots & \ddots & \vdots\\
+\Lbt^{M,1} & \Lbt^{M,2} & \ldots & \Lbt^{M,M}
+\end{array}
+\right],
+\qquad \qquad
+\Rhot =
+\left[
+\begin{array}{c}
+\Rhot^{1} \\
+\Rhot^{2} \\
+\vdots \\
+\Rhot^{M}
+\end{array}
+\right],\qquad 
+\UUt =
+\left[
+\begin{array}{c}
+\UUt^{1} \\
+\UUt^{2} \\
+\vdots \\
+\UUt^{M}
+\end{array}
+\right],
+\end{equation}
+with, for any $p,q=1,\ldots,M$, and $m,n\in\Zb$:
+$
+\Lbtpqmn = \PSGamma{L\Phinq}{\Phimp}$, $\Rhot_{m}^{p} = \rhomp$ and
+$\UUt_{m}^{p} = \PSGamma{-\uincg}{\Phimp}$.
+
+For the other integral formulations (section \ref{AutresEI}) or even for any other boundary condition, 
+ the expressions of the three boundary integral operators  $M$, $N$ and $D$ are needed.
+Therefore, to compute an integral equation, we introduce the infinite matrices $\Mbt = (\Mbtpq)_{1\leqslant p,q\leqslant M}$, $\Nbt= (\Nbtpq)_{1\leqslant p,q\leqslant M}$ and
+ $\Dbt= (\Dbtpq)_{1\leqslant p,q\leqslant M}$, with the same block structure as $\Lbt$ (see equation
+  (\ref{eqEqInt:MatLbt})). For $p,q =1,\ldots, M$, the coefficients of the infinite matrices $\Mbtpq$, $\Nbtpq$ and $\Dbtpq$ are defined for any indices
+   $m$ and $n$ in $\Zb$ by
+\[
+\Mbtpqmn = \PSGamma{M\Phinq}{\Phimp},
+\Nbtpqmn = \PSGamma{N\Phinq}{\Phimp}, \textrm{ and }
+\Dbtpqmn = \PSGamma{D\Phinq}{\Phimp}.
+\]
+For a numerical implementation, we can explicitly compute \cite{JACT,ThierryThesis} the matrix blocks
+ $\Lbtpq$, $\Mbtpq$, $\Nbtpq$ and $\Dbtpq$ involved in $\Lbt$, $\Mbt$, $\Nbt$ and $\Dbt$, for
+  $p,q=1,\ldots,M$. To this end, we introduce the infinite diagonal matrices
+   $\Jbtp$, $\dJbtp$, $\Hbtp$ and $\dHbtp$, with general terms, for $m \in \Zb$,
+$$%\begin{equation}\label{eqEqInt:Jbtp}
+\Jbtp_{mm} = \Jm(ka_{p}), \hspace{0.5cm}
+\dJbtp_{mm} = \Jmp(ka_{p}), \hspace{0.5cm}
+\Hbtp_{mm} = \Hm(ka_{p}), \hspace{0.5cm}
+\dHbtp_{mm} = \Hmp(ka_{p}).
+$$%\end{equation}
+In addition, let $\Ibtp$ be the infinite identity matrix, and, for $q\neq p$, the infinite separation matrix $\Sbtpq$ between the obstacles $\Omegamp$ and
+ $\Omegamq$, defined by
+$$%\begin{equation}\label{eqEqInt:Sbtpq}
+\Sbtpq=(\Sbtpqmn)_{m\in \Zb,n\in
+\Zb}\qquad \text{and}\qquad \Sbtpqmn=\Smnbpq = H_{m-n}^{(1)} (k b_{pq})e^{i(m-n)\alpha_{bq}}.
+$$%\end{equation}
+Under these notations, we rewrite the blocks $\Lbtpq$, $\Mbtpq$, $\Nbtpq$ and $\Dbtpq$ of the infinite matrices
+ $\Lbt$, $\Mbt$, $\Nbt$ and $\Dbt$ under the matrix form, for any $p,q= 1,\ldots,M$,
+
+
+\qquad\qquad \textbullet $\quad\dsp{\Lbtpq = 
+\begin{cases}
+\dsp{\frac{i\pi a_p}{2} \Jbtp\Hbtp,} & \text{ if } p = q,\\[0.3cm]
+\dsp{\frac{i \pi\sqrt{a_p a_q}}{2} \Jbtp (\Sbtpq)^T\Jbtq,} &\text{ if } p \neq q,
+\end{cases}}$\\[0.5cm]
+
+\qquad\qquad \textbullet $\quad\dsp{\Mbtpq = 
+\begin{cases}
+\dsp{ - \frac{1}{2}\Ibtp - \frac{i \pi k a_p}{2} \Jbtp \dHbtp = \frac{1}{2}\Ibtp - \frac{i \pi k a_p}{2} \dJbtp \Hbtp,} &\text{ if } p = q,\\[0.3cm]
+\dsp{- \frac{i k \pi\sqrt{a_p a_q}}{2} \Jbtp (\Sbtpq)^T \dJbtq,}&\text{ if } p \neq q,
+\end{cases}}$\\[0.5cm]
+
+\qquad\qquad \textbullet $\quad\dsp{\Nbtpq =
+\begin{cases}
+\dsp{\frac{1}{2}\Ibtp + \frac{i \pi k a_p}{2} \Jbtp \dHbtp  = -\frac{1}{2}\Ibtp + \frac{i \pi k a_p}{2} \dJbtp \Hbtp,} &\text{ if } p = q, \\[0.3cm]
+\dsp{\frac{i k \pi\sqrt{a_p a_q}}{2} \dJbtp (\Sbtpq)^T \Jbtq,}& \text{ if } p \neq q, 
+\end{cases}}$\\[0.5cm]
+
+\qquad\qquad \textbullet $\quad\dsp{\Dbtpq =
+\begin{cases}
+\dsp{\frac{i \pi k^2 a_p}{2} \dJbtp\dHbtp,} & \text{ if } p = q, \\[0.3cm]
+\dsp{ - \frac{i k^2 \pi\sqrt{a_p a_q}}{2} \dJbtp (\Sbtpq)^T \dJbtq,} &\text{ if } p \neq q,
+\end{cases}}$\\[0.5cm]
+where $(\Sbtpq)^T$ is the transpose matrix of the separation matrix $\Sbtpq$. 
+
+The integral equations involve the trace or normal derivative trace of the incident wavefield on $\Gamma$.
+We  have already introduced the infinite vector $\UUt$ of the coefficients of $\uincg$ in the Fourier basis.
+We then define similarly the infinite vector $\dUUt = (\dUUt^{p})_{1\leqslant p \leqslant M}$ of the coefficients of the normal derivative trace
+ $\duincg$, such that
+$$
+\forall p=1,\ldots,M,\;\forall m\in\Zb,\qquad \dUUtmp = \PSGamma{\duincg}{\Phimp}.
+$$
+Finally, the density changes according to the integral equation and most particularly with respect to the boundary condition. 
+To keep the same notations as previously, we introduce the densities
+ $\lambda$ and $\psi$ (used in the BWIE) that are expanded in the Fourier basis as
+$$
+\lambda = \sum_{p=1}^{M}\sum_{m\in\Zb} \lambdamp\Phimp \qquad \text{ and }\qquad \psi = \sum_{p=1}^{M}\sum_{m\in\Zb} \psimp\Phimp.
+$$
+Finally, we set: $\lambdabt = (\lambdabt^{p})_{1\leqslant p \leqslant M}$ and
+ $\Psit = (\Psit^{p})_{1\leqslant p \leqslant M}$, where each block  $\lambdabt^{p} = (\lambdabt_{m}^{p})_{m\in\Zb}$ and
+  $\Psit^{p} = (\Psit_{m}^{p})_{m\in\Zb}$ is defined by: $\forall m\in\Zb$,
+$\lambdabt_{m}^{p} = \lambdamp$ and $\Psit_{m}^{p} = \psimp$.
+
+
+
+%=================================================================
+        \subsection{Projection of the incident waves in the Fourier basis}\label{secEqInt:SecondMembre}
+%=================================================================
+
+To fully solve one of the integral equations (EFIE, MFIE, CFIE or BWIE), we need to compute the Fourier coefficients of the
+trace and normal derivative traces of the incident wave. We give the results  for both an incident plane wave 
+and a pointwise source term (Green's function).
+
+For an incident plane wave, the following proposition holds \cite{AntChnRam08}.
+\begin{prop}\label{propEqInt:UincFourier}
+Let us assume that $\uinc$ is an incident plane wave of direction $\Beta$, with $\Beta = (\cos(\beta),\sin(\beta))$ and
+ $\beta\in[0,2\pi]$, i.e.
+$$
+\forall\xx\in\Rb^{2},\qquad\uinc(\xx) = e^{ik\Beta\cdot\xx}.
+$$
+Then we have the following equalities
+$$%\begin{equation}\label{eqEqInt:Fmp}
+\UUt_{m}^{p}= \PSGamma{\uincg}{\Phimp} = \dmp \Jm(ka_p), \qquad  \dUUtmp=\PSGamma{\dn\uincg}{\Phimp} = k \dmp \Jmp(ka_p),
+$$%\end{equation}
+with
+$%\begin{equation}\label{eqEqInt:dmp}
+\dmp = \sqrt{2\pi a_p} e^{ik \Beta \cdot \bbp} e^{i m (\pi/2 - \beta)}
+$.%\end{equation}
+\end{prop}
+
+Let us consider now an incident wave emitted by a pointwise source located at $\ssb\in\Omegaps$, i.e.
+the wave $\uinc$ is the Green's function centered at $\ssb$.
+The  Fourier coefficients  of the trace and normal derivative trace of $\uinc$ on $\Gamma$  are then given
+by the following proposition \cite{ThierryThesis}.
+\begin{prop}\label{propEqInt:UincGreenFourier}
+Let $\ssb\in\Omegaps$. We assume that the incident wave $\uinc$ is the Green's function centered at $\ssb$ 
+$$
+\forall \xx\in\Rb^{2}\setminus\{\ssb\},\qquad \uinc(\xx) = G(\xx,\ssb) = \frac{i}{4}\Hz(k\|\xx-\ssb\|).
+$$
+The Fourier coefficients in $\Bscr$ of the trace and normal derivative trace of the incident wave on $\Gamma$ are respectively given by
+$$%\begin{equation}\label{eqEqInt:FmpGreen}
+\UUt_{m}^{p} = \PSGamma{\uincg}{\Phimp} = \frac{i \pi\ap}{2}\Jm(ka_p)\Hm(k\rp(\ssb))\overline{\Phimpt(\ssb)}
+$$%\end{equation}
+and
+$$
+\dUUtmp = \PSGamma{\dn\uincg}{\Phimp} = k \frac{i \pi\ap}{2} \Jmp(k \ap) H_{m}^{(1)}(k \rp(\ssb)) \overline{\Phimpt(\ssb)}.
+$$
+\end{prop}
+
+
+%==============================================================================
+	\subsection{Near- and far-fields evaluations}\label{secEqInt:quantite}
+%==============================================================================
+
+%==============================================================================
+%	\subsubsection{Near-field evaluation}\label{secEqInt:evaluation}
+%==============================================================================
+
+By using the Graf's addition theorem \cite{Mar06,ThierryThesis}, we can compute the expression of the single- and double-layer potentials
+at a point  $\xx$ located in the propagation domain $\Omegaps$.
+\begin{prop}\label{propEqInt:LMphi}%[Evaluation des potentiels à l'extérieur des obstacles]
+Let $\rho\in L^{2}(\Gamma)$ and $\mu\in H^{1/2}(\Gamma)$ be two densities admitting the following decompositions in the Fourier basis $\BF$ 
+$$
+\rho = \sum_{p=1}^{M}\sum_{m\in\Zb} \rhomp\Phimp \qquad\text{ and }\qquad \lambda = \sum_{p=1}^{M}\sum_{m\in\Zb} \lambdamp\Phimp.
+$$
+Then, for any point $\xx$ in the  domain of propagation $\Omegaps$, the single-layer potential reads
+$$%\begin{equation}\label{eqEqInt:Lphimpt}
+\Lop\rho(\xx) = \sum_{p=1}^M\sum_{m\in\Zb}\rhomp \Lop \Phimp(\xx) =\sum_{p=1}^M\sum_{m\in\Zb}\rhomp \frac{i\pi a_p}{2} J_m(ka_p)\Hm(kr_p(\xx)) \Phimpt(\xx),
+$$%\end{equation}
+and the double-layer potential can be expressed as
+$$%\begin{equation}\label{eqEqInt:Mphimpt}
+\Mop\lambda(\xx) = \sum_{p=1}^M\sum_{m\in\Zb}\lambdamp\Mop \Phimp(\xx) = -\sum_{p=1}^M\sum_{m\in\Zb} \lambdamp\frac{i\pi ka_p}{2} J_m'(ka_p)\Hm(kr_p(\xx)) \Phimpt(\xx).
+$$%\end{equation}
+\end{prop}
+Proposition \ref{propEqInt:LMphi} implies that, for any  $\xx$ in $\Omegaps$,
+$$
+ u(\xx) = \Lop\rho(\xx) + \Mop\lambda(\xx) = \sum_{p=1}^M\sum_{m\in\Zb}\frac{i\pi a_p}{2} \left[\rhomp  J_m(ka_p) + \lambdamp \Jmp(k\ap)\right]\Hm(kr_p(\xx)) \Phimpt(\xx).
+$$
+
+%==============================================================================
+%	\subsubsection{Far-field and Radar Cross Section (RCS) evaluations}\label{secEqInt:SER}
+%==============================================================================
+
+For computing the far-field pattern, let us recall that the scattered field $u$ admits the following Helmholtz's integral representation:
+$u = \Lop \rho + \Mop \lambda$,
+where $\rho$ and $\lambda$ are two unknown densities. In the polar coordinates system $(r,\theta)$ and by using an asymptotic expansion
+of  $u$ when $r\to +\infty$, the following relation holds \cite{ColKre83}
+$$
+\forall \theta\in [0,2\pi],\qquad u(r,\theta) = \frac{e^{ikr}}{r^{1/2}} \left[ a_{\Lop}(\theta) + a_{\Mop}(\theta) \right] + \GrandO{\frac{1}{r^{3/2}}},
+$$
+where $a_{\Lop}$ and $a_{\Mop}$ are the radiated far-fields  for the single- and double-layer potentials, respectively, defined for any angle
+ $\theta$ of $[0,2\pi]$ by
+$$
+\begin{cases}
+\dsp{a_{\Lop}(\theta) = \frac{1}{\sqrt{8k\pi}}e^{i\pi /4} \int_{\Gamma} e^{-ik \thetab \cdot \yy} \rho(\yy) \dd \Gamma(\yy),}\\[0.4cm]
+\dsp{a_{\Mop}(\theta) = \frac{1}{\sqrt{8k\pi}}e^{i\pi /4} \int_{\Gamma} -\frac{ik}{\|\yy\|} \thetab \cdot \yy e^{-ik \thetab \cdot \yy} \lambda(\yy) \dd \Gamma(\yy),}
+\end{cases}
+$$
+with $\thetab:=(\cos(\theta),\sin(\theta))$. In addition, the Radar Cross Section (RCS) is defined by
+$$%\begin{equation}\label{eqEqInt:defSER}
+\forall \theta\in[0,2\pi], \quad \textrm{RCS}(\theta) = 10\log_{10}\left(2\pi\Abs{\aLop(\theta) + \aMop(\theta)}^{2}\right) (\dB).
+$$%\end{equation}
+To optimize the far-fields computation, these relations can be written thanks to the inner product between two infinite vectors.
+Indeed, let us introduce $\aabt_{\Lop} = ((\aabt_{\Lop})^{p})_{1\leqslant p \leqslant M}$ and $\aabt_{\Mop} = ((\aabt_{\Mop})^{p})_{1\leqslant p \leqslant M}$,
+where $(\aabt_{\Lop})^{p}$ and $(\aabt_{\Mop})^{p}$ are given by:  $\forall p=1,\ldots,M$,
+$$
+\left\{\begin{array}{l}
+\dsp{(\aabt_{\Lop})^{p} = \Big((\aabt_{\Lop})^{p}_{m}\Big)_{m\in\Zb}, \qquad (\aabt_{\Lop})^{p}_{m} = \frac{ie^{-i\pi/4}\sqrt{a_{p}}}{2\sqrt{k}} e^{-i\bp k\cos(\theta-\alphap)}\Jm(k\ap)e^{im(\theta-\pi/2)},}\\[0.3cm]
+\dsp{(\aabt_{\Mop})^{p} = \Big((\aabt_{\Lop})^{p}_{m}\Big)_{m\in\Zb}, \qquad (\aabt_{\Lop})^{p}_{m} = \frac{ie^{-i\pi/4}\sqrt{ka_{p}}}{2} e^{-i\bp k\cos(\theta-\alphap)}\Jmp(k\ap)e^{im(\theta-\pi/2)}.}
+\end{array}\right.
+$$
+Then, we obtain the following: $\dsp{a_{\Lop}(\theta) = (\aabt_{\Lop})^{T}\Rhot}$ and $\dsp{a_{\Mop}(\theta) = (\aabt_{\Mop})^{T}\lambdabt}$.
+
+
+%----------------------------------------
+	\section{Finite-dimensional approximations and numerical solutions proposed in $\mu$-diff}\label{sectionFiniteDimensional}
+%----------------------------------------
+
+We now have all the ingredients to numerically solve the four integral equations EFIE, MFIE, CFIE and BWIE,
+for sound-soft obstacles. In fact, any integral equation for any boundary condition can be solved according to the previous developments.
+In practice, the infinite Fourier systems need to be truncated to get a finite dimensional problem: we must pass from
+a sum over  $m\in \mathbb{Z}$ to a finite number of Fourier modes that depends on $ka_{p}$, $p=1,...,M$.
+Let us consider e.g. the EFIE, the extension to the other boundary integral operators being direct. The EFIE is given by
+ equation (\ref{eqEqInt:MatLbt}): $\Lbt\Rhot = -\UUt$. To truncate each Fourier series associated with 
+  $(\Phimp)_{m\in\Zb}$ for the obstacle $\Omegamp$, we only keep $2N_{p} +1$ modes in such a way that the indices $m$ of the truncated series
+  satisfy: $\forall p=1,\ldots,M$, $-\Np\leqslant m \leqslant \Np$. The truncation parameter $N_{p}$ must be fixed large enough, with
+  $N_{p} \geqslant k a_{p}$, for $p=1,...,M$. An example \cite{AntChnRam08,JACT} is: $N_{p} = k a_{p} + C_{p}$, where
+   $C_{p}$ weakly grows with $k a_{p}$. A numerical study of the parameter $\Np$ is proposed in \cite{AntChnRam08,JACT} where 
+   the following formula leads to a stable and accurate computation
+\begin{equation}\label{eq:Np}
+ \Np = \left[ k a_p+ \left(\frac{1}{2\sqrt{2}} \ln (2\sqrt{2} \pi k a_p \varepsilon^{-1})\right)^{\frac{2}{3}} (k a_p)^{1/3} +1\right ],
+\end{equation}
+where $\varepsilon$ is a small parameter (related to the relative tolerance required in the iterative Krylov subspace solver used
+for solving the truncated linear system (\ref{EFIEDimensionFinie}), see  \cite{AntChnRam08,JACT}).
+
+The resulting  linear system writes
+\begin{equation}\label{EFIEDimensionFinie}
+\Lb\Rho = -\UU,
+\end{equation}
+where we introduced the block matrix $\Lb = (\Lbpq)_{1\leqslant p,q\leqslant M}$ and the vectors $\Rho = (\Rho^{p})_{1\leqslant p\leqslant M}$ and
+ $\UU = (\UU^{p})_{1\leqslant p\leqslant M}$ defined by
+\begin{equation}\label{eqEqInt:EFIEtronque}
+\Lb = \left[
+\begin{array}{c c c c}
+\Lb^{1,1} & \Lb^{1,2} & \ldots & \Lb^{1,M} \\
+\Lb^{2,1} & \Lb^{2,2} & \ldots & \Lb^{2,M} \\
+\vdots & \vdots & \ddots & \vdots\\
+\Lb^{M,1} & \Lb^{M,2} & \ldots & \Lb^{M,M}
+\end{array}
+\right],
+\qquad \qquad
+\Rho =
+\left[
+\begin{array}{c}
+\Rho^{1} \\
+\Rho^{2} \\
+\vdots \\
+\Rho^{M}
+\end{array}
+\right],\qquad \qquad
+\UU =
+\left[
+\begin{array}{c}
+\UU^{1} \\
+\UU^{2} \\
+\vdots \\
+\UU^{M}
+\end{array}
+\right].
+\end{equation}
+For $p,q= 1,\ldots, M$,
+ the  complex-valued matrix $\Lbpq$ is of size $(2\Np+1)\times(2N_{q}+1)$ and its coefficients $\Lbpqmn$ are: $\Lbpqmn = \Lbtpqmn$,
+ for $m=-\Np,\ldots,\Np$, $ n = -\Nq,\ldots,\Nq$.
+The complex-valued components of the vector $\Rho^{p} = (\Rho^{p}_{m})_{-\Np\leqslant m \leqslant\Np}$ of size $2\Np+1$ are
+  the approximate Fourier coefficients  $\rhomp$ of $\rho$. For the sake of clarity, we keep on writing: $\Rho^{p}_{m} = \Rhot^{p}_{m} = \rhomp$,
+  for all $ m =-\Np,\ldots,\Np$.
+The complex-valued vector $\UU^{p} = (\UU^{p}_{m})_{-\Np\leqslant m \leqslant\Np}$ is composed of the  $2\Np+1$ Fourier
+coefficients of the trace of the incident wave on $\Gamma$, i.e.  $\UU^{p}_{m} = \UUt^{p}_{m} = \PSGamma{\uincg}{\Phimp}$,
+$\forall m =-\Np,\ldots,\Np$.
+If $\Ntot = \sum_{p=1}^{M}(2\Np +1)$ denotes the total number of modes, the size of the complex-valued matrix
+ $\Lb$ is then $\Ntot\times\Ntot$. More generally, all the boundary integral operators can be truncated according to this process.
+ Concerning the notations, it is sufficient to formally omit the tilde symbol $\sim$ over the quantities involved in sections
+  (\ref{integralinfinite})-(\ref{secEqInt:quantite}).
+
+Since  the four finite-dimensional matrices $\Lb$, $\Mb$, $\Nb$ and $\Db$ that respectively correspond to the four
+boundary integral operators $L$, $M$, $N$ and $D$ can be computed,  the linear systems that approximate the EFIE, MFIE, CFIE and
+ BWIE can be stated. For example, the CFIE leads to (with $0\leqslant \alpha\leqslant 1$ and $\Im(\eta)\neq 0$)
+\begin{equation}\label{eqEqInt:CFIEDapp}
+\left[ \alpha\eta\Lb + (1-\alpha) \left(\frac{\Ib}{2} + \Nb\right)\right]\Rho = -\alpha\eta\UU - (1-\alpha)\dUU.
+\end{equation}
+Let us remark that the matrix obtained after discretization is always a linear combination of the four integral operators
+ $\Lb$, $\Mb$, $\Nb$, $\Db$ and the identity matrix  $\Ib$. As a consequence, for a given integral equation,
+ the resulting matrix is of size $\Ntot\times\Ntot$ and has the same block structure as e.g. 
+  $\Lb$ (see equation  (\ref{eqEqInt:EFIEtronque})).
+ The finite-dimensional linear system (\ref{EFIEDimensionFinie}) (or (\ref{eqEqInt:CFIEDapp})) is accurately solved in $\mu$-diff
+by using the Matlab direct solver or a preconditioned Krylov subspace linear solver 
+that uses fast matrix-vector products based on Fast Fourier Transforms (FFTs), the choice of the linear algebra strategy
+(direct vs. iterative) depending on the configuration with respect to $ka_{p}$ and  
+$M$. The use of FFTs is made possible since the off-diagonal blocks of the integral operators can be written as the products
+of diagonal and Toeplitz matrices \cite{AntChnRam08,JACT} (see e.g. the matrices $\Sbtpqmn$ in section \ref{integralinfinite}). In addition,
+low memory is only necessary when $ka_{p}$ is large enough since  the storage of the Toeplitz
+matrices can be optimized. This resulting storage technique is called \textit{sparse} representation in $\mu$-diff,
+ in contrast with the \textit{dense} (full) storage of the complex-valued matrices.
+ Let us assume that $a_p \approx a$, for $1 \leqslant p \leqslant M$.
+In terms of storage, the dense version of a matrix requires to store about $4M^{2}[ka]^{2}$ coefficients (assuming that $N_{p}$ are fixed
+by formula (\ref{eq:Np}), and $[r]$ denotes the integer part of a real number $r$) while the sparse storage needs about
+$4M^{2}[ka]$ complex-valued coefficients. In terms of computational time for solving the linear system,
+the direct (multithreaded) gaussian solver included in Matlab leads to a cost that scales with $\mathcal{O}(M^{3}(ka)^{3})$. For the preconditioned iterative Krylov subspace
+methods (i.e. restarted GMRES)), the global cost is $\mathcal{O}(M^2 ka \log_{2}(ka))$, the converge rate depending on
+the physical situation and robustness of the preconditioner. From these remarks, we deduce that an iterative method is an efficient  and cheap 
+alternative to a direct solver for large wavenumbers $ka$, but also for large $M$.
+ We refer to \cite{AntChnRam08,JACT} for a thorough computational study of the various numerical strategies.
+A few examples in $\mu$-diff are provided (see section  \ref{sectionnumericalexamples} and the corresponding scripts) with the toolbox.
+Finally, the post-processing formulas (near- and far-fields quantities) clearly inherits of the truncation procedure (see section \ref{secEqInt:quantite}).

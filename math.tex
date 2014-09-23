@@ -1,3 +1,437 @@
 The \mudiff toolbox is based on integral equation and, in fact, provides the the four classical boundary integral operators. The derivation and the choice of the integral formulation is let to the user, even if some of them are given in this chapter, which contains all the necessary mathematical background to solve  time-harmonic wave scattering problems by disks, by penetrable or impenetrable obstacles. The only limitation is the integral formulation: if the integral formulation is written, then it can be solved using \mudiff.
 
 This chapter begins by presenting the potential theory and the four classical boundary integral operators with their main properties. The case of the scattering by disks is then studied and the boundary integral operators are projected in the Fourier bases, leading to infinite matrices but with analytic expression of the coefficients. The case of the truncation is then discussed, and the chapter concludes with the expression of both the near- and far-field, and the projections of the right-hand side on the Fourier bases (incident wave).
+
+
+%=======================================================================
+\section{Classical integral equation for acoustic scattering}\label{secEqInt:EqInt}
+\sectionmark{Classical integral equation for acoustic scattering}
+%=======================================================================
+
+Here is presented a techniques to derive classical direct integral equation in case of impenetrable obstacle. Even if \mudiff can be used to solve the penetrable case, studying the impenetrable case is a good way to introduce the boundary integral operators and their properties. This section is strongly inspired by a lecture from Bendali and Fares \cite{BenFar07} and the PhD thesis of Thierry \cite{Thi11} (in french).
+
+\subsection{Scattering problem}
+
+Consider a homogeneous medium, isotrope and non-dissipative filling the whole plane $\Rb^2$ and containing an open and bounded set $\Omegam$, possibly not connected but such that every component is simply connected. Let $\Gamma$ be its boundary and $\nn$ its unit normal pointing outside $\Omegam$. The propagation domain is denoted by $\Omegaps = \Rb^2 \setminus \overline{\Omega^-}$. When illuminated by an incident and time-harmonic wave $\uinc$, the obstacles $\Omegam$ generate a scattered field $u$, solution of (the time dependency is assumed to be of the form $e^{-i \omega t}$ and the wavenumber $k:=2\pi/\omega$ to be real and positive)
+\begin{equation}\label{eqEqInt:ProblemeU}
+\begin{cases}
+        \Delta u + k^2 u = 0 &\text{in }\Omega^+ \\
+        u = - u^{inc} & \text{on } \Gamma \\
+	u \text{ outgoing.}
+\end{cases}
+\end{equation}
+The first equation is the Helmholtz equation. The condition ``$u$ outgoing'' denotes the Sommerfeld radiation condition
+$$
+\displaystyle{\lim_{\|\xx\| \to \infty} \|\xx\|^{(1)/2}\left( \nabla u \cdot \frac{\xx}{\|\xx\|} - iku\right)=0,}
+$$
+where $\|\xx\| = (\sum_{j=1}^{d}x_{j}^{2})^{1/2}$ is the euclidian norm of $\mathbb{R}^d$. The focus is here put on a Dirichlet boundary condition on $\Gamma$. The Neumann case is studied later.
+As $\uinc$ is a solution of the Helmholtz equation in $\Rb^{2}$, then the total field $\ut = u + \uinc$ is solution of the following problem
+\begin{equation}\label{eqEqInt:ProblemeUt}
+\begin{cases}
+        \Delta \ut + k^2 \ut = 0 &\text{in }\Omega^+ \\
+        \ut = 0 & \text{on } \Gamma \\
+		(\ut-\uinc) \text{ outgoing.}
+\end{cases}
+\end{equation}
+These two problems are recalled to be uniquely solvable \cite{ColKre83}. 
+\begin{theoreme}\label{theo:UniqueSolution}
+Problems (\ref{eqEqInt:ProblemeU}) and (\ref{eqEqInt:ProblemeUt}) admet one and only one solution.
+\end{theoreme}
+
+%====================================================================
+	\subsection{Volume and boundary integral operators}\label{secEqInt:OpInt}
+%====================================================================
+
+
+Let the volume single-layer integral operator $\Lop$ be defined by (see \textit{e.g.} \cite[Theorem 6.12]{McL00})
+$$
+\begin{array}{c c c l l}
+\Lop: & \hmdemi & \longrightarrow & H^{1}_{loc}(\Rb^d) &\\
+& \rho & \longmapsto & \Lop \rho, & \dsp{  \forall \xx \in \Rb^d, \quad \Lop\rho(\xx) = \int_\Gamma G(\xx,\yy) \rho(\yy) \, \dd\Gamma(\yy)},
+% \Lop \rho(\xx) = \PSdemi{\rho}{G(\xx,\cdot)}},
+\end{array}
+$$
+and the volume double-layer integral operator $\Mop$ by
+$$
+\begin{array}{c c c l l }
+\Mop: & \hdemi & \longrightarrow & H^{1}_{loc}(\Rb^d \setminus \Gamma) & \\
+& \lambda & \longmapsto & \Mop \lambda, & \dsp{\forall \xx \in \Rb^d \setminus \Gamma,  \Mop\lambda(\xx) = -\int_\Gamma \dny G(\xx,\yy) \lambda(\yy) \, \dd\Gamma(\yy)},
+%\Mop \lambda(\xx) = \PSdemi{\dn G(\xx,\cdot)}{\lambda}}.
+\end{array}
+$$
+where the spaces $\hmdemi$, $H^{1}(\Rb^d \setminus \Gamma)$, $H^1_{loc}(\Rb^d \setminus \Gamma)$ are the usual Sobolev spaces and the Green function $G(\cdot\,,\cdot)$ is given by
+\begin{equation}\label{eqEqInt:Green}
+\forall \xx, \yy \in \Rb^2, \;\xx \neq \yy, \qquad G(\xx,\yy) = \frac{i}{4}H_0^{(1)}(k\|\xx-\yy\|).
+\end{equation}
+The function $H_0^{(1)}$ being the first kind and zeroth order Hankel function.
+\begin{remark}
+All the integrals on $\Gamma$ must be seen as a dual product between the Sobolev space $H^{1/2}(\Gamma)$ and its dual $H^{-1/2}(\Gamma)$. However, as soon as the data ($\uinc$ and $\Gamma$) are smooth enough, then the scattered field $u$ is also smooth and the dual product can be identified with the (non-hermitian) scalar product on $L^2(\Gamma)$:
+$$
+ \PSdemi{f}{g} = \int_\Gamma f(\xx)g(\xx)\;\dd\Gamma(\xx).
+$$
+This identification is considered throughout this paper.
+\end{remark}
+
+The trace $\gammazpm$ and the normal trace $\gammaupm$ operators are now defined following and inspired by \cite[Appendix A]{ChaGraLan12}, where the plus or minus sign specifies whether the trace is taken from the inside of $\Omegaps$ or $\Omegam$. First, the trace operators $\gammazpm: H^1(\Omegapm) \to H^{1/2}(\Gamma)$ are defined so that, if $v\in C^{\infty}(\overline{\Omegapm})$, then
+$$
+\gammazpm v(\xx) = \lim_{\zz \in \Omegapm \to \xx}v(\zz),
+$$
+for almost every $\xx\in\Gamma$. By introducing the space $H^1(\Omegapm; \Delta) := \{v\in H^1(\Omegapm) ; \Delta v\in L^2(\Omegapm)\}$ and the linear operators $\gammazpmd:H^{1/2}(\Gamma)\to H^1(\Omegapm)$ such that $\gammazpm\gammazpmd\varphi=\varphi$, for all $\varphi \in H^{1/2}(\Gamma)$, the normal traces $\gammaupm: H^1(\Omegapm; \Delta)\to H^{-1/2}(\Gamma)$ can be defined \cite[Equation (A.28)]{ChaGraLan12}:
+\begin{multline}\label{eq:gammaupm}
+\forall v\in H^{1}(\Omegapm; \Delta), \forall \varphi\in H^{1/2}(\Gamma),\\
+\left(\gammaupm v, \varphi\right)_{H^{-1/2}(\Gamma), H^{1/2}(\Gamma)} 
+:= \mp\left[\int_{\Omegapm}\Delta v(\xx)\overline{w(\xx)}\;\dd\xx + \int_{\Omegapm}\nabla v(\xx)\cdot\nabla \overline{w(\xx)}\;\dd\xx\right],
+\end{multline}
+where  $w:=\gammazpmd \varphi$ (and thus satisfies $\gammazpm w = \varphi$). As the quantities involved in scattering problem do not belong to $H^1(\Omegaps)$ but to $H^1_{loc}(\Omegaps)$, the exterior trace and normal trace operators are naturally extended as $\gammazps:H^1_{loc}(\Omegaps)\to H^{1/2}(\Gamma)$ and $\gammaups:H^1_{loc}(\Omegaps;\Delta)\to H^{-1/2}(\Gamma)$ by $\gammazps(v)=\gammazps(vv')$ and $\gammaups(v)=\gammaups(vv')$, where $v'$ is an arbitrary compactly supported and indefinitely differentiable function on $\overline{\Omegaps}$ which is equal to $1$ in a neighborhood of $\Gamma$, and where $H^1_{loc}(\Omegaps; \Delta) := \{v\in H^1_{loc}(\Omegaps) ; \Delta v\in L^2_{loc}(\Omegaps)\}$. Remark that, when the function $v$ is sufficiently smooth, then its normal trace $\gammaupm v$, given by (\ref{eq:gammaupm}), belongs to $L^2(\Gamma)$ and can be written as $\gammaupm v(\xx) = \lim_{\zz\in\Omegapm\to\xx}\nabla v(\zz)\cdot \nn(\xx)$, for almost every $\xx$ on $\Gamma$.
+Note also that, the single- and double-layer potentials, introduced previously, belong not only to $H^1_{loc}(\Omegaps)\bigcup H^1(\Omegam)$ but also to $H^1_{loc}(\Omegaps; \Delta)\bigcup H^1(\Omegam; \Delta)$ (see \eg \cite[\S2.2]{ChaGraLan12}).
+Some well-known properties of the single- and double-layer potentials are summarized in the following propositions. Their proof can be found for example in \cite[Theorems 7.5 and 9.6]{McL00} for proposition \ref{propEqInt:potentiel} and in \cite[Theorem 6.12]{McL00} for proposition \ref{propEqInt:trace}.
+\begin{prop}\label{propEqInt:potentiel}
+For every densities $\rho \in \hmdemi$ and $\lambda \in \hdemi$, the single-layer potential $\Lop\rho$ and double-layer potential $\Mop\lambda$ are outgoing solutions of the Helmholtz equation in $\Rb^d \setminus \Gamma$. Moreover, the scattered field $u$, solution of (\ref{eqEqInt:ProblemeU}), can be written as
+$$
+\forall\xx\in\Omegaps,\qquad u(\xx) = -\Lop(\dn u|_{\Gamma}) (\xx)-\Mop(u|_{\Gamma}) (\xx).
+$$
+\end{prop}
+%Let us first define the trace $\gammazpm$ and the normal trace $\gammaupm$ where the plus or minus sign specifies whether the trace is taken from the inside of $\Omegaps$ or $\Omegam$: %For any point $\xx\in\Gamma$, 
+%$$
+%\forall\xx\in\Gamma,\qquad \gammazpm g(\xx) := \lim_{\zz\in \Omega^{\pm} \to \xx} g(\zz)
+%\qquad\text{ and }\qquad
+%\gammaupm g(\xx) := \lim_{\zz\in \Omega^{\pm} \to \xx} \dnz g(\zz).
+%$$
+\begin{prop}\label{propEqInt:trace}
+The trace and the normal trace of the operators $\Lop$ and $\Mop$ are given by the following relations %(the sign denote if the point $z$ tends to $x$ from the inside or the outside of $\Gamma$)
+%For every point $\xx$ of $\Gamma$, the trace and the normal trace of the operators $\Lop$ and $\Mop$ are given by the following relations (the sign denote if the point $z$ tends to $x$ from the inside or the outside of $\Gamma$) 
+\begin{equation}\label{eqEqInt:trace}
+\begin{array}{l @{\qquad \qquad}l }
+\dsp{\gammazpm\Lop \rho =L \rho}, &
+\dsp{\gammazpm \Mop\lambda = \left(\mp \frac{1}{2}I + M\right) \lambda},\\[0.3cm]
+\dsp{\gammaupm \Lop \rho  = \left( \mp \frac{1}{2}I + N\right)\rho},&
+\dsp{\gammaupm\Mop\lambda = D \lambda},
+%\dsp{\lim_{\zz\in \Omega^{\pm} \to \xx} \Lop \rho (\zz) =L \rho (\xx)}, &
+%\dsp{\lim_{\zz\in \Omega^{\pm} \to \xx} \Mop\lambda(\zz) = \left(\mp \frac{1}{2}I + M\right) \lambda(\xx)},\\[0.3cm]
+%\dsp{\lim_{\zz\in \Omega^{\pm} \to \xx} \dnz \Lop \rho (\zz) = \left( \mp \frac{1}{2}I + N\right)\rho(\xx)},&
+%\dsp{\lim_{\zz\in \Omega^{\pm} \to \xx} \dnz \Mop\lambda(\zz) = D \lambda(\xx)},
+\end{array}
+\end{equation}
+where $I$ is the identity operator and, for $\xx\in\Gamma, \rho \in\hmdemi$ and $\lambda\in\hdemi$, the four boundary integral operators are defined by
+\begin{equation}\label{eqEqInt:OpIntBord2}
+\begin{array}{l l c l @{\quad\qquad}l c l}
+L : & H^{-1/2}(\Gamma) & \longrightarrow & \dsp{H^{1/2}(\Gamma),} & \dsp{L\rho(\xx)} &  =  &\dsp{ \int_{\Gamma} G(\xx,\yy) \rho(\yy) \dd\Gamma(\yy)}, \\[0.3cm]
+M : & H^{1/2}(\Gamma) & \longrightarrow & \dsp{H^{1/2}(\Gamma),} & \dsp{M\lambda(\xx) } &  =  &\dsp{  -\int_{\Gamma} \dny G(\xx,\yy)\lambda(\yy) \dd\Gamma(\yy)}, \\[0.3cm]
+N : & H^{-1/2}(\Gamma) & \longrightarrow & \dsp{H^{-1/2}(\Gamma),} & \dsp{N\rho(\xx)  }&  =  &\dsp{  \int_{\Gamma} \dnx G(\xx,\yy) \rho(\yy) \dd\Gamma(\yy) = -M^* \rho (\xx)}, \\[0.3cm]
+D : & H^{1/2}(\Gamma) & \longrightarrow & \dsp{H^{-1/2}(\Gamma),} &\dsp{D\lambda (\xx) }  &  =  &\dsp{  -\dnx \int_{\Gamma} \dny G(\xx,\yy)\lambda (\yy) \dd\Gamma(\yy)}.
+\end{array}
+\end{equation}
+\end{prop}
+In this paper, the boundary integral operators are written with a roman letter ({\it e.g.} $L$) whereas the volume integral operators are written with a calligraphic letter ({\it e.g.} $\Lop$). 
+%\begin{remark}
+%The boundary integral operator $-N$ is the adjoint of the operator $M$, in the sense that
+%$$
+%\forall (f,g)\in H^{1/2}(\Gamma)\times H^{-1/2}(\Gamma), \qquad\qquad\PSdemi{g}{Mf} = \PSdemi{-Ng}{f}.
+%$$
+%
+%\end{remark}
+%
+%According to \cite[Theorems 4.4.1]{Ned01}, the operators $M$ and $N$ are compact (they are regularizers of order 1, $i.e.$ continuous from $H^{s}(\Gamma)$ into $H^{s+1}(\Gamma)$).
+%\begin{prop}\label{propEqInt:MNcompacts}
+%%Les opérateurs $L : H^{-1/2}(\Gamma) \longrightarrow  \dsp{H^{1/2}(\Gamma)}$ et $D : H^{1/2}(\Gamma) \longrightarrow  \dsp{H^{1/2}(\Gamma)}$ définissent des isomorphismes. 
+%If the boundary $\Gamma$ is of class $C^2$ then the operator $M$ (respectively the operator $N$) is compact from $H^{1/2}(\Gamma)$ into $H^{1/2}(\Gamma)$ (respectively from $H^{-1/2}(\Gamma)$ into $H^{-1/2}(\Gamma)$). 
+%\end{prop}
+%On the other side, the boundary integral operators $L$ and $D$ are invertible, providing $k$ is not an irregular frequency (see $e.g.$ theorems 3.4.1 and 3.4.2 from \cite{Ned01}).
+According to \cite[Theorems 3.4.1 and 3.4.2]{Ned01}, the boundary integral operators $L$ and $D$ are invertible, providing $k$ is not an irregular frequency.
+ \begin{theorem}\label{theo:FreqIr}
+Let $F_D(\Omegam)$ (resp. $F_N(\Omegam)$) be the countable set of positive wavenumbers $k$ accumulating at infinity such that the interior homogeneous Dirichlet (resp. Neumann) problem
+\begin{equation}\label{eqEqInt:problemeinterne1}
+\begin{cases}
+-\Delta v = k^2 v & \text{in }\Omega^-, \\
+v = 0 \left(\text{resp. } \dn v = 0 \right)& \text{on } \Gamma, \\ 
+%\gammazm v = 0 \left(\text{resp. } \gammaum v = 0 \right)& \text{on } \Gamma, \\ 
+\end{cases}
+\end{equation}
+admits non-trivial solutions. Then, the operator $L$ (resp. $D$) realizes an isomorphism from $\hmdemi$ into $\hdemi$ (resp. from $\hdemi$ into $\hmdemi$) if and only if $k \not\in F_D(\Omegam)$ (resp. $k \not\in F_N(\Omegam)$).
+\end{theorem}
+These irregular frequencies $k$ of $F_D(\Omegam)$ (resp. of $F_N(\Omegam)$) are exactly the square roots of the eigenvalues of the Laplacian operator $(-\Delta)$ for the homogeneous interior Dirichlet (resp. Neumann) problem. In the multiple scattering case, that is when $\Omegam = \bigcup_{p=1}^M \Omegamp$ is multiply connected, the following equalities clearly hold true
+\begin{equation}\label{eq:FDOmegamp}
+F_D(\Omegam) = \bigcup_{p=1}^M F_D(\Omegamp) \qquad\text{ and } \qquad F_N(\Omegam) = \bigcup_{p=1}^M F_N(\Omegamp).
+\end{equation}
+Throughout the paper, $F_{DN}(\Omegam)$ denotes the set of all irregular frequencies:
+\begin{equation}\label{eq:FDN}
+F_{DN}(\Omegam) = F_{D}(\Omegam)\bigcup F_{N}(\Omegam).
+\end{equation}
+
+
+
+\subsection{Direct integral equations}
+
+\subsubsection{Generalities}
+
+This section details the way of deriving direct integral equations, described in \cite{BenFar07}. This approach is nonstandard but has advantages that appear later in the paper at Section \ref{sec:SingleScat}.
+
+The principle is to write the total field $\ut$ as a combination of a single- and a double-layer potentials:
+\begin{equation}\label{eqEqInt:ut}
+\ut(\xx) = \Lop \rho (\xx) + \Mop \lambda (\xx) + \uinc(\xx), \qquad \forall \xx \in \Omegaps,
+\end{equation}
+where $(\lambda, \rho)$ are now the two unknown of the problem. Thanks to proposition \ref{propEqInt:potentiel}, such an expression ensures that both $\ut$ is solution of the Helmholtz equation in $\Omega^+$ and $(\ut-\uinc)$ is outgoing. % (see e.g \cite{ColKre83}). 
+Following \cite{BenFar07}, an integral equation is said to be direct when the densities $(\lambda,\rho)$ have a physical meaning. Indeed, for these integral equations, they are exactly the Cauchy data $\left( -\ut|_\Gamma, -\dn\ut|_\Gamma \right)$. However, this is not a choice but a consequence of the construction of the integral equation. In electromagnetic scattering, direct and indirect integral equations are more often referred to as respectively \emph{field} and \emph{source} integral equations (see \textit{e.g.} Harington and Mautz \cite{HarMau78, MauHar79} or PhD thesis of Sophie Borel \cite{Bor06}).
+
+For now on, the problem, composed by the two unknown $(\lambda,\rho)$, has only one equation given by the Dirichlet boundary condition on $\Gamma$. To obtain a second equation, a fictitious interior wave $\utm$, living in $\Omegam$, is introduced and defined by
+\begin{equation}\label{eqEqInt:utm}
+\utm(\xx) = \Lop \rho (\xx) + \Mop \lambda (\xx) + \uinc(\xx), \qquad \forall \xx \in \Omegam.
+\end{equation}
+Remark that, on the one hand $\utm$ is a solution of the Helmholtz equation in $\Omegam$ and on the other hand, due to the trace relations (\ref{eqEqInt:trace}), the couple of unknown $(\lambda,\rho)$ satisfies the well-known \emph{jump-relation}
+\begin{equation}\label{eqEqInt:jump}
+\left\{
+\begin{array}{l}
+\lambda = \utm|_\Gamma - \ut|_\Gamma, \\[0.2cm]
+\rho = \dn \utm|_\Gamma - \dn \ut|_\Gamma.
+\end{array}
+\right.
+\end{equation}
+As the wave $\utm$ is fictitious, it does not act on the solution $\ut$ of the scattering problem. As a consequence, the boundary condition on $\Gamma$ imposed to $\utm$ has no influence on $\ut$. Let this constraint be represented by an operator $A$ such that $\utm$ is the solution of the following interior problem
+\begin{equation}\label{eqEqInt:ProblemeInterne}
+\begin{cases}
+        \Delta \utm + k^2 \utm = 0 &\text{in }\Omegam, \\
+        A \utm = 0 & \text{on } \Gamma.
+	\end{cases}
+\end{equation}
+To build a direct integral equation, the operator $A$ is chosen such that the field $\utm$ vanishes in $\Omegam$.% (this method is also named ``null-field method''). 
+Supposing that such an operator exists, then, on the boundary $\Gamma$, the following equalities will hold true
+$$
+\begin{cases}
+\utm|_\Gamma = 0,  & \\
+\dn\utm|_\Gamma = 0. &
+\end{cases}
+$$
+Consequently and thanks to the Dirichlet boundary condition $\ut|_{\Gamma}=0$,  the jump relations (\ref{eqEqInt:jump}) will read as
+$$
+\begin{cases}
+\lambda = 0,&\\%-\ut|_\Gamma, & \\
+\rho = -\dn\ut|_\Gamma, &
+\end{cases}
+$$
+%and the set of unknowns $(\lambda,\rho)$ will exactly be the set of Cauchy data. Moreover, the Dirichlet boundary condition $\ut|_{\Gamma} = 0$ of the initial scattering problem (\ref{eqEqInt:ProblemeUt}) will imply that
+%$$
+%\begin{cases}
+%\lambda = 0, & \\
+%\rho = -\dn\ut|_\Gamma. &
+%\end{cases}
+%$$
+Therefore, both the fictitious field $\utm$ and the total field $\ut$ will be composed by a single-layer potential only
+$$
+\left\{\begin{array}{l}
+\dsp{\ut(\xx) = \Lop \rho (\xx) + \uinc(\xx), \qquad \forall\xx \in \Omegaps,}\\[0.2cm]
+\dsp{\utm(\xx) = \Lop \rho (\xx) + \uinc(\xx), \qquad \forall\xx \in \Omegam.}
+\end{array}\right.
+$$
+The unknown $\rho$ is finally obtained through the resolution of the (direct) integral equation $A\utm = 0$, which can be written as
+\begin{equation}\label{eqEqInt:EqInt}
+A\Lop\rho = -A\uinc.
+\end{equation}
+%with $\LA = A\Lop$.
+%Finally, the solution $\ut$ of the scattering problem (\ref{eqEqInt:problemeinterne1}) is built as a single-layer potential with the density $\rho$, solution of (\ref{eqEqInt:EqInt}):
+%$$
+%\ut(\xx) = \Lop \rho (\xx) + \uinc(\xx), \qquad \forall\xx \in \Omegaps.
+%$$ 
+Both the expression and the nature of the integral equation (\ref{eqEqInt:EqInt}) depend on the boundary condition imposed to $\utm$, represented here by the operator $A$.  The next subsections describe the three usual direct integral equations that are studied in this paper. The proofs are not provided and can be found for example in \cite{BenFar07} or \cite{Thi11}.
+
+%%%%%%%%%%%%%
+\subsubsection{EFIE (\textit{Electric Field Integral Equation})}
+%%%%%%%%%%%%%
+
+%The EFIE is obtained when a homogeneous Dirichlet boundary condition is imposed on the fictitious field $\utm$. 
+For this integral equation, the operator $A$ is the interior trace operator $\gammazm$ on $\Gamma$. Thanks to the continuity on $\Gamma$ of the single-layer integral operator $\Lop$ (see equation (\ref{eqEqInt:trace})), the boundary integral equation (\ref{eqEqInt:EqInt}) becomes
+\begin{equation}\label{eq:EFIE}
+L \rho = - \uincg.
+\end{equation}
+Due to theorem \ref{theo:FreqIr}, this first kind integral equation, named \emph{Electric Field Integral Equation} (EFIE), is well-posed and equivalent to the scattering problem (\ref{eqEqInt:ProblemeUt}) 
+except for Dirichlet irregular frequencies. %, for which the field $\utm$ is not necessarily null. 
+%This is summarized in the following Proposition.
+\begin{prop}\label{prop:EFIE}
+If $k\not\in F_D(\Omegam)$ then the single-layer potential $\Lop\rho + \uinc$ is solution of the scattering problem (\ref{eqEqInt:ProblemeUt}) \ssi $\rho$ is the solution of the EFIE (\ref{eq:EFIE}). %Moreover, in that case, the density $\rho$ is equal to $-\dn\ut|_{\Gamma}$.
+\end{prop}
+
+\begin{remark}
+When $k\in F_{D}(\Omegam)$, the integral operator $L$ is no more bijective but is still one-to-one. It can be shown that the kernel of the operator $L$ is a subset of the kernel of the operator $\Lop$. Consequently, for every solution $\rhot$ of the EFIE, the associated single-layer potential $\Lop\rhot + \uinc$ is still the solution of the scattering problem (\ref{eqEqInt:ProblemeUt}).
+\end{remark}
+
+%%%%%%%%%%%%%%
+\subsubsection{MFIE (\textit{Magnetic Field Integral Equation})}
+
+Another possibility is to chose $A = \gammaum$, the interior normal trace. Using traces formul\ae{}  (\ref{eqEqInt:trace}), the integral equation (\ref{eqEqInt:EqInt}) becomes
+%Imposing to $\utm$ a homogeneous Neumann boundary condition of $\Gamma$ gives rise to the following Fredholm second kind integral equation
+\begin{equation}\label{eq:MFIE}
+\MFIED \rho = -  \duincg.
+\end{equation}
+%Note that the operator $A$ is here the interior normal trace $\gammaum$ on $\Gamma$.
+This Fredholm second kind integral equation, named \emph{Magnetic Field Integral Equation} (MFIE), is well-posed and equivalent to the scattering problem (\ref{eqEqInt:ProblemeUt}) as far as $k$ is not an irregular Neumann frequency.
+\begin{prop}\label{prop:MFIE}
+If $k\not\in F_N(\Omegam)$, then the quantity $\Lop\rho+\uinc$ is the solution of the scattering problem (\ref{eqEqInt:ProblemeUt}) \ssi $\rho$ is the solution of the MFIE (\ref{eq:MFIE}). %In that case, we have $\rho = -\dn\ut|_{\Gamma}$.
+\end{prop}
+
+\begin{remark}
+For every irregular frequency $k$ of $F_{N}(\Omegam)$, the operator $\MFIED$ is no more one-to-one. In that case and contrary to the EFIE, the single-layer potential $\Lop\rhot + \uinc$ based on a solution $\rhot$ of the MFIE is not guaranteed to be the solution of the scattering problem (\ref{eqEqInt:ProblemeUt}).
+\end{remark}
+
+\subsubsection{CFIE (\textit{Combined Field Integral Equation})}
+
+To avoid the irregular frequencies problem, Burton and Miller \cite{BurMil70} considered a linear combination of the EFIE and the MFIE by imposing a Fourier-Robin boundary condition to $\utm$ on $\Gamma$:
+$$
+%(1-\alpha) \dn\utm + \alpha \eta \utm = 0,
+A = (1-\alpha) \gammaum + \alpha \eta \gammazm,
+$$
+with
+\begin{equation}\label{eq:condAlphaEta}
+0 <\alpha <1 \qquad\text{ and } \qquad \Im(\eta) \neq 0,
+\end{equation}
+where $\Im(\eta)$ is the imaginary part of the complex number $\eta$. 
+%Note that the operator $A$ is then a linear combination of the interior trace and normal trace :
+%$$
+%A = (1-\alpha) \gammaum + \alpha \eta \gammazm.
+%$$
+Hence, the boundary integral equation (\ref{eqEqInt:EqInt}) reads as
+\begin{equation}\label{eq:CFIE}
+\CFIED \rho = - \left[ (1-\alpha) \dn\uinc|_\Gamma + \alpha \eta \uinc|_\Gamma \right].
+\end{equation}
+This \emph{Combined Field Integral Equation} (CFIE, denomination of Harrington and Mautz \cite{HarMau78} in electromagnetism) or Burton-Miller integral equation \cite{BurMil70} is well-posed for every frequency $k$.
+\begin{prop}\label{prop:CFIE}
+For any $k>0$ and for any couple $\alpha$ and $\eta$ satisfying condition (\ref{eq:condAlphaEta}), the single-layer potential $\Lop\rho+\uinc$ is the solution of the scattering problem \ssi $\rho$ is the solution of the CFIE (\ref{eqEqInt:ProblemeUt}). %If so, the density $\rho$ satisfies $\rho = -\dn\ut|_{\Gamma}$.
+\end{prop}
+
+
+%----------------------------------------
+\subsection{Brakhage-Werner indirect integral equation}\label{sec:BW}
+%----------------------------------------
+
+The indirect integral equations of Brakhage-Werner, shorten as BWIE, is derived in this section.  This paragraph begins with some notations. The total field $\ut$ is here sought as a linear combination of a single- and a double-layer of density $\psi\in H^{1/2}(\Gamma)$:
+$$
+\ut = \uinc + \Lop_{BW}\psi,
+$$
+where the operator $\Lop_{BW}$ of parameter $\eta_{BW}$ is given by
+%a combination of the single- and the double-layer operators:
+\begin{equation}\label{eq:LopBW}
+\forall\xx\in\Rb^{d}\setminus\Gamma, \qquad \Lop_{BW}\psi(\xx) = (-\eta_{BW}\Lop - \Mop)\psi(\xx) = 
+\int_{\Gamma}\Big(\dny G(\xx,\yy) - \eta_{BW} G(\xx,\yy)\Big)\psi(\yy)\;\dd\Gamma(\yy),
+\end{equation}
+with $\Im(\eta) \neq 0$. The integral equation is obtained by applying the exterior trace $\gammazps$ on $\Gamma$ to $\ut$. Indeed, the Dirichlet boundary condition $\gammazps \ut = 0$ and the traces relation (\ref{eqEqInt:trace}) directly give the Brakhage-Werner integral equation solved by $\psi$ 
+\begin{equation}\label{eqEqInt:BW}
+\LBW \psi = -\uincg,
+\end{equation}
+with
+$$
+\LBW = \left( -\eta L -M + \frac{1}{2}I \right).
+$$
+This second kind integral equation does not suffer from irregular frequency \cite{BraWer65}.
+\begin{prop}
+For all $k>0$, the quantity $\Lop_{BW}\psi+\uinc$ is the solution of the scattered field (\ref{eqEqInt:ProblemeUt}) \ssi $\psi$ is the solution of the Brakhage-Werner integral equation (\ref{eqEqInt:BW}).
+\end{prop}
+\begin{remark}
+Other generalizations of these equations, when $\eta_{BW}$ is an operator, are available for example in \cite{AloBorLev07, AntoineDarbasQJMAM, AntoineDarbasM2AN}
+\end{remark}
+\begin{remark}\label{rem:BW}
+A numerical study concerning the optimal choice of parameter $\eta_{BW}$, appearing in relation (\ref{eq:LopBW}), is proposed in \cite{KreSpa83} in the case of a single spherical or circular obstacle of radius $R$. For a Dirichlet boundary condition, the choice $\eta_{BW} = i/2\max(1/R,k)$ leads to a reasonable condition number of the matrix of the linear system associated to the Brakhage-Werner integral equation, for sufficiently high frequency. 
+Recent works have been done on how to choose this parameter for much more general domains, see for example \cite[\S6]{ChaGraLan09} and \cite[\S5.1]{ChaGraLan12} for the case of large $k$ and \cite[\S2.6 and \S2.7]{BetChaGra11} for the case of small frequency $k$. Note also that, according to \cite[Remark 2.24]{ChaGraLan12}, these results apply to both $L_{BW}$ and the CFIE operator, since when $\alpha = 1/2$, these operators are adjoints (up to a factor of $1/2$) in the real $L^2$ inner product.
+\end{remark}
+
+\section{Neumann case}
+
+\section{Penetrable case}
+
+\subsection{An example of an integral equation}
+
+\subsection{Using the Calder\'on projectors}
+
+%%%%%%%%%
+\section{Multiple scattering case}%Matrix form of the integral equation $A$ in the multiple scattering case}
+%%%%%%%%%
+
+\subsection{Notations}
+
+The domain $\Omegam$ is now supposed to be a collection of $M$ disjoint bounded open sets $\Omegam_{p}$ of $\Rb^{d}$, $p=1,\ldots, M$, such that every domain $(\Rb^{d}\setminus\overline{\Omegam_{p}})$ is connected, as this is the case for the propagation domain $\Omegaps = \Rb^{d}\setminus\overline{\Omegam}$. 
+In this paper, single scattering designates scattering in a medium containing only one scatterer whereas multiple scattering is used for a medium containing more than one obstacle. This article being focused on the multiple scattering case, $M$ will be assumed to satisfy $M\geq 2$.
+
+As $\Omegam$ is composed of $M$ disjoint obstacles $\Omegamp$, $p=1,\ldots,M$, the single-layer volume integral operator $\Lop$ can be written as the sum of $M$ operators $\Lop_{q}$, $q=1,\ldots,M$, defined by
+\begin{equation}\label{eqEqInt:Lopq}
+\begin{array}{r c c  l}
+\Lop_{q} : &   H^{-1/2}(\Gammaq) & \longrightarrow& H^{1}_{loc}(\Rb^{d}) \\
+ & \rhoq &\longmapsto& \dsp{\Lopq\rhoq, \qquad\forall\xx\in\Rb^{d}, \quad \Lopq\rhoq(\xx) = \int_{\Gammaq} G(\xx,\yy)\rhoq(\yy)\;\dd\yy}.
+ \end{array}
+\end{equation}
+Therefore the single-layer potential can be decomposed as follows
+%if $\rhoq =\rho|_{\Gammaq}$ for any density $\rho \in H^{-1/2}(\Gamma)$ and index $q=1,\ldots,M$, we have
+\begin{equation}\label{eq:decomposeLop}
+\forall\rho\in H^{-1/2}(\Gamma),\qquad \Lop\rho = \sum_{q=1}^{M}\Lopq\rhoq, \qquad \text{ with } \rhoq = \rho|_{\Gammaq}.
+\end{equation}
+By introducing the operators $L_{p,q}$, for $p,q=1,\ldots,M$, defined on $H^{-1/2}(\Gammaq)$ by, 
+$$
+\forall \rhoq\in H^{-1/2}(\Gammaq), \qquad L_{p,q} \rho_q= (\Lop_q\rho_q)|_{\Gamma_p},
+$$
+or in the longer form
+\begin{equation}\label{eqEqInt:OpLApq}
+\forall \rhoq\in H^{-1/2}(\Gammaq), \forall \xx\in\Gamma_p,\qquad L_{p,q}\rhoq(\xx) = \int_{\Gamma_q}G(\xx,\yy) \rhoq(\yy)\;\dd\yy,
+\end{equation}
+then the EFIE can be written in the following matrix form
+$$
+\left[\begin{array}{c c c c}
+L^{1,1} & L^{1,2} & \ldots & L^{1,M} \\
+L^{2,1} & L^{2,2} & \ldots & L^{2,M} \\
+\vdots & \vdots & \ddots & \vdots \\
+L^{M,1} & L^{M,2} & \ldots & L^{M,M} \\
+\end{array}\right]
+\left[\begin{array}{c}
+\rho_1 \\
+\rho_{2} \\
+\vdots \\
+\rho_{M} \\
+\end{array}\right]
+= 
+- \left[\begin{array}{c}
+\uinc|_{\Gamma_1} \\
+\uinc|_{\Gamma_2} \\
+\vdots \\
+\uinc|_{\Gamma_M} \\
+\end{array}\right].
+$$
+The same procedure can be applied to the other volume operator $\Mop$ and the other boundary integral operators $M,N$ and $D$.
+
+%--------------------------
+\subsection{Single scattering preconditioning}%Matrix form of the integral equation $A$ in the multiple scattering case}
+
+Let the \emph{single scattering operator} of the EFIE $\Lsgl$, corresponding to the diagonal part of the operator $L$, be defined by:
+\begin{equation}\label{eq:LAsgl}
+\Lsgl = \left[\begin{array}{c c c c}
+L^{1,1} & 0 & \ldots & 0 \\
+0 & L^{2,2} & \ldots & 0 \\
+\vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \ldots & L^{M,M} \\
+\end{array}\right].
+\end{equation}
+Indeed, each component $\LApp$ of $\LAsgl$ represents the self-interaction of the scatterer $\Omegamp$. More precisely, if the medium contains only one obstacle $\Omegamp$, with $p\in\{1,\ldots, M\}$, then this equality would hold true $\LA = \LApp$.
+
+Let the wavenumber $k$ be a regular ($k\not\in\FD(\Omega)$) so that $L$ and $\Lsgl$ are invertible. The single scattering preconditioner consists then simply in $\Lsgl$:
+$$
+\Lsgl^{-1} = \left[\begin{array}{c c c c}
+(L^{1,1})^{-1} & 0 & \ldots & 0 \\
+0 & (L^{2,2})^{-1} & \ldots & 0 \\
+\vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \ldots & (L^{M,M})^{-1} \\
+\end{array}\right].
+$$
+and the preconditioned EFIE becomes
+\begin{equation}\label{eqEqINt:eqAprecond}
+\Lsgl^{-1}L\rho = -\Lsgl^{-1}\uinc|_{\Gamma},
+\end{equation}
+where the operator $\Lsgl^{-1}L$ has the following matrix form
+\begin{equation}\label{eqEqINt:LAsglLA}
+\Lsgl^{-1} L = \left[\begin{array}{c c c c}
+I & (L^{1,1})^{-1}L^{1,2} & \ldots & (L^{1,1})^{-1}L^{1,M} \\
+(L^{2,2})^{-1}L^{2,1} & I & \ldots & (L^{2,2})^{-1}L^{2,M} \\
+\vdots & \vdots & \ddots & \vdots \\
+(L^{M,M})^{-1}L^{M,1} & (L^{M,M})^{-1}L^{M,2} & \ldots & I \\
+\end{array}\right],
+\end{equation}
+where $I$ is the identity operator. Note that this preconditioning accelerates the convergence rate of an iterative solver, like the GMRES, as illustrated by the numerical example given in Section \ref{sec:num}.
+
+The single scattering preconditioner car be applied to the other integral equations and the following result holds \cite{Thi14}
+\begin{prop}
+When preconditioned by their single-scattering preconditioners, the EFIE, MFIE and CFIE become identical and similar to the preconditioned BWIE (equal up to an invertible operator). In other words, after being preconditioned, the four integral equations will lead to the same convergence rate of the iterative solver.
+\end{prop}
+This proposition shows in particular that there is no need in computing the single-scattering preconditioned version of every integral equations: only one is enough. because the resulting operator presents a good convergence rate for multiple scattering, it is hard coded in \mudiff for the Dirichlet and the Neumann cases. They are based on the single-layer potential for the Dirichlet case and the double-layer potential for the Neumann case (EFIE, MFIE or CFIE in both cases).
