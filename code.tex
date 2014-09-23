@@ -489,21 +489,25 @@ Now that the system has been solved, the next step is to display the results. Th
 
 \subsubsection{Far field}
 
-The far field of a potential $\eta\Lop\rho + \gamma\Mop\lambda$, given by formul\ae{} (\ref{??}) and (\ref{??}), is computed thanks to the \code{FarField} function:
+The far field of a potential $\sum_{p=1}^{\Nscat}\eta_p\Lop_p\rho_p + \gamma_p\Mop_p\lambda_p$, given by formul\ae{} (\ref{??}) and (\ref{??}), is computed thanks to the \code{FarField} function:
 \begin{verbatim}
 F = FarField(O, a, M_modes, k, theta, Density, Weight);
 \end{verbatim}
-where \code{theta} is the vector of receiving angles (in rad.), \code{Density} is either $\rho$, $\lambda$ or both and \code{Weight} is the weights to apply to the volumic integral operators. To be more precise, the potential is assumed to be of the form
+where \code{theta} is the vector of receiving angles (in rad.), \code{Density} is either $\rho$, $\lambda$ or both and \code{Weight} is the weights to apply to the $\Nscat$ volumic integral operators. The quantity \code{Weight} is of size either $[1\times2]$ or $[1\times\Nscat]$. To be more precise, the potential is assumed to be of the form
 $$
-\code{Weight(1)}\Lop\code{Density(:,1)} + \code{Weight(2)}\Mop\code{Density(:,2)}.
+\code{Weight(p, 1)}\Lop\code{Density(:,1)} + \code{Weight(p,2)}\Mop\code{Density(:,2)}.
 $$
-Note that if \code{Density} is a column vector then \code{Density(:,2)} = \code{Density(:,1)} (the same density is used for both single- and double-layer potentials. Here is the example of the EFIE for the Dirichlet problem, where the scattered field $u$ reads as $u = \Lop\rho$, its far field is then computed by
+Note that if \code{Density} is a column vector then \code{Density(:,2)} = \code{Density(:,1)} (the same density is used for both single- and double-layer potentials. In the same way, if \code{Weight} is a $[2\times1]$ vector then \code{Weight}(p,1) = \code{Weight}(1) (this is done automatically). Here is the example of the EFIE for the Dirichlet problem, where the scattered field $u$ reads as $u = \Lop\rho$, its far field is then computed by
 \begin{verbatim}
 F = FarField(O, a, M_modes, k, theta, rho, [1,0]);
 \end{verbatim}
 For the Brackage-Werner integral equation for the Dirichlet problem,  the scattered field $u$ reads as $u = (-\eta\Lop-\Mop)\psi$, and its far field is computed by
 \begin{verbatim}
 F = FarField(O, a, M_modes, k, theta, psi, [-eta,-1]);
+\end{verbatim}
+If $\rho$ and $\lambda$ are both computed and the user needs to compute $\sum_{p=1}^{\Nscat} p\Lop_p\rho_p - p\Mop_p\lambda_p$, then: 
+\begin{verbatim}
+F = FarField(O, a, M_modes, k, theta, [rho, lambda], [[1:p].', -[1:p].']);
 \end{verbatim}
 
 \subsubsection{Radar Cross Section (RCS)}
@@ -526,7 +530,34 @@ where the arguments are exactly the same as for the far field. In fact, \code{RC
 
 The near field of a potential is given by equations (\ref{??}) and (\ref{??}) outside the obstacles and by (\ref{??}) and (\ref{??}) inside. In the same way, \mudiff separates the outside and the inside computation.
 
+
 \paragraph{Outside the obstacles}
+The assumption on the potentials are exactly the same as for the far field. The user only needs to create a mesh using \eg \code{meshgrid} and launch \code{ExternalPotential}, which syntax is
+\begin{verbatim}
+U = ExternalPotential(X, Y, O, a, M_modes, k, Density, TypeOfOperator, OPTIONS);
+\end{verbatim}
+The arguments are exactly the same as for \code{FarField}, except obviously for \code{X} and \code{Y}, which come from the mesh grid, and the options (see below). The resulting matrix \code{U} has $0$ value inside the obstacle. By default, the computation is not done on the boundary of the obstacles. Here is an example of usage for $u=\Lop\rho$:
+\begin{verbatim}
+XX = [-10:0.1:10];
+YY = [-10:0.1:10];
+[X,Y] = meshgrid(XX,YY);
+U = ExternalPotential(X, Y, O, a M_modes, k, rho, [1,0]);
+\end{verbatim}
+
+\paragraph{Inside the obstacles}
+Inside the obstacle $\Omega_p$, the only contribution is assumed to be of the form $\Lop_p\rho_p + \Mop_p\lambda_p$ (the other contributions are not computed). In the same way as for the external potential, the computation is done in \mudiff as:
+\begin{verbatim}
+U = InternalPotential(X, Y, O, a, M_modes, k, Density, TypeOfOperator, OPTIONS);
+\end{verbatim}
+where \code{U} has zero value outside the obstacles and by default, also on the boundaries.
+
+\paragraph{Common options}
+
+\code{ExternalPotential} and \code{InternalPotential} share the same options which are described here. For the sake of clarity, the examples are shown with only \code{ExternalPotential} even if they work also for \code{InternalPotential}.
+\begin{itemize}
+\item \code{ExternalPotential(..., 'Verbosity', VERBOSITY} : VERBOSITY is a scalar, which when set to 0, stop displaying message (default = 1)
+\item \code{ExternalPotential(..., 'OnBoundary', ONBOUNDARY} : if ONBOUNDARY is set to $1$ then the boundary is also covered (beware of the jump relation\ldots) (default = 0)
+\end{itemize}
 
 \subsubsection{Incident wave}
 
