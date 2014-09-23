@@ -485,7 +485,7 @@ lambda = gmres(@(X)SpMatVec(X, M_modes, SpAMFIE, ), DnUinc);
 
 \section{Post-Processing}
 
-Now that the system has been solved, the next step is to display the results. The \mudiff toolbox proposes some post-processing features such as computing the far-field (fast) or the near-field (more time consuming) of the wave on a grid (Matlab \code{mesh grid}) or on some points only. In addition, other features are available to draw the disks or the incident field. Both the near- and far-field computations can be done for a linear combination of a single- and double-layer potentials $\Lop\rho + \Mop\lambda$, only one of them (\eg $\Lop\rho$) or with the same density $(\Lop+\Mop)\psi$, with a single command line.
+Now that the system has been solved, the next step is to display the results. The \mudiff toolbox proposes some post-processing features such as computing the far-field (fast) or the near-field (more time consuming) of the wave on a grid (Matlab \code{mesh grid}) or on some points only. In addition, other features are available to draw the disks or the incident field. Both the near- and far-field computations can be done for a linear combination of a single- and double-layer potentials $\Lop\rho + \Mop\lambda$, only one of them (\eg $\Lop\rho$) or with the same density $(\Lop+\Mop)\psi$, with a single command line. Every post-processing functions are located in the \code{PostProcessing/} directory.
 
 \subsubsection{Far field}
 
@@ -561,6 +561,60 @@ where \code{U} has zero value outside the obstacles and by default, also on the 
 
 \subsubsection{Incident wave}
 
-\subsubsection{Obstacles}
+The incident waves can be also computed on a grid using 
+\begin{verbatim}
+Uinc = IncidentWaveOnGrid(X, Y, k, TypeOfWave, Param);
+\end{verbatim}
+where \code{Param} is either the angle of direction for a plane wave (scalar) or the location of a point source ($[2\times1]$ vector). The \code{TypeOfWave} is either a \code{char} or a scalar value and follows the same rules as \code{IncidentWave} function from the PreProcessing part (see \S\ref{??}), except for the \code{char} possibility. \code{X} and \code{Y} ares matrices coming from the \code{meshgrid} Matlab function. Below is an example of the computation of a plane wave of angle of direction \code{beta\_inc}:
+\begin{verbatim}
+Uinc = IncidentWaveOnGrid(X, Y, k, 'PlaneWave', beta_inc);
+\end{verbatim}
+
+ 
+\subsubsection{Geometry}
+
+The \mudiff toolbox also proposes some functions for the post processing of obstacles. 
+\paragraph{Drawing the disks:}
+\begin{verbatim}
+PlotCircles(O, a, fig_index, OPTIONS);
+\end{verbatim}
+where \code{fig\_index} is the Figure handle and the OPTIONS are
+\begin{itemize}
+\item \code{PlotCirclesOnFigure(..., 'Color', COLOR)}: apply the \code{COLOR} color to lines (same as the plot function)
+\item \code{PlotCirclesOnFigure(..., 'LineWidth', LINEWIDTH)}: set the line width to \code{LINEWIDTH} (same as the plot function)
+\item \code{PlotCirclesOnFigure(..., 'zdata', ZDATA)}: set the zdata of the figure to \code{ZDATA} (same as the plot function)
+\end{itemize}
+Remark that, when drawing disks on a figure containing some values, do not forget to set the zdata to the max value! Examples: 
+\begin{verbatim}
+figure(1);
+surf(X,Y,U);
+PlotCirclesOnFigure(O, a, 1, 'zdata', max(max(U)));
+\end{verbatim}
+
+\paragraph{Getting a mask matrix}, that is a matrix $S$ such that, is $X$ and $Y$ are obtained by \code{meshgrid}:
+$$
+S(i,j) = \begin{cases}
+0 & \text{ if } (X(i,j),Y(i,j)) \text{ is outside the obstacles,}\\
+p & \text{ if } (X(i,j),Y(i,j)) \in\Omega_p,\\
+p+0.5 & \text{ if } (X(i,j),Y(i,j)) \in\Gamma_p.\\
+\end{cases}
+$$
+This kind of matrix is handy when plotting the potentials and is actually used by \code{ExternalPotential} and \code{InternalPotential}. The function \code{MaskMatrix} which provides the matrix $M$ has the following syntax
+\begin{verbatim}
+S = MaskMatrixObstacles(X, Y, O, a);
+\end{verbatim}
+
+\paragraph{Extract the boundary points.} In the same way as the \code{MaskMatrixObstacles} function, \code{BoundaryOfObstacles} leads to a matrix $G$ where
+$$
+G(i,j) = \begin{cases}
+0 & \text{ if } (X(i,j),Y(i,j)) \text{ is outside the obstacles,}\\
+0 & \text{ if } (X(i,j),Y(i,j)) \in\Omega_p,\\
+p & \text{ if } (X(i,j),Y(i,j)) \in\Gamma_p.\\
+\end{cases}
+$$
+Similarly, $G$ is computed by
+\begin{verbatim}
+G = BoundaryOfObstacles(X, Y, O, a);
+\end{verbatim}
 
 \section{Full Examples}
