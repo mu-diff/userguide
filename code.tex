@@ -485,9 +485,45 @@ lambda = gmres(@(X)SpMatVec(X, M_modes, SpAMFIE, ), DnUinc);
 
 \section{Post-Processing}
 
+Now that the system has been solved, the next step is to display the results. The \mudiff toolbox proposes some post-processing features such as computing the far-field (fast) or the near-field (more time consuming) of the wave on a grid (Matlab \code{mesh grid}) or on some points only. In addition, other features are available to draw the disks or the incident field. Both the near- and far-field computations can be done for a linear combination of a single- and double-layer potentials $\Lop\rho + \Mop\lambda$, only one of them (\eg $\Lop\rho$) or with the same density $(\Lop+\Mop)\psi$, with a single command line.
 
+\subsubsection{Far field}
+
+The far field of a potential $\eta\Lop\rho + \gamma\Mop\lambda$ is computed thanks to the \code{FarField} function:
+\begin{verbatim}
+F = FarField(O, a, M_modes, k, theta, Density, Weight);
+\end{verbatim}
+where \code{theta} is the vector of receiving angles (in rad.), \code{Density} is either $\rho$, $\lambda$ or both and \code{Weight} is the weights to apply to the volumic integral operators. To be more precise, the potential is assumed to be of the form
+$$
+\code{Weight(1)}\Lop\code{Density(:,1)} + \code{Weight(2)}\Mop\code{Density(:,2)}.
+$$
+Note that if \code{Density} is a column vector then \code{Density(:,2)} = \code{Density(:,1)} (the same density is used for both single- and double-layer potentials. Here is the example of the EFIE for the Dirichlet problem, where the scattered field $u$ reads as $u = \Lop\rho$, its far field is then computed by
+\begin{verbatim}
+F = FarField(O, a, M_modes, k, theta, rho, [1,0]);
+\end{verbatim}
+For the Brackage-Werner integral equation for the Dirichlet problem,  the scattered field $u$ reads as $u = (-\eta\Lop-\Mop)\psi$, and its far field is computed by
+\begin{verbatim}
+F = FarField(O, a, M_modes, k, theta, psi, [-eta,-1]);
+\end{verbatim}
+
+\subsubsection{Radar Cross Section (RCS)}
+
+The radar cross section of a far field can be computed either from the far field with \code{FarField\_to\_RCS} or directly from the density with \code{RCS}. In \mudiff, the radar cross section $\sigma$ is obtained by ($F$ being the far field)
+$$
+\sigma = 10\log_{10}(2\pi|F|^2).
+$$
+The syntax is then simply
+\begin{verbatim}
+R = FarField_to_RCS(F);
+\end{verbatim}
+where \code{F} has been computed by the \code{FarField} function. Otherwise, the RSC can be computed directly from the densities by
+\begin{verbatim}
+R = RCS(O, a, M_modes, k, theta, Density, Weight);
+\end{verbatim}
+where the arguments are exactly the same as for the far field. In fact, \code{RCS} first calls \code{FarField} and the \code{FarField\_to\_RCS}.
 
 \subsubsection{Near field}
-\subsubsection{Far field and Radar Cross Section (RCS)}
-\subsubsection{Plot and display}
 
+\subsubsection{Incident wave}
+
+\subsubsection{Obstacles}
