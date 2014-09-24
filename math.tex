@@ -492,7 +492,7 @@ The same procedure can be applied to the other volume operator $\Mop$ and the ot
 
 %--------------------------
 \subsection{Single scattering preconditioning}%Matrix form of the integral equation $A$ in the multiple scattering case}
-
+\label{sec:SingleScat}
 Let the \emph{single scattering operator} of the EFIE $\Lsgl$, corresponding to the diagonal part of the operator $L$, be defined by:
 \begin{equation}\label{eq:LAsgl}
 \Lsgl = \left[\begin{array}{c c c c}
@@ -529,7 +529,7 @@ I & (L^{1,1})^{-1}L^{1,2} & \ldots & (L^{1,1})^{-1}L^{1,M} \\
 where $I$ is the identity operator. Note that this preconditioning accelerates the convergence rate of an iterative solver, like the GMRES, as illustrated by the numerical example given in Section \ref{sec:num}.
 
 The single scattering preconditioner car be applied to the other integral equations and the following result holds \cite{Thi14}
-\begin{prop}
+\begin{prop}\label{prop:SingleScat}
 When preconditioned by their single-scattering preconditioners, the EFIE, MFIE and CFIE become identical and similar to the preconditioned BWIE (equal up to an invertible operator). In other words, after being preconditioned, the four integral equations will lead to the same convergence rate of the iterative solver.
 \end{prop}
 This proposition shows in particular that there is no need in computing the single-scattering preconditioned version of every integral equations: only one is enough. because the resulting operator presents a good convergence rate for multiple scattering, it is hard coded in \mudiff for the Dirichlet and the Neumann cases. They are based on the single-layer potential for the Dirichlet case and the double-layer potential for the Neumann case (EFIE, MFIE or CFIE in both cases).

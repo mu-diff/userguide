@@ -214,31 +214,31 @@ $\lambdabt_{m}^{p} = \lambdamp$ and $\Psit_{m}^{p} = \psimp$.
 
 \subsection{Single-scattering preconditioned integral equations}
 
-The EFIE preconditioned by its single scattering component (see Section \ref{??}), given by,
+The EFIE preconditioned by its single scattering component (see Section \ref{sec:SingleScat}), given by,
 $$
 \Lsgl^{-1} L \rho = \Lsgl^{-1}\uinc|_{\Gamma},
 $$
 can also be computed analytically in the Fourier bases. Indeed, let $\widehat{\Lb}^{-1}\Lb$ be the matrix associated to the operator $\Lsgl^{-1}L$, then
-$$
+\begin{equation}\label{eq:LL}
 \forall p,q=1,\ldots,\Nscat, \qquad
-(\widehat{\Lb}^{-1}\Lb)^{p,q} = \begin{cases}
+(\widehat{\widetilde{\Lb}}^{-1}\widetilde{\Lb})^{p,q} = \begin{cases}
 \Ib^{p} & \text{ if } p=q,\\
-\dsp \sqrt{\frac{a_q}{a_p}}(\Hb^p)^{-1}(\Sbpq)^{T}\Jb^{q}&\text{otherwise}.
+\dsp \sqrt{\frac{a_q}{a_p}}(\Hbt^p)^{-1}(\Sbtpq)^{T}\Jbt^{q}&\text{otherwise}.
 \end{cases}
-$$
+\end{equation}
 And for the Neumann case, the preconditioned integral equation (EFIE) reads as:
 $$
 \widehat{D}^{-1}D\lambda = \widehat{D}^{-1}\dn\uinc|_{\Gamma}.
 $$ 
 The matrix $\widehat{\Db}^{-1}\Db$ of $\widehat{D}^{-1}D$ is then given by
-$$
+\begin{equation}\label{eq:DD}
 \forall p,q=1,\ldots,\Nscat, \qquad
-(\widehat{\Db}^{-1}\Db)^{p,q} = \begin{cases}
+(\widehat{\widetilde{\Db}}^{-1}\widetilde{\Db})^{p,q} = \begin{cases}
 \Ib^{p} & \text{ if } p=q,\\
--\dsp \sqrt{\frac{a_q}{a_p}}(\dHbtp)^{-1}(\Sbpq)^{T}\dJb^{q}&\text{otherwise}.
+-\dsp \sqrt{\frac{a_q}{a_p}}(\dHbtp)^{-1}(\Sbtpq)^{T}\dJbt^{q}&\text{otherwise}.
 \end{cases}
-$$
-As highlighted in Section \ref{??}, there is no need to compute the preconditioned versions of the other integral equations as they lead to the same operator (up to an invertible operators, for BWIE). To solve sound-hard or sound-soft scattering, using the above integral equations is an excellent choice.
+\end{equation}
+As highlighted by Proposition \ref{prop:SingleScat}, there is no need to compute the preconditioned versions of the other integral equations as they lead to the same operator (up to an invertible operators, for BWIE). To solve sound-hard or sound-soft scattering, using the above integral equations is an excellent choice.
 
 %=================================================================
         \subsection{Projection of the incident waves in the Fourier basis}\label{secEqInt:SecondMembre}

@@ -200,11 +200,11 @@ Tolerance used for the conditional statement (default $10^{-10}$).
 
 \paragraph{Example 1:} remove every obstacles that are either on the row of $x-$abscissa $1$ or on the column of $y-$ordinate $2.5$:
 \begin{verbatim}
-[O,a] = RemoveDisk(O\_old, a\_old, 'X', 1, 'Y', 2.5);
+[O,a] = RemoveDisk(O_old, a_old, 'X', 1, 'Y', 2.5);
 \end{verbatim}
 \paragraph{Example 2:} remove the obstacles centered on $(2,5)$ and $(3,4)$:
 \begin{verbatim}
-[O,a] = RemoveDisk(O\_old, a\_old, 'XY', [2, 3; 5, 4]);
+[O,a] = RemoveDisk(O_old, a_old, 'XY', [2, 3; 5, 4]);
 \end{verbatim}
 
 \subsection{Truncation of the Fourier series}
@@ -292,69 +292,79 @@ Remember that the resulting vector corresponds to the opposite of the trace or n
 
 \section{Integral operators}
 
+\subsection{Generalities}
+
 The functions defining the integral operators are in the directory \code{IntOperators/} which has the \code{Dense/}
 and \code{Sparse/} subdirectories for the dense (matrix) and sparse (@function) representations of the four basic integral operators used in scattering,
-\ie $\Lb$, $\Mb$, $\Nb$ and $\Db$, given by respectively (), (), () and (). Preconditioned versions of the operators by their diagonal part are also defined (based on single scattering \cite{AntChnRam08,JACT}).
-For example, for a Dirichlet boundary value problem, the EFIE (\ref{EFIED}), which is based on a single-layer representation, can be built by using the function \texttt{SingleLayer} for a dense matrix version or the function \texttt{SpSingleLayer} to get a sparse representation. % function call for a Krylov subspace solver.
-Nevertheless, from the user point of view, there is no need to enter into the detail of all the related functions. Indeed, a frontal function,
-called \texttt{IntegralOperator}, allows to directly build a linear combination of the previous integral operators, which are all indexed by a hard-coded number. This provides a very convenient way
-when one does not want to use the specific functions or need to build a more complicated operator. For example, the spectral (dense) construction of the BWIE for the Dirichlet problem can be written
+\ie $\Lb$, $\Mb$, $\Nb$ and $\Db$, given in their infinite version by respectively (\ref{eq:InfL}), (\ref{eq:InfM}), (\ref{eq:InfN}) and (\ref{eq:InfD}). Preconditioned versions of the operators by their single scattering operators \cite{Thi14}. In fact and following Proposition \ref{prop:SingleScat}, only $\widehat{L}L$ (EFIE Dirichlet) and $\widehat{D}D$ (EFIE Neumann) are available, as they are the only one needed for the Dirichlet and Neumann problems. These operators have moreover an analytic expression of every of their coefficients (see equations (\ref{eq:LL}) and (\ref{eq:DD}), in the infinite matrices case).
+
+Two different type of storage are available with the \mudiff toolbox: dense and sparse. The assembly of matrix is however similar for both cases (only a few differences). \mudiff is close to the mathematics for the assembly process, in the sense that the matrix $\Ab$ of an integral operator is built block by block ($\Abpq$). For both storage, two main functions exist: a ``block'' function (\code{BlockIntegralOperator} and \code{SpBlockIntegralOperator}) and a whole matrix function (\code{IntegralOperator} and \code{SpIntegralOperator}), which assembles every blocks into one matrix. This separation permits to the user to either build a ``simple'' matrix of one operator or to construct a more ``complex'' matrix where each block represents a different operator or a linear combination of them. Note also that, every operator has functions of interface (located in \code{Dense/Interface} or \code{Sparse/Interface} folders). For example \code{SingleLayer} is the interface function of \code{IntegralOperator} to build the single-layer operator, and \code{BlockSingleLayer} the one of \code{BlockIntegralOperator}. The same applies for the sparse storage with a prefix \code{Sp}:  \code{SpSingleLayer},  \code{SpBlockSingleLayer}.
 
 
-All the functions computing the integral operators are located in the \code{IntOperators/} folder.
-Two different type of storage are provided with the \mudiff toolbox: dense and sparse. The dense storage the whole matrix in memory whereas the sparse version uses the special structure of the matrix of an integral operator to store it. The sparse storage in \mudiff and this user guide has nothing to deal with the sparse storage provided in \matlab such as \texttt{sparse} function. The dense storage is easier to use and works pretty well for small scale problems. It also presents the advantage of providing the whole matrix of the integral operator, which can be useful for spectrum analysis for example. On the other hand, for a large number of circular obstacles and/or for large frequency, the memory storage becomes too important and the sparse version must be used. One should be however careful: the sparse matrix-vector product, based on the cross-correlation (\texttt{xcorr} \matlab function), is very sensitive to the number of modes chosen in the truncation of the Fourier series. Indeed, if too many modes are kept, the matrix-vector product show to be unstable. The formula (\ref{eqEqInt:CFIEDapp}) seems to provide stability.
+The dense storage should be preferred for solving small scale problem, when the memory and the CPU cost is not a problem, where the sparse storage must be used when the limits are reached. For the sparse storage, which is detailed later, the matrices are stored as vectors and the matrix-vector product is then fast. The drawback being however some instability, in particular when the truncation of the Fourier series is not done properly. The formula (\ref{eqEqInt:CFIEDapp}) seems to give a stable result though \cite{AntChnRam08}.
 
-To explain how the code works, let us take an example of one of the four boundary integral operator $L,M,N$ or $D$ being discretized as a generic matrix $\Ab = (\Abpq)_{1\leq p,q\leq \Nscat}$. Let us highlight that \mudiff can manage more complexe matrices, where two different blocks are not the discretization of the same operators or can even be a linear combination of operators. Nevertheless, if $\Ap$ is one of the four boundary integral operators, then as highlighted in previous chapter, $\Ab$ has the following structure, for $p,q=1,\ldots,\Nscat$ and $p\neq q$:
-\begin{itemize}
-\item $\Abpp$ is diagonal.
-\item $\Abpq$ is full and can be divided as $\Abpq = \AbpqL\Tbpq\AbpqR$ where $\AbpqL$ and $\AbpqR$ are diagonal and called respectively the left and right part, and $\Tbpq = (\Tbpqmn))$, with $\Tbpqmn = i\pi e^{??}H_0^{(1)}(k\bpq)$, is a Toeplitz matrix.
-\end{itemize}
-In the sparse version, diagonal submatrices $\Abpp,\AbpqL$ and $\AbpqR$  are stored as a vector of size respectively $2\Np+1$, $2\Np+1$ and $2\Nq+1$, and the Toeplitz matrices $\Tbpq$ are stored as vectors of size $2\Np+2\Nq-1$.
 
-This section is naturally divided in two part, the first being devoted to the dense storage and the second to the sparse version. The assembly, the storage and the usage of the matrices being significantly different.
+
+%Two different type of storage are provided with the \mudiff toolbox: dense and sparse. The dense storage the whole matrix in memory whereas the sparse version uses the special structure of the matrix of an integral operator to store it. The sparse storage in \mudiff and this user guide has nothing to deal with the sparse storage provided in \matlab such as \texttt{sparse} function. The dense storage is easier to use and works pretty well for small scale problems. It also presents the advantage of providing the whole matrix of the integral operator, which can be useful for spectrum analysis for example. On the other hand, for a large number of circular obstacles and/or for large frequency, the memory storage becomes too important and the sparse version must be used. One should be however careful: the sparse matrix-vector product, based on the cross-correlation (\texttt{xcorr} \matlab function), is very sensitive to the number of modes chosen in the truncation of the Fourier series. Indeed, if too many modes are kept, the matrix-vector product show to be unstable. The formula (\ref{eqEqInt:CFIEDapp}) seems to provide stability.
+%
+%To explain how the code works, let us take an example of one of the four boundary integral operator $L,M,N$ or $D$ being discretized as a generic matrix $\Ab = (\Abpq)_{1\leq p,q\leq \Nscat}$. Let us highlight that \mudiff can manage more complexe matrices, where two different blocks are not the discretization of the same operators or can even be a linear combination of operators. Nevertheless, if $\Ap$ is one of the four boundary integral operators, then as highlighted in previous chapter, $\Ab$ has the following structure, for $p,q=1,\ldots,\Nscat$ and $p\neq q$:
+%\begin{itemize}
+%\item $\Abpp$ is diagonal.
+%\item $\Abpq$ is full and can be divided as $\Abpq = \AbpqL\Tbpq\AbpqR$ where $\AbpqL$ and $\AbpqR$ are diagonal and called respectively the left and right part, and $\Tbpq = (\Tbpqmn))$, with $\Tbpqmn = i\pi e^{??}H_0^{(1)}(k\bpq)$, is a Toeplitz matrix.
+%\end{itemize}
+%In the sparse version, diagonal submatrices $\Abpp,\AbpqL$ and $\AbpqR$  are stored as a vector of size respectively $2\Np+1$, $2\Np+1$ and $2\Nq+1$, and the Toeplitz matrices $\Tbpq$ are stored as vectors of size $2\Np+2\Nq-1$.
+%
+%This section is naturally divided in two part, the first being devoted to the dense storage and the second to the sparse version. The assembly, the storage and the usage of the matrices being significantly different.
 
 \subsection{Available integral operators and numbering}
 \label{seccode:IntOp}
 
-\mudiff can build the four boundary integral operators $L,M,N$ and $D$ described in the previous chapter, and also the single-scattering version of the EFIE, that is $??$ (Dirichlet) and $??$ (Neumann). As for the incident wave, in \mudiff, a unique number is assigned to every operator.
+As for the incident wave, for every operator, there exists a function that build the whole operator for the multiple scattering problem, both for dense and sparse storage. The available operators are listed on table \ref{table:IntOp}, with their unique identifier (integer), their name in \mudiff (useful to get their interface functions) and their definition.
 
+\begin{table}
 \begin{center}\begin{tabular}{|c| c| c|c|}
-\hline Int. Op. & Number & \mudiff Name & Value for $\xx\in\Gamma$\\\hline
-- & 0 & \code{Zero} & Zero operator (null matrix)\\\hline
+\hline Int. Op. & Identifier & Function & Definition for $\xx\in\Gamma$\\\hline\hline
+- & 0 & - & Zero operator (null matrix)\\\hline
 $I$ & 1 & \code{Identity} & Identity\\\hline
-$L$ & 2 & \code{SingleLayer} & $\dsp L\rho(\xx) = \int_{\Gamma} G(\xx,\yy) \rho(\yy)\dd\yy$\\\hline
-$M$ & 3 & \code{DoubleLayer} & $\dsp M\lambda(\xx) = -\int_{\Gamma} \dny G(\xx,\yy) \lambda(\yy)\dd\yy$\\\hline
-$N$ & 4 & \code{DnSingleLayer} & $\dsp N\rho(\xx) = \dnx\int_{\Gamma} G(\xx,\yy) \rho(\yy)\dd\yy$\\\hline
-$D$ & 5 & \code{DnDoubleLayer} & $\dsp D\lambda(\xx) = -\dnx\int_{\Gamma} \dny G(\xx,\yy) \lambda(\yy)\dd\yy$\\\hline
-$\hat{L}L$ & 6 & \code{PrecondDirichlet} & Single-Layer preconditioned by its diagonal\\\hline
-$\hat{D}D$& 7 & \code{PrecondNeumann} & Dn Double-Layer preconditioned by its diagonal\\\hline
+$L$ & 2 & \code{SingleLayer} & $\dsp L\rho(\xx) = \int_{\Gamma} G(\xx,\yy) \rho(\yy)\dd\yy$\\[0.25cm]\hline
+$M$ & 3 & \code{DoubleLayer} & $\dsp M\lambda(\xx) = -\int_{\Gamma} \dny G(\xx,\yy) \lambda(\yy)\dd\yy$\\[0.25cm]\hline
+$N$ & 4 & \code{DnSingleLayer} & $\dsp N\rho(\xx) = \dnx\int_{\Gamma} G(\xx,\yy) \rho(\yy)\dd\yy$\\[0.25cm]\hline
+$D$ & 5 & \code{DnDoubleLayer} & $\dsp D\lambda(\xx) = -\dnx\int_{\Gamma} \dny G(\xx,\yy) \lambda(\yy)\dd\yy$\\[0.25cm]\hline
+$\hat{L}L$ & 6 & \code{PrecondDirichlet} & Single-Layer preconditioned by its diagonal\\[0.25cm]\hline
+$\hat{D}D$& 7 & \code{PrecondNeumann} & Dn Double-Layer preconditioned by its diagonal\\[0.25cm]\hline
 \end{tabular}\end{center}
+\caption{Available operators, their unique identifier, function name (interface) and the mathematical definition. The zero function does not have an interface function and the sparse version is obtained by prefixing by \code{Sp} (\code{SpSingleLayer}, \code{SpDnDoubleLayer},\ldots). The block interface functions are also prefixed by ``\code{Block}'' (\code{SpBlockSingleLayer}, \code{BlockSingleLayer},\ldots)}
+\label{table:IntOp}
+\end{table}
+
 
 \subsection{Dense storage}
 \subsubsection{Building a block $\Abpq$}
 
-A block is created thanks to \texttt{BlockIntegralOperator} function, which has the following syntax
+A sub matrix block can be created with the function \texttt{BlockIntegralOperator}:
 \begin{verbatim}
 	Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, TypeOfOperator, Weight);
 \end{verbatim}
-The \code{Weight} argument is optional and set to $1$ by default. The quantity \code{TypeOfOperator} specifies the integral operator to compute, thanks to the numbering of section \ref{seccode:IntOp}. If \code{TypeOfOperator} is a scalar (\eg $=2$) then the resulting matrix \code{Apq} is the submatrix of the associated operator (\eg $\Lbpq$). If \code{TypeOfOperator} is a row (\eg \code{[1,3]}) then the sum of the two operators is done (\eg $\Ibpq+\Mbpq$). Finally the \code{Weight} quantity, of the same size as \code{TypeOfOperator}, is the constant to multiply the block with.
+The \code{Weight} argument is optional and set to $1$ by default. The quantity \code{TypeOfOperator} specifies the integral operator to compute, thanks to the numbering of Table \ref{table:IntOp}. If \code{TypeOfOperator} is a scalar (\eg $=2$) then the resulting matrix \code{Apq} is the submatrix of the associated operator (\eg $\Lbpq$). If \code{TypeOfOperator} is a row (\eg \code{[1,3]}) then the sum of the two operators is done (\eg $\Ibpq+\Mbpq$). Finally the \code{Weight} quantity, of the same size as \code{TypeOfOperator}, is the constant to multiply the block with. The block is hence:
+$$
+\Abpq = \sum_{\ell=1}^{N}\code{Weight}(\ell).\code{Operator}(\ell)
+$$
+where \code{Operator}$(\ell)$ is one of the integral operator.
 
-An example being more precise than a huge speak, let us build some blocks:
-\begin{itemize}
-\item The single-layer block $\Lbpq$:
+\paragraph{Example 1:} Building the single-layer block $\Lbpq$:
 \begin{verbatim}
 Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, 1);
 \end{verbatim}
-\item The block $0.5\Ibpq + \Mbpq$, appearing in the MFIE (\ref{??}):
+\paragraph{Example 2:} Build the whole matrix $0.5\Ibpq + \Nbpq$, appearing in the MFIE (\ref{eq:MFIE}):
 \begin{verbatim}
-Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, [1, 3], [0.5, 1]);
+Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, [1, 4], [0.5, 1]);
 \end{verbatim}
-\item The sum of the four integral operator $0.5\Lbpq + 1.5\Mbpq + 2.5\Nbpq + 3.5\Dbpq$:
+\paragraph{Example 3:} The sum of the four blocks: $0.5\Lbpq + 1.5\Mbpq + 2.5\Nbpq + 3.5\Dbpq$:
 \begin{verbatim}
 Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, [2, 3, 4, 5], 
-[0.5, 1.5, 2.5, 3.5]);
+                         [0.5, 1.5, 2.5, 3.5]);
 \end{verbatim}
-\end{itemize}
+
 
 \subsubsection{Assemble the matrix $\Ab$}
 
@@ -364,9 +374,10 @@ A = IntegralOperator(O, a, M_modes, k, TypeOfOperator, Weight);
 \end{verbatim}
 As for \code{BlockIntegralOperator}, the quantity \code{Weight} is optional and set to $1$ by default. Roughly speaking, \code{IntegralOperator} will loop on every obstacle $p$ and $q$ and launch the following command
 \begin{verbatim}
-Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, Tpq, Wpq);
+Apq = BlockIntegralOperator(O(:,p), a(p), M_modes(p), O(:,q), a(q), M_modes(q), 
+                                                    k, Tpq, Wpq);
 \end{verbatim}
-where \code{Tpq} and \code{Wpq} are given by \code{TypeOfOperator} and \code{Weight} such that (\code{Weight} is of the same size of \code{TypeOfOperator} and so \code{Wpq} follows the same rules as \code{Tpq}):
+and places \code{Apq} in the right block of the whole matrix. The quantities \code{Tpq} and \code{Wpq} are given by \code{TypeOfOperator} and \code{Weight} such that (\code{Weight} is of the same size of \code{TypeOfOperator} and so \code{Wpq} follows the same rules as \code{Tpq}):
 \begin{itemize}
 \item If \code{TypeOfOperator} is a scalar then \code{Tpq} = \code{TypeOfOperator}. 
 \item If \code{TypeOfOperator} is a row or a column vector then \code{Tpq} is an array given by \code{Tpq} = \code{TypeOfOperator}. 
@@ -374,33 +385,30 @@ where \code{Tpq} and \code{Wpq} are given by \code{TypeOfOperator} and \code{Wei
 \item If \code{TypeOfOperator} is a $3D-$array then \code{Tpq} is an array and is given by \code{Tpq(:)} = \code{TypeOfOperator(p,q,:)}. 
 \end{itemize}
 
-For example, building \ldots 
-\begin{itemize}
-\item The single-layer potential $L$
+\paragraph{Example 1:} The single-layer potential $L$
 \begin{verbatim}
 L = IntegralOperator(O, a, M_modes, k, 2);
 \end{verbatim}
-\item The operator of the MFIE for a Dirichlet boundary condition (\ref{??}), $0.5I + N$:
+\paragraph{Example 2:} The operator of the MFIE for a Dirichlet boundary condition (\ref{eq:MFIE}), $0.5I + N$:
 \begin{verbatim}
 A_MFIE = IntegralOperator(O, a, M_modes, k, [1,4], [0.5,1]);
 \end{verbatim}
-\item The following operator
+\paragraph{Example 3:} The following operator for two obstacles only
 $$
 \left(\begin{array}{c c}
 0.5 I_{1,1}+ M_{1,1} & L_{1,2}\\
 D_{2,1} & 0.5 I_{2,2}+N_{2,2}
 \end{array}\right)
 $$
-can be done using also the null operator:
+can be computed using a $3D$ array and the null operator:
 \begin{verbatim}
 TypeOfOp = zeros(2,2,2); Weight = zeros(2,2,2);
-TypeOfOp(1,1, :) = [1, 3]; Weight(1,1, :) = [0.5, 1]; %block A_{1,1}
-TypeOfOp(1,2, :) = [2, 0]; Weight(1,2, :) = [1, 0]; %block A_{1,2}
-TypeOfOp(2,1, :) = [5, 0]; Weight(2,1, :) = [1, 0]; %block A_{2,1}
-TypeOfOp(2,2, :) = [1, 4]; Weight(2,2, :) = [0.5, 1]; %block A_{2,2}
+TypeOfOp(:, 1,1) = [1, 3]; Weight(:, 1,1) = [0.5, 1]; %block A_{1,1}
+TypeOfOp(:, 1,2) = [2, 0]; Weight(:, 1,2) = [1, 0]; %block A_{1,2}
+TypeOfOp(:, 2,1) = [5, 0]; Weight(:, 2,1) = [1, 0]; %block A_{2,1}
+TypeOfOp(:, 2,2) = [1, 4]; Weight(:, 2,2) = [0.5, 1]; %block A_{2,2}
 A = IntegralOperator(O, a, M_modes, k, TypeOfOp, Weight);
 \end{verbatim}
-\end{itemize}
 
 \subsection{Sparse storage}
 
