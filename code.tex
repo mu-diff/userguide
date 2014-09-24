@@ -629,27 +629,42 @@ psi = gmres(@(X)SpMatVec(X, M_modes, SpA), Uinc);
 
 \section{Post-Processing}
 
-Now that the system has been solved, the next step is to display the results. The \mudiff toolbox proposes some post-processing features such as computing the far-field (fast) or the near-field (more time consuming) of the wave on a grid (Matlab \code{mesh grid}) or on some points only. In addition, other features are available to draw the disks or the incident field. Both the near- and far-field computations can be done for a linear combination of a single- and double-layer potentials $\Lop\rho + \Mop\lambda$, only one of them (\eg $\Lop\rho$) or with the same density $(\Lop+\Mop)\psi$, with a single command line. Every post-processing functions are located in the \code{PostProcessing/} directory.
+Now that the system has been solved, the next step is to display some results. The \mudiff toolbox proposes some post-processing features such as computing the far-field (fast) or the near-field of the wave on a grid (Matlab \code{meshgrid}) or on some points only. In addition, other features are available such as drawing the disks on figures or the incident field. Both the near- and far-field computations can be done for a linear combination of a single- and double-layer potentials $\Lop\rho + \Mop\lambda$, only one of them (\eg $\Lop\rho$) or with the same density $(\Lop+\Mop)\psi$, with a single command line. Every post-processing functions are located in the \code{PostProcessing/} directory.
 
 \subsubsection{Far field}
 
-The far field of a potential $\sum_{p=1}^{\Nscat}\eta_p\Lop_p\rho_p + \gamma_p\Mop_p\lambda_p$, given by formul\ae{} (\ref{??}) and (\ref{??}), is computed thanks to the \code{FarField} function:
+The far field of the single- and double-layer potentials
+$$
+\sum_{p=1}^{\Nscat}\eta_p\Lop_p\rho_p + \gamma_p\Mop_p\lambda_p,
+$$
+is given by equation (\ref{eq:FFFourier}). The \code{FarField} function does the job properly:
 \begin{verbatim}
 F = FarField(O, a, M_modes, k, theta, Density, Weight);
 \end{verbatim}
-where \code{theta} is the vector of receiving angles (in rad.), \code{Density} is either $\rho$, $\lambda$ or both and \code{Weight} is the weights to apply to the $\Nscat$ volumic integral operators. The quantity \code{Weight} is of size either $[1\times2]$ or $[1\times\Nscat]$. To be more precise, the potential is assumed to be of the form
+where the parameters are:
+\begin{itemize}
+\item \code{theta} is the vector of receiving angles (in rad.)
+\item \code{Density} is either $\rho$, $\lambda$ or both. If \code{Density} is a column vector then \code{Density(:,2)} = \code{Density(:,1)} and only one density is used both for the single- and the double-layer potentials contribution. If \code{Density} has $2$ columns, then \code{Density(:,1)} is considered to be the single-layer density and \code{Density(:,2)} the double-layer density.
+\item \code{Weight} is the weights to apply to the $\Nscat$ volumic integral operators ($\eta_p$ and $\gamma_p$). The quantity \code{Weight} is of size either $[1\times2]$ or $[1\times\Nscat]$. The first column of \code{Weight} is applied to the single-layer potentials and the second to the double-layer potentials: \code{Weight(p,1)}=$\eta_p$ and \code{Weight(p,2)}=$\gamma_p$. If \code{Weight} is a row of length $2$ then \code{Weight(1)}=$\eta_p$ and \code{Weight(2)}=$\gamma_p$ for all $p$ (the coefficient are the same for every obstacles).
+\end{itemize}
+With these notations, the far field computed is the far field of:
 $$
-\code{Weight(p, 1)}\Lop\code{Density(:,1)} + \code{Weight(p,2)}\Mop\code{Density(:,2)}.
+\sum_{p=1}^{\code{N\_scat}}\code{Weight(p, 1)}\Lop\code{Density(:,1)} + \code{Weight(p,2)}\Mop\code{Density(:,2)}.
 $$
-Note that if \code{Density} is a column vector then \code{Density(:,2)} = \code{Density(:,1)} (the same density is used for both single- and double-layer potentials. In the same way, if \code{Weight} is a $[2\times1]$ vector then \code{Weight}(p,1) = \code{Weight}(1) (this is done automatically). Here is the example of the EFIE for the Dirichlet problem, where the scattered field $u$ reads as $u = \Lop\rho$, its far field is then computed by
+\paragraph{Example 1:}  EFIE for the Dirichlet problem (\ref{eq:EFIE}, where the scattered field $u$ reads as $u = \Lop\rho$, its far field is then computed by
 \begin{verbatim}
 F = FarField(O, a, M_modes, k, theta, rho, [1,0]);
 \end{verbatim}
-For the Brackage-Werner integral equation for the Dirichlet problem,  the scattered field $u$ reads as $u = (-\eta\Lop-\Mop)\psi$, and its far field is computed by
+\paragraph{Example 2:} for the Brackage-Werner integral equation for the Dirichlet problem (\ref{eqEqInt:BW}),  the scattered field $u$ reads as $u = (-\eta\Lop-\Mop)\psi$, and its far field is computed by
 \begin{verbatim}
+eta = i/k;
 F = FarField(O, a, M_modes, k, theta, psi, [-eta,-1]);
 \end{verbatim}
-If $\rho$ and $\lambda$ are both computed and the user needs to compute $\sum_{p=1}^{\Nscat} p\Lop_p\rho_p - p\Mop_p\lambda_p$, then: 
+\paragraph{Example 3:} $\rho$ and $\lambda$ are both computed and the user needs to compute for example
+$$
+\sum_{p=1}^{\Nscat} p\Lop_p\rho_p - p\Mop_p\lambda_p,
+$$
+then (s)he can do it with: 
 \begin{verbatim}
 F = FarField(O, a, M_modes, k, theta, [rho, lambda], [[1:p].', -[1:p].']);
 \end{verbatim}
@@ -660,7 +675,7 @@ The radar cross section of a far field can be computed either from the far field
 $$
 \sigma = 10\log_{10}(2\pi|F|^2).
 $$
-The syntax is then simply
+The computation is then done by typing:
 \begin{verbatim}
 R = FarField_to_RCS(F);
 \end{verbatim}
@@ -668,19 +683,40 @@ where \code{F} has been computed by the \code{FarField} function. Otherwise, the
 \begin{verbatim}
 R = RCS(O, a, M_modes, k, theta, Density, Weight);
 \end{verbatim}
-where the arguments are exactly the same as for the far field. In fact, \code{RCS} first calls \code{FarField} and the \code{FarField\_to\_RCS}.
+where the arguments are exactly the same as for the far field. In fact, \code{RCS} first calls \code{FarField} and then \code{FarField\_to\_RCS}.
 
-\subsubsection{Near field}
+\subsubsection{Near field: outside and inside the obstacles}
 
-The near field of a potential is given by equations (\ref{??}) and (\ref{??}) outside the obstacles and by (\ref{??}) and (\ref{??}) inside. In the same way, \mudiff separates the outside and the inside computation.
+The near field of a potential is given by equations (\ref{eqEqInt:Lphimpt}) and (\ref{eqEqInt:Mphimpt}) outside the obstacles and by (\ref{eqEqInt:LphimptINT}) and (\ref{eqEqInt:MphimptINT}) inside. In the same way, \mudiff separates the outside and the inside computation. 
 
-
-\paragraph{Outside the obstacles}
-The assumption on the potentials are exactly the same as for the far field. The user only needs to create a mesh using \eg \code{meshgrid} and launch \code{ExternalPotential}, which syntax is
+First is explained how to compute the field outside the obstacles. The user only needs to create a mesh using \eg \code{meshgrid} and launch \code{ExternalPotential}, which syntax is
 \begin{verbatim}
-U = ExternalPotential(X, Y, O, a, M_modes, k, Density, TypeOfOperator, OPTIONS);
+U = ExternalPotential(X, Y, O, a, M_modes, k, Density, Weight, OPTIONS);
 \end{verbatim}
-The arguments are exactly the same as for \code{FarField}, except obviously for \code{X} and \code{Y}, which come from the mesh grid, and the options (see below). The resulting matrix \code{U} has $0$ value inside the obstacle. By default, the computation is not done on the boundary of the obstacles. Here is an example of usage for $u=\Lop\rho$:
+The resulting matrix \code{U} has $0$ value inside the obstacle. By default, the computation is not done on the boundary of the obstacles (this can be changed thanks to the options). The arguments are:
+\begin{itemize}
+\item The arguments \code{Density} and \code{Weight} are exactly the same as for \code{FarField},
+\item The quantities \code{X} and \code{Y} are the grid and they come from the Matlab \code{meshgrid} function
+\item The OPTIONS must be chosen from the options of the potential, see below (after the internal potential).
+\end{itemize}
+
+Second, the computation inside the obstacle $\Omega_p$. For the inside field, the only contribution is assumed to be of the form 
+$$
+\Lop_p\rho_p + \Mop_p\lambda_p
+$$
+In other words, the contributions of the other obstacles are not taken into account. In the same way as for the external potential, the computation is done in \mudiff with:
+\begin{verbatim}
+U = InternalPotential(X, Y, O, a, M_modes, k, Density, Weight, OPTIONS);
+\end{verbatim}
+where \code{U} has zero value outside the obstacles and by default, also on the boundaries. The arguments are exactly the same as \code{ExternalPotential}.
+
+Finally, the common options for \code{ExternalPotential} and \code{InternalPotential} are described below. For the sake of clarity, the examples are shown with only \code{ExternalPotential} even if they work also for \code{InternalPotential}:
+\begin{itemize}
+\item \code{ExternalPotential(..., 'Verbosity', VERBOSITY} : VERBOSITY is a scalar, which when set to 0, stop displaying message (default = 1)
+\item \code{ExternalPotential(..., 'OnBoundary', ONBOUNDARY} : if ONBOUNDARY is set to $1$ then the boundary is also covered (beware of the jump relation\ldots) (default = 0)
+\end{itemize}
+
+\paragraph{Example 1: }compute the single-layer potential $u=\Lop\rho$ on a grid:
 \begin{verbatim}
 XX = [-10:0.1:10];
 YY = [-10:0.1:10];
@@ -688,20 +724,14 @@ YY = [-10:0.1:10];
 U = ExternalPotential(X, Y, O, a M_modes, k, rho, [1,0]);
 \end{verbatim}
 
-\paragraph{Inside the obstacles}
-Inside the obstacle $\Omega_p$, the only contribution is assumed to be of the form $\Lop_p\rho_p + \Mop_p\lambda_p$ (the other contributions are not computed). In the same way as for the external potential, the computation is done in \mudiff as:
+\paragraph{Example 2: } consider two obstacles and compute $\Lop_1\rho_1 + 0.5\Lop_2\rho_2 + 1.5\Mop_1\lambda_1 -1.5\Mop_2\lambda_2$  inside the obstacle, where the densities are assumed to be computed:
 \begin{verbatim}
-U = InternalPotential(X, Y, O, a, M_modes, k, Density, TypeOfOperator, OPTIONS);
+XX = [-10:0.1:10];
+YY = [-10:0.1:10];
+[X,Y] = meshgrid(XX,YY);
+U = InternalPotential(X, Y, O, a M_modes, k, [rho, lambda], [1, 1.5 ; 0.5, -1.5]);
 \end{verbatim}
-where \code{U} has zero value outside the obstacles and by default, also on the boundaries.
 
-\paragraph{Common options}
-
-\code{ExternalPotential} and \code{InternalPotential} share the same options which are described here. For the sake of clarity, the examples are shown with only \code{ExternalPotential} even if they work also for \code{InternalPotential}.
-\begin{itemize}
-\item \code{ExternalPotential(..., 'Verbosity', VERBOSITY} : VERBOSITY is a scalar, which when set to 0, stop displaying message (default = 1)
-\item \code{ExternalPotential(..., 'OnBoundary', ONBOUNDARY} : if ONBOUNDARY is set to $1$ then the boundary is also covered (beware of the jump relation\ldots) (default = 0)
-\end{itemize}
 
 \subsubsection{Incident wave}
 
@@ -709,9 +739,23 @@ The incident waves can be also computed on a grid using
 \begin{verbatim}
 Uinc = IncidentWaveOnGrid(X, Y, k, TypeOfWave, Param);
 \end{verbatim}
-where \code{Param} is either the angle of direction for a plane wave (scalar) or the location of a point source ($[2\times1]$ vector). The \code{TypeOfWave} is either a \code{char} or a scalar value and follows the same rules as \code{IncidentWave} function from the PreProcessing part (see \S\ref{??}), except for the \code{char} possibility. \code{X} and \code{Y} ares matrices coming from the \code{meshgrid} Matlab function. Below is an example of the computation of a plane wave of angle of direction \code{beta\_inc}:
+where, as for the \code{IncidentWave} function from the PreProcessing part (see \S\ref{??}) :
+\begin{itemize}
+\item \code{X} and \code{Y} ares matrices coming from the \code{meshgrid} Matlab function
+\item \code{Param} is either the angle of direction for a plane wave (scalar) or the location of a point source ($[2\times1]$ vector)
+\item \code{TypeOfWave} is either a \code{char} or a scalar value 
+\end{itemize}
+\paragraph{Example:} computation of a plane wave of angle of direction \code{beta\_inc}=$\pi$:
 \begin{verbatim}
+beta_inc = pi;
+XX = [-10:0.1:10];
+YY = [-10:0.1:10];
+[X,Y] = meshgrid(XX,YY);
 Uinc = IncidentWaveOnGrid(X, Y, k, 'PlaneWave', beta_inc);
+\end{verbatim}
+The last line could also be
+\begin{verbatim}
+Uinc = IncidentWaveOnGrid(X, Y, k, 1, beta_inc);
 \end{verbatim}
 
  

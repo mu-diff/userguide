@@ -303,13 +303,13 @@ $$
 \rho = \sum_{p=1}^{M}\sum_{m\in\Zb} \rhomp\Phimp \qquad\text{ and }\qquad \lambda = \sum_{p=1}^{M}\sum_{m\in\Zb} \lambdamp\Phimp.
 $$
 Then, for any point $\xx$ in the  domain of propagation $\Omegaps$, the single-layer potential reads
-$$%\begin{equation}\label{eqEqInt:Lphimpt}
+\begin{equation}\label{eqEqInt:Lphimpt}
 \Lop\rho(\xx) = \sum_{p=1}^M\sum_{m\in\Zb}\rhomp \Lop \Phimp(\xx) =\sum_{p=1}^M\sum_{m\in\Zb}\rhomp \frac{i\pi a_p}{2} J_m(ka_p)\Hm(kr_p(\xx)) \Phimpt(\xx),
-$$%\end{equation}
+\end{equation}
 and the double-layer potential can be expressed as
-$$%\begin{equation}\label{eqEqInt:Mphimpt}
+\begin{equation}\label{eqEqInt:Mphimpt}
 \Mop\lambda(\xx) = \sum_{p=1}^M\sum_{m\in\Zb}\lambdamp\Mop \Phimp(\xx) = -\sum_{p=1}^M\sum_{m\in\Zb} \lambdamp\frac{i\pi ka_p}{2} J_m'(ka_p)\Hm(kr_p(\xx)) \Phimpt(\xx).
-$$%\end{equation}
+\end{equation}
 \end{prop}
 Proposition \ref{propEqInt:LMphi} implies that, for any  $\xx$ in $\Omegaps$,
 $$
@@ -329,13 +329,13 @@ $$
 \rho = \sum_{p=1}^{M}\sum_{m\in\Zb} \rhomp\Phimp \qquad\text{ and }\qquad \lambda = \sum_{p=1}^{M}\sum_{m\in\Zb} \lambdamp\Phimp.
 $$
 Then, for any point $\xx$ inside the obstacle $\Omegap$, the single-layer potential reads
-$$
+\begin{equation}\label{eqEqInt:LphimptINT}
 \Lop\rho(\xx) = \sum_{m\in\Zb}\rhomp \Lop \Phimp(\xx) =\sum_{p=1}^M\sum_{m\in\Zb}\rhomp \frac{i\pi a_p}{2} H_m^{(1)}(ka_p)J_m(kr_p(\xx)) \Phimpt(\xx),
-$$
+\end{equation}
 and the double-layer potential can be expressed as
-$$
+\begin{equation}\label{eqEqInt:MphimptINT}
 \Mop\lambda(\xx) = \sum_{p=1}^M\sum_{m\in\Zb}\lambdamp\Mop \Phimp(\xx) = -\sum_{p=1}^M\sum_{m\in\Zb} \lambdamp\frac{i\pi ka_p}{2} \Hmp(ka_p)J_m(kr_p(\xx)) \Phimpt(\xx).
-$$
+\end{equation}
 \end{prop}
 
 
@@ -365,12 +365,13 @@ $$%\end{equation}
 To optimize the far-fields computation, these relations can be written thanks to the inner product between two infinite vectors.
 Indeed, let us introduce $\aabt_{\Lop} = ((\aabt_{\Lop})^{p})_{1\leqslant p \leqslant M}$ and $\aabt_{\Mop} = ((\aabt_{\Mop})^{p})_{1\leqslant p \leqslant M}$,
 where $(\aabt_{\Lop})^{p}$ and $(\aabt_{\Mop})^{p}$ are given by:  $\forall p=1,\ldots,M$,
-$$
+\begin{equation}
+\label{eq:FFFourier}
 \left\{\begin{array}{l}
 \dsp{(\aabt_{\Lop})^{p} = \Big((\aabt_{\Lop})^{p}_{m}\Big)_{m\in\Zb}, \qquad (\aabt_{\Lop})^{p}_{m} = \frac{ie^{-i\pi/4}\sqrt{a_{p}}}{2\sqrt{k}} e^{-i\bp k\cos(\theta-\alphap)}\Jm(k\ap)e^{im(\theta-\pi/2)},}\\[0.3cm]
 \dsp{(\aabt_{\Mop})^{p} = \Big((\aabt_{\Lop})^{p}_{m}\Big)_{m\in\Zb}, \qquad (\aabt_{\Lop})^{p}_{m} = \frac{ie^{-i\pi/4}\sqrt{ka_{p}}}{2} e^{-i\bp k\cos(\theta-\alphap)}\Jmp(k\ap)e^{im(\theta-\pi/2)}.}
 \end{array}\right.
-$$
+\end{equation}
 Then, we obtain the following: $\dsp{a_{\Lop}(\theta) = (\aabt_{\Lop})^{T}\Rhot}$ and $\dsp{a_{\Mop}(\theta) = (\aabt_{\Mop})^{T}\lambdabt}$.
 
 
