@@ -8,7 +8,7 @@ This chapter begins by presenting the potential theory and the four classical bo
 \sectionmark{Classical integral equation for acoustic scattering}
 %=======================================================================
 
-Here is presented a techniques to derive classical direct integral equation in case of impenetrable obstacle. Even if \mudiff can be used to solve the penetrable case, studying the impenetrable case is a good way to introduce the boundary integral operators and their properties. This section is strongly inspired by a lecture from Bendali and Fares \cite{BenFar07} and the PhD thesis of Thierry \cite{Thi11} (in french).
+Here is presented a techniques to derive classical direct integral equation in case of impenetrable obstacle. Even if \mudiff can be used to solve the penetrable case, studying the impenetrable case is a good way to introduce the boundary integral operators and their properties. This section is strongly inspired by a lecture from Bendali and Fares \cite{BenFar07} and the PhD thesis of Thierry \cite{ThierryThesis} (in french).
 
 \subsection{Scattering problem}
 
@@ -231,7 +231,7 @@ A\Lop\rho = -A\uinc.
 %$$
 %\ut(\xx) = \Lop \rho (\xx) + \uinc(\xx), \qquad \forall\xx \in \Omegaps.
 %$$ 
-Both the expression and the nature of the integral equation (\ref{eqEqInt:EqInt}) depend on the boundary condition imposed to $\utm$, represented here by the operator $A$.  The next subsections describe the three usual direct integral equations that are studied in this paper. The proofs are not provided and can be found for example in \cite{BenFar07} or \cite{Thi11}.
+Both the expression and the nature of the integral equation (\ref{eqEqInt:EqInt}) depend on the boundary condition imposed to $\utm$, represented here by the operator $A$.  The next subsections describe the three usual direct integral equations that are studied in this paper. The proofs are not provided and can be found for example in \cite{BenFar07} or \cite{ThierryThesis}.
 
 %%%%%%%%%%%%%
 \subsubsection{EFIE (\textit{Electric Field Integral Equation})}
@@ -526,9 +526,7 @@ I & (L^{1,1})^{-1}L^{1,2} & \ldots & (L^{1,1})^{-1}L^{1,M} \\
 (L^{M,M})^{-1}L^{M,1} & (L^{M,M})^{-1}L^{M,2} & \ldots & I \\
 \end{array}\right],
 \end{equation}
-where $I$ is the identity operator. Note that this preconditioning accelerates the convergence rate of an iterative solver, like the GMRES, as illustrated by the numerical example given in Section \ref{sec:num}.
-
-The single scattering preconditioner car be applied to the other integral equations and the following result holds \cite{Thi14}
+where $I$ is the identity operator. Note that this preconditioning accelerates the convergence rate of an iterative solver, like the GMRES. The single scattering preconditioner can be applied to the other integral equations and the following result holds \cite{Thi14}
 \begin{prop}\label{prop:SingleScat}
 When preconditioned by their single-scattering preconditioners, the EFIE, MFIE and CFIE become identical and similar to the preconditioned BWIE (equal up to an invertible operator). In other words, after being preconditioned, the four integral equations will lead to the same convergence rate of the iterative solver.
 \end{prop}

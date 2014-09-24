@@ -15,9 +15,13 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 %\usepackage{showkeys}
+\usepackage{epstopdf}
 \usepackage{graphicx}
 \usepackage{graphics}
 \usepackage{subfigure}
+
+\usepackage{pgfplots}
+\usepackage{pgfkeys}
 
 \usepackage{import} % pour les .pdf_tex
 
@@ -46,20 +50,20 @@
 \newcommand{\code}[1]{\texttt{#1}}
 
 
-\title{$\mu$-diff Matlab toolbox: user guide}
+\title{\mudiff Toolbox for Matlab: user guide}
 
 %\author{X. Antoine\thanks{Institut Elie Cartan Nancy (IECN), Nancy University, INRIA Corida Team, B.P. 239, F-54506
 %    Vandoeuvre-l\`es-Nancy Cedex, France.}, \and
 %  C. Besse\thanks{?} \and P. Klein}
 
-\author{Bertrand Thierry\footnotemark[1] , Xavier Antoine\footnotemark[2] , Chokri Chniti\footnotemark[3]   and 
-Hasan Alzubaidi\footnotemark[3]}
+\author{Xavier \textsc{Antoine} and Bertrand \textsc{Thierry}}
 
-\date{}
+%\date{}
+
 
 \begin{document}
 
-\maketitle
+%\maketitle
 
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
 
@@ -71,13 +75,16 @@ Hasan Alzubaidi\footnotemark[3]}
 
 \renewcommand{\thefootnote}{\arabic{footnote}}
 
+
+\maketitle
 \dominitoc
 \tableofcontents
 
-\chapter{Copyright}
+
+\chapter*{Copyright}
 \input{copyright}
 
-\chapter{Introduction}
+\chapter*{Introduction}
 \input{introduction}
 
 
@@ -91,7 +98,7 @@ Hasan Alzubaidi\footnotemark[3]}
 \chapter{\mudiff Toolbox}\minitoc
 \input{code}
 
-\chapter{Conclusion}
+\chapter*{Conclusion}
 \input{conclusion}
 
 

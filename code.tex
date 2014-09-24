@@ -99,13 +99,13 @@ a = [0.1, 0.5, 10];
 
 \subsubsection{Periodic placement}
 
-Two build-in functions are available with the toolbox to create disks periodically, with a rectangular or a triangular lattice, as shown on figure \ref{??}. The two functions must be called as follows, first for the rectangular lattice:
+Two build-in functions are available with the toolbox to create disks periodically, with a rectangular or a triangular lattice, as shown on figure \ref{fig:lattices}. The two functions must be called as follows, first for the rectangular lattice:
 \begin{verbatim}
-O = RectangularLattice(bx, by, Nx, Ny);
+O = RectangularLattice(bx, by, Nx, Ny, OPTIONS);
 \end{verbatim}
 and second for the triangular lattice:
 \begin{verbatim}
-O = TriangularLattice(bx,by,Nx,Ny);
+O = TriangularLattice(bx, by, Nx, Ny, OPTIONS);
 \end{verbatim}
 where the arguments are:
 \begin{itemize}
@@ -119,11 +119,34 @@ For both functions, the vector of radii must be built separately and manually. F
 a = ones(size(O,2));
 \end{verbatim}
 
+The available options are (same for \code{RectangularLattice} and \code{TriangularLattice}):
+\begin{itemize}
+\item \code{RectangularLattice(..., 'Center', Ostart)}
+Place the first disk on Ostart position, Ostart being a [2x1] vector. (Default: $[0;0]$).
+ \item \code{RectangularLattice(..., 'Direction', DIR)}
+Pace the row in the increasing y-direction (DIR=+1) or decreasing y-diretion (DIR=-1). Default: DIR+1.
+\end{itemize}
+
 \paragraph{Example:} Building a rectangle of $3$ unit disks and $4$ rows. Each disks is separated from a distance of $1.5$ (so the centers from a distance of $3.5$):
 \begin{verbatim}
 O = RectangularLattice(3.5, 3.5, 3, 4);
 a = ones(size(O,2));
 \end{verbatim}
+
+\begin{figure}
+\centering
+\subfigure[Rectangular lattice]{\begin{tikzpicture}
+ \pgftext{\includegraphics[width=0.45\textwidth]{./img/obstacles/rectangular.png}}
+ \draw (10pt,-75pt) node[below]{\footnotesize $x_{1}$} ;
+ \draw (-92pt,10pt) node[below]{\footnotesize $x_{2}$} ;
+\end{tikzpicture}}\quad\subfigure[Triangular lattice]{\begin{tikzpicture}
+ \pgftext{\includegraphics[width=0.45\textwidth]{./img/obstacles/triangular.png}}
+ \draw (10pt,-75pt) node[below]{\footnotesize $x_{1}$} ;
+ \draw (-92pt,10pt) node[below]{\footnotesize $x_{2}$} ;
+\end{tikzpicture}}
+\caption{Rectangular (left) and triangular (right) lattice with \code{bx}=3, \code{by}=4, \code{Nx} = 5, \code{Ny}=6.}
+\label{fig:lattices}
+\end{figure}
 
 
 \subsubsection{Random placement}
@@ -206,6 +229,27 @@ Tolerance used for the conditional statement (default $10^{-10}$).
 \begin{verbatim}
 [O,a] = RemoveDisk(O_old, a_old, 'XY', [2, 3; 5, 4]);
 \end{verbatim}
+\paragraph{Example 3:} create a periodic placement of $11$ by $11$ unit disks, separated by a distance of $1$ then remove the middle line and the middle column, as shown on figure \ref{fig:removeDisks}. The central disk is moreover centered on $(0,0)$.
+\begin{verbatim}
+bx = 3; by = 3;
+Nx = 11; Ny = 11;
+O = RectangularLattice(bx, by, Nx, Ny, 'Center', [-15,-15]);
+a = ones(1, size(O, 2));
+[O, a] = RemoveDisk(O, a, 'X', 0, 'Y', 0);
+\end{verbatim}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+ \pgftext{\includegraphics[width=0.45\textwidth]{./img/obstacles/removeDisks.png}}
+ \draw (10pt,-75pt) node[below]{\footnotesize $x_{1}$} ;
+ \draw (-92pt,10pt) node[below]{\footnotesize $x_{2}$} ;
+\end{tikzpicture}
+\caption{Periodic placement with a row and a column deleted.}
+\label{fig:removeDisks}
+\end{figure}
+
+
 
 \subsection{Truncation of the Fourier series}
 
