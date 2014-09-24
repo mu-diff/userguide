@@ -164,31 +164,32 @@ $$%\begin{equation}\label{eqEqInt:Sbtpq}
 $$%\end{equation}
 Under these notations, we rewrite the blocks $\Lbtpq$, $\Mbtpq$, $\Nbtpq$ and $\Dbtpq$ of the infinite matrices
  $\Lbt$, $\Mbt$, $\Nbt$ and $\Dbt$ under the matrix form, for any $p,q= 1,\ldots,M$,
-
-
-\qquad\qquad \textbullet $\quad\dsp{\Lbtpq = 
+ \begin{itemize}
+\item[]\begin{flalign}\label{eq:InfL}
+\text{\textbullet}\quad&
+\Lbtpq = 
 \begin{cases}
 \dsp{\frac{i\pi a_p}{2} \Jbtp\Hbtp,} & \text{ if } p = q,\\[0.3cm]
 \dsp{\frac{i \pi\sqrt{a_p a_q}}{2} \Jbtp (\Sbtpq)^T\Jbtq,} &\text{ if } p \neq q,
-\end{cases}}$\\[0.5cm]
-
-\qquad\qquad \textbullet $\quad\dsp{\Mbtpq = 
+\end{cases}&\end{flalign}\item[]\begin{flalign}\label{eq:InfM}
+\text{\textbullet}\quad&
+\Mbtpq = 
 \begin{cases}
 \dsp{ - \frac{1}{2}\Ibtp - \frac{i \pi k a_p}{2} \Jbtp \dHbtp = \frac{1}{2}\Ibtp - \frac{i \pi k a_p}{2} \dJbtp \Hbtp,} &\text{ if } p = q,\\[0.3cm]
 \dsp{- \frac{i k \pi\sqrt{a_p a_q}}{2} \Jbtp (\Sbtpq)^T \dJbtq,}&\text{ if } p \neq q,
-\end{cases}}$\\[0.5cm]
-
-\qquad\qquad \textbullet $\quad\dsp{\Nbtpq =
+\end{cases}&\end{flalign}\item[]\begin{flalign}\label{eq:InfN}
+\text{\textbullet}\quad&
+\Nbtpq =
 \begin{cases}
 \dsp{\frac{1}{2}\Ibtp + \frac{i \pi k a_p}{2} \Jbtp \dHbtp  = -\frac{1}{2}\Ibtp + \frac{i \pi k a_p}{2} \dJbtp \Hbtp,} &\text{ if } p = q, \\[0.3cm]
 \dsp{\frac{i k \pi\sqrt{a_p a_q}}{2} \dJbtp (\Sbtpq)^T \Jbtq,}& \text{ if } p \neq q, 
-\end{cases}}$\\[0.5cm]
-
-\qquad\qquad \textbullet $\quad\dsp{\Dbtpq =
+\end{cases}&\end{flalign}\item[]\begin{flalign}\label{eq:InfD}
+\text{\textbullet}\quad&
+\Dbtpq =
 \begin{cases}
 \dsp{\frac{i \pi k^2 a_p}{2} \dJbtp\dHbtp,} & \text{ if } p = q, \\[0.3cm]
 \dsp{ - \frac{i k^2 \pi\sqrt{a_p a_q}}{2} \dJbtp (\Sbtpq)^T \dJbtq,} &\text{ if } p \neq q,
-\end{cases}}$\\[0.5cm]
+\end{cases}&\end{flalign}\end{itemize} 
 where $(\Sbtpq)^T$ is the transpose matrix of the separation matrix $\Sbtpq$. 
 
 The integral equations involve the trace or normal derivative trace of the incident wavefield on $\Gamma$.
@@ -441,7 +442,7 @@ $\forall m =-\Np,\ldots,\Np$.
 If $\Ntot = \sum_{p=1}^{M}(2\Np +1)$ denotes the total number of modes, the size of the complex-valued matrix
  $\Lb$ is then $\Ntot\times\Ntot$. More generally, all the boundary integral operators can be truncated according to this process.
  Concerning the notations, it is sufficient to formally omit the tilde symbol $\sim$ over the quantities involved in sections
-  (\ref{integralinfinite})-(\ref{secEqInt:quantite}).
+  (\ref{integralinfinite}) to (\ref{secEqInt:SER}).
 
 Since  the four finite-dimensional matrices $\Lb$, $\Mb$, $\Nb$ and $\Db$ that respectively correspond to the four
 boundary integral operators $L$, $M$, $N$ and $D$ can be computed,  the linear systems that approximate the EFIE, MFIE, CFIE and
@@ -471,5 +472,5 @@ methods (i.e. restarted GMRES)), the global cost is $\mathcal{O}(M^2 ka \log_{2}
 the physical situation and robustness of the preconditioner. From these remarks, we deduce that an iterative method is an efficient  and cheap 
 alternative to a direct solver for large wavenumbers $ka$, but also for large $M$.
  We refer to \cite{AntChnRam08,JACT} for a thorough computational study of the various numerical strategies.
-A few examples in $\mu$-diff are provided (see section  \ref{sectionnumericalexamples} and the corresponding scripts) with the toolbox.
-Finally, the post-processing formulas (near- and far-fields quantities) clearly inherits of the truncation procedure (see section \ref{secEqInt:quantite}).
+A few examples in $\mu$-diff are provided with the toolbox.
+Finally, the post-processing formulas (near- and far-fields quantities) clearly inherits of the truncation procedure (see sections \ref{secEqInt:evaluation} and \ref{secEqInt:SER}).
