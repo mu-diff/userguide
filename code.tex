@@ -409,31 +409,42 @@ TypeOfOp(:, 2,1) = [5, 0]; Weight(:, 2,1) = [1, 0]; %block A_{2,1}
 TypeOfOp(:, 2,2) = [1, 4]; Weight(:, 2,2) = [0.5, 1]; %block A_{2,2}
 A = IntegralOperator(O, a, M_modes, k, TypeOfOp, Weight);
 \end{verbatim}
+\paragraph{Example 4:} The Brakhage-Werner integral equation for a Dirichlet problem (\ref{eqEqInt:BW})
+\begin{verbatim}
+k = 1;
+beta_inc = pi;
+eta = i/k;
+Uinc = PlaneWave(O, a, M_modes, k, beta_inc);
+A = IntegralOperator(O, a, M_modes, k, [1, 2, 3], [0.5, -eta_BW, -1]);
+psi = A \ Uinc;
+\end{verbatim}
 
 \subsection{Sparse storage}
 
-Storing the matrices in a sparse way lead to a significant reduction in memory storage and a faster matrix-vector product. The linear system must then however be solved using an iterative solver only, as the matrix is no more fully stored. Combining linearly the matrices is still possible but is done during the matrix-vector product, indeed, summing two matrices of two different integral operators is not guaranteed to keep the special structure. If the problem involves (at least) two different integral operators, they must hence be computed separately.
+Storing the matrices in a sparse way leads to a significant reduction in memory storage and a faster matrix-vector product. The linear system must then however be solved using an iterative solver only, as the matrix is no more fully stored. Combining linearly the matrices is still possible but this is done during the matrix-vector product. Indeed, summing two matrices of two different integral operators is not guaranteed to keep the special structure. If the problem involves (at least) two different integral operators, they must hence be computed separately.
 
-\subsubsection{Storage: generalities}
+\subsubsection{Compact storage}
 
-To explain how the matrix is stored using \mudiff sparse storage, let $\Ab$ be the matrix of one of the four integral operators $L,M,N$ or $D$. The matrix $\Ab$ has the following special structure
+To explain how the matrix is stored using \mudiff sparse storage, let $\Ab$ be the matrix of one of the four integral operators $L,M,N$ or $D$. The matrix $\Ab$ has the following special structure (for $p,q=1,\ldots,M$ and $p\neq q$):
 \begin{itemize}
 \item $\Abpp$ is diagonal
-\item $\Abpq$ is full and can be divided as $\Abpq = \AbpqL\Tbpq\AbpqR$ where $\AbpqL$ and $\AbpqR$ are diagonal and called respectively the left and right part, and $\Tbpq = (\Tbpqmn))$, with $\Tbpqmn = i\pi e^{??}H_0^{(1)}(k\bpq)$, is a Toeplitz matrix.
+\item $\Abpq$ is full and can be divided as $\Abpq = \AbpqL\Tbpq\AbpqR$ where $\AbpqL$ and $\AbpqR$ are diagonal and called respectively the left and right part, and $\Tbpq = (\Tbpqmn))$, with $\Tbpqmn = i\pi e^{i(n-m)\alpha_{pq}}H_{n-m}^{(1)}(k\bpq)$, is a Toeplitz matrix: $\Tbpqmn = \Tbpq_{m+1,n+1}$.
 \end{itemize}
 
-Let $\AbL$ and $\AbR$ be two $3D$ arrays such that
+The idea is that the diagonal matrices can be stored as a vector containing the diagonal only. A matrix-vector product between a diagonal matrix and a vector is then simply a point-to-point multiplication. The Toeplitz matrix can also be stored in a compact form as a vector and the matrix-vector product is handled by a cross-correlation (based on FFT). 
+
+The diagonals part are stored in the $3D$ arrays $\AbL$ and $\AbR$ (``L'' for left part and ``R'' for the right part). The left part, $\AbL$ also carries the diagonal part of the matrix:
 $$
 \AbL(:,p,q) = \begin{cases}
 \diag(\Abpp) & \text{ if }p=q,\\
-\AbpqL & \text{ otherwise,}
+\diag(\AbpqL) & \text{ otherwise,}
 \end{cases}\qquad
 \AbR(:,p,q) = \begin{cases}
 0 & \text{ if }p=q,\\
-\AbpqR & \text{ otherwise.}
+\diag(\AbpqR) & \text{ otherwise.}
 \end{cases}
 $$
-There is only $\Tbpq$, of size $(2\Np+1) \times (2\Nq+1)$ to be stored sparsely. A Toeplitz matrix has the following structure
+The matrix $\Tbpq$, of size $(2\Np+1) \times (2\Nq+1)$ is then also compacted as a Toeplitz matrix has the following structure
 $$
 \Tbpq = \left(\begin{array}{c c c c c}
 t_1 & t_2 & t_3 & \ldots & t_{(2\Nq+1)} \\
@@ -444,7 +455,7 @@ t_{(2\Nq+1)+2} & t_{(2\Nq+1)+1} & t_{1} & \ldots & t_{(2\Nq+1)-2}\\
 t_{(2\Nq+1)+(2\Np+1)-1} & t_{(2\Nq+1)+(2\Np+1)-2} & t_{(2\Nq+1)+(2\Np+1)-3} &   \ldots  & t_{(2\Nq+1)-(2\Np+1)+1}
 \end{array}\right)
 $$
-Clearly, only the first row and the first column are necessary to build the matrix and hence $\Tbpq$ can be stored as a root vector $\AbpqM$ of size $(2\Np+1)+ (2\Nq+1)-1 = 2\Np +2\Nq+1$ and such that:
+Clearly, the root vector containing the first row and the first column is enough to rebuild the matrix. This root vector, called $\AbpqM$, is of size $(2\Np+1)+ (2\Nq+1)-1 = 2\Np +2\Nq+1$ and such that:
 $$
 \AbpqM = \left(\begin{array}{c}
 t_{(2\Nq+1)+(2\Np+1)-1}\\
@@ -459,7 +470,7 @@ t_{3} \\
 t_{(2\Nq+1), 1}\\
 \end{array}\right).
 $$
-Finally, the $3D$ array $\AbM$ will store every sub-vectors $\AbpqM$:
+Finally, all these root vectors are stored in the $3D$ array $\AbM$:
 $$
 \AbM(:,p,q) = \begin{cases}
 0 & \text{ if }p=q,\\
@@ -467,27 +478,29 @@ $$
 \end{cases}
 $$
 
-The whole matrix $\Ab$ is thus stored in three different part: $\AbL$, $\AbM$ and $\AbR$. In the computer point of view, as a $3D$ array has a fix size in each direction, hence, in Matlab, the sizes of the arrays are given by
+The whole matrix $\Ab$ is thus stored in three different parts: $\AbL$, $\AbM$ and $\AbR$. From the computer point of view, as a $3D$ array has a fix size in each direction, the second and third dimension of the arrays are both of size \code{N\_scat} and the length in the first dimension is given by:
 \begin{center}
-\begin{tabular}{| l | l |}
-\hline$\AbL$ & $\dsp \max_p(2\Np+1)$\\[0.2cm]\hline
-$\AbM$ & $\dsp \max_{p}\max_{q\neq p}\left[(2\Np+1)+(2\Nq+1)-1\right]$\\[0.2cm]\hline
-$\AbR$ & $\dsp \max_p(2\Np+1)$\\[0.2cm]\hline
+\begin{tabular}{| l | l | l | l |}
+\hline $3D$-array & \multicolumn{3}{c|}{Length in the dimension\ldots}\\\cline{2-4}
+& $1$ & $2$ & $3$\\\hline
+$\AbL$ & $\dsp \max_p(2\Np+1)$ & \code{N\_scat}& \code{N\_scat}\\[0.2cm]\hline
+$\AbM$ & $\dsp \max_{p}\max_{q\neq p}\left[(2\Np+1)+(2\Nq+1)-1\right]$& \code{N\_scat}& \code{N\_scat}\\[0.2cm]\hline
+$\AbR$ & $\dsp \max_p(2\Np+1)$& \code{N\_scat}& \code{N\_scat}\\[0.2cm]\hline
 \end{tabular}\end{center}
-With this constraint, the vector $\AbL(:,p,q)$ can be larger than $2\Np+1$ and thus $\AbpqL$ must be extracted: $\AbpqL = \AbL(1:2\Np+1,p)$. The same occurs for $\AbM$ and $\AbR$. 
+With this constraint, the vector $\AbL(:,p,q)$ can be larger than $2\Np+1$ and thus $\AbpqL$ must be extracted: $\AbpqL = \AbL(1:2\Np+1, p, p)$. The same occurs for $\AbM$ and $\AbR$. 
 
 Finally, these $3D$ arrays are merged into a cell \code{A}, representing the matrix $\Ab$, such that, using the Matlab notations:
 $$
 \code{A}\{1\} = \AbL,\qquad \code{A}\{2\} = \AbM,\qquad\code{A}\{3\} = \AbR.
 $$
 
-\subsubsection{Matrix-vector product}
+\subsubsection{Fast matrix-vector product}
 
-The matrix vector product between \code{A} and a vector $X$ is divided in different parts. Let us look at $Y=\Ab X$ and more particularly at the $p^{th}$ component
+The matrix vector product between $\Ab$ and a vector $X$ is divided in different smaller operations. Let us look at $Y=\Ab X$ and more particularly at the $p^{th}$ component
 $$
 Y_p = \sum_{q} \Abpq X_q.
 $$
-Using the previous notations, it comes that
+Using the previous notations, it can be rewritten as
 $$
 Y_p = \AbppL X_p + \sum_{q\neq p} \AbpqL (\AbpqM (\AbpqR X_q)).
 $$
@@ -502,76 +515,115 @@ $$
 The matrix vector product between $\Ab$ and $X$ is then done in a fast way (cross correlation is fast using Fourier).
 
 
-\subsubsection{Assembly: Matlab functions}
+\subsubsection{\mudiff: assemble the matrix}
 
 The assembly process is very similar to the dense one, the difference being the prefix \code{Sp}. The block function is then called by
 \begin{verbatim}
 SpBlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, Nmax, k, TypeOfOperator, Weight);
 \end{verbatim}
-The major difference here is that \textbf{no linear combination of operators can be done during the assembly process} for the sparse representation. The quantity \code{TypeOfOperator} cannot hence be a vector but only a scalar. On the other hand, the full assembly of a matrix can be done through
+The function returns three vectors corresponding to $\AbpqL$, $\AbpqM$ and $\AbpqR$. The major difference here is that \textbf{no linear combination of operators can be done during the assembly process} for the sparse representation. The quantity \code{TypeOfOperator} cannot hence be a vector but only a scalar. On the other hand, the full assembly of a matrix can be done through
 \begin{verbatim}
 A = SpIntegralOperator(O, a, M_modes, k, TypeOfOperator, Weight);
 \end{verbatim}
-where \code{TypeOfOperator} can be a scalar or a matrix (not a $3D$ array nor a vector!). If \code{TypeOfOperator} is a matrix, then the block $\Abpq$ is assumed to be of type \code{TypeOfOperator(p,q)}. The linear combination of operators can still be done, but must be specified in the matrix-vector product (see below). Note that a function exists to add the (weighted-)identity to a sparse operator (see below).
+The result is a Matlab \code{cell} of three component, where each of them is a $3D-$array. The quantity \code{TypeOfOperator} can be a scalar or a matrix (not a $3D$ array nor a vector!). If \code{TypeOfOperator} is a matrix, then the block $\Abpq$ is assumed to be of type \code{TypeOfOperator(p,q)}. The linear combination of operators can still be done, but must be specified in the matrix-vector product (see below). Note that a function exists to add the (weighted-)identity to a sparse operator (see below).
 
-Here is an example of the creation of \mudiff sparse matrix of the single-layer operator $L$
+\paragraph{Example 1:} Creation of \mudiff sparse matrix of the single-layer operator $L$
 \begin{verbatim}
 L = SpIntegralOperator(O, a, M_modes, k, 2);
+\end{verbatim}
+\code{L} is now a cell of $3$ components! Note that we can use the interface function
+\begin{verbatim}
+L = SpSingleLayer(O, a, M_modes, k);
+\end{verbatim}
+\paragraph{Example 2:} For two obstacles, building the following matrix 
+$$
+\left(\begin{array}{c c}
+M_{1,1} & 0.5L_{1,2}\\
+1.5D_{2,1} & 2.5N_{2,2}
+\end{array}\right)
+$$
+can be done with the below commands
+\begin{verbatim}
+TypeOfOp = zeros(2,2); Weight = zeros(2,2);
+TypeOfOp(1,1) = [3]; Weight(1,1) = [1]; %block A_{1,1}
+TypeOfOp(1,2) = [2,]; Weight(1,2) = [0.5]; %block A_{1,2}
+TypeOfOp(2,1) = [5]; Weight(2,1) = [1.5]; %block A_{2,1}
+TypeOfOp(2,2) = [4]; Weight(2,2) = [2.5]; %block A_{2,2}
+A = SpIntegralOperator(O, a, M_modes, k, TypeOfOp, Weight);
 \end{verbatim}
 
 \subsubsection{Assembly: adding the identity}
 
-It is possible to add the identity multiplied by a constant to a sparse operator, thanks to
+It is possible to add the identity (multiplied by a constant) to a sparse operator:
 \begin{verbatim}
 A = SpAddIdentity(A, alpha, M_modes);
 \end{verbatim}
 which simply returns $A = A+\alpha I$.
 
-\subsubsection{Linear combination of operator}
+\paragraph{Example 1:} If \code{L} is the sparse representation of the single-layer operator, then
+\begin{verbatim}
+L = SpIntegralOperator(O, a, M_modes, k, 2);
+alpha_L = SpAddIdentity(L, 0.5, M_modes);
+\end{verbatim}
+will compute $0.5L$.
+
+\subsubsection{\mudiff: sparse matrix-vector product}
 
 A matrix vector product $Y = \Ab X$ is done thanks to 
 \begin{verbatim}
 Y = SpMatVec(X, M_modes, ListOfOperators, Weight);
 \end{verbatim}
-where \code{Weight} is optional. \code{ListOfOperators} is a \textbf{Matlab cell} (not an array!) containing every sparse matrix that the user want to multiply. For example, computing $\Lb X$ is done as follows:
+where \code{Weight} is optional. \code{ListOfOperators} is a \textbf{Matlab cell} (not an array! Make use of $\{\cdot\}$ instead of $[\cdot]$) containing every sparse matrices that the user want to use. The linear combination of the operators is done at that time at each matrix-vector product.
+
+\paragraph{Example 1:} Computing $Y = \Lb X$ is done as follows:
 \begin{verbatim}
 SpL = SpIntegralOperator(O, a, M_modes, k, 2);
 Y = SpMatVec(X, M_modes, SpL);
 \end{verbatim}
-And computing $Y =(0.5*I + N)X$, where $I$ is the identity (\textbf{Beware the $\{\cdot\}$ !}):
+\paragraph{Example 2:} Calculating $Y =(0.5*I + N)X$, where $I$ is the identity (\textbf{Beware the $\{\cdot\}$ !}):
 \begin{verbatim}
-[SpN{1}, SpN{2}, SpN{3}] = SpDnSingleLayer(O, a, M_modes, k);
-[I{1},I{2},I{3}] = SpIdentity(O, a, M_modes);
-Y = SpMatVec(X, M_modes, {I,A}, [0.5, 1]);
+SpI = SpIdentity(O, a, M_modes);
+SpN = SpDnSingleLayer(O, a, M_modes, k);
+Y = SpMatVec(X, M_modes, {SpI, SpN}, [0.5, 1]);
 \end{verbatim}
 This could also be done using \code{SpAddIdentity} function:
 \begin{verbatim}
-[SpN{1}, SpN{2}, SpN{3}] = SpDnSingleLayer(O, a, M_modes, k);
-[A{1},A{2},A{3}] = SpAddIdentity(SpN, 0.5, M_modes);
+SpN = SpDnSingleLayer(O, a, M_modes, k);
+A = SpAddIdentity(SpN, 0.5, M_modes);
 Y = SpMatVec(X, M_modes, A);
 \end{verbatim}
 
 \subsubsection{Solving a linear system}
 
-Now that the matrices and the right hand side have been assembled, the sparse linear system can solved iteratively. Using for example the GMRES solver \cite{??}, the syntax to solve the EFIE (\ref{??}) would be
+Now that the matrices and the right hand side have been assembled, the sparse linear system can solved iteratively. Using for example the GMRES solver \cite{SaaSch86}, the syntax to solve\ldots
+\paragraph{Example 1: The EFIE (\ref{eq:EFIE}):} $L\rho = -\uinc|_{\Gamma}$, would be
 \begin{verbatim}
-SpL = SpIntegralOperator(O, a, M_modes, k, 2);
+SpL = SpSingleLayer(O, a, M_modes, k);
 Uinc = PlaneWave(O, a, M_modes, k, beta_inc);
 rho = gmres(@(X)SpMatVec(X, M_modes, SpL), Uinc);
 \end{verbatim}
-Solving the MFIE (\ref{}) can be done as
+\paragraph{Example 2: The MFIE (\ref{eq:MFIE}):} $(I/2+N)\rho = -\dn\uinc|_{\Gamma}$:
 \begin{verbatim}
-[SpN{1}, SpN{2}, SpN{3}] = SpDnSingleLayer(O, a, M_modes, k);
-[I{1},I{2},I{3}] = SpIdentity(O, a, M_modes);
+SpN = SpDnSingleLayer(O, a, M_modes, k);
+SpI = SpIdentity(O, a, M_modes);
 DnUinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
-lambda = gmres(@(X)SpMatVec(X, M_modes,{I,SpN}, [0.5,1]), DnUinc);
+rho = gmres(@(X)SpMatVec(X, M_modes, {SpI, SpN}, [0.5, 1]), DnUinc);
 \end{verbatim}
 or using the \code{SpAddIdentity} function
 \begin{verbatim}
-[SpAMFIE{1}, SpAMFIE{2}, SpAMFIE{3}] = SpDnSingleLayer(O, a, M_modes, k);
-[SpAMFIE{1}, SpAMFIE{2}, SpAMFIE{3}] = SpAddIdentity(SpAMFIE, 0.5, M_modes);
+SpAMFIE = SpDnSingleLayer(O, a, M_modes, k);
+SpAMFIE = SpAddIdentity(SpAMFIE, 0.5, M_modes);
 DnUinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
-lambda = gmres(@(X)SpMatVec(X, M_modes, SpAMFIE, ), DnUinc);
+rho = gmres(@(X)SpMatVec(X, M_modes, SpAMFIE), DnUinc);
+\end{verbatim}
+\paragraph{Example 3: The Brakhage-Werner integral equation} for a Dirichlet problem (\ref{eqEqInt:BW})
+\begin{verbatim}
+k = 1;
+beta_inc = pi;
+eta = i/k;
+Uinc = PlaneWave(O, a, M_modes, k, beta_inc);
+SpA = SpIntegralOperator(O, a, M_modes, k, [1, 2, 3], [0.5, -eta_BW, -1]);
+psi = gmres(@(X)SpMatVec(X, M_modes, SpA), Uinc);
 \end{verbatim}
 
 
