@@ -753,16 +753,16 @@ YY = [-10:0.1:10];
 [X,Y] = meshgrid(XX,YY);
 Uinc = IncidentWaveOnGrid(X, Y, k, 'PlaneWave', beta_inc);
 \end{verbatim}
-The last line could also be
+The last line could also be (switch \code{'PlaneWave'} with its identifier $1$):
 \begin{verbatim}
 Uinc = IncidentWaveOnGrid(X, Y, k, 1, beta_inc);
 \end{verbatim}
 
  
-\subsubsection{Geometry}
+\subsubsection{Geometry: drawing the obstacles and creating mask matrices}
 
 The \mudiff toolbox also proposes some functions for the post processing of obstacles. 
-\paragraph{Drawing the disks:}
+\paragraph{Drawing the disks with \code{PlotCircles}}
 \begin{verbatim}
 PlotCircles(O, a, fig_index, OPTIONS);
 \end{verbatim}
@@ -779,7 +779,7 @@ surf(X,Y,U);
 PlotCirclesOnFigure(O, a, 1, 'zdata', max(max(U)));
 \end{verbatim}
 
-\paragraph{Getting a mask matrix}, that is a matrix $S$ such that, is $X$ and $Y$ are obtained by \code{meshgrid}:
+\paragraph{Getting a mask matrix,} which is a matrix $S$ such that, if $X$ and $Y$ are obtained by \code{meshgrid}:
 $$
 S(i,j) = \begin{cases}
 0 & \text{ if } (X(i,j),Y(i,j)) \text{ is outside the obstacles,}\\
@@ -787,7 +787,7 @@ p & \text{ if } (X(i,j),Y(i,j)) \in\Omega_p,\\
 p+0.5 & \text{ if } (X(i,j),Y(i,j)) \in\Gamma_p.\\
 \end{cases}
 $$
-This kind of matrix is handy when plotting the potentials and is actually used by \code{ExternalPotential} and \code{InternalPotential}. The function \code{MaskMatrix} which provides the matrix $M$ has the following syntax
+This kind of matrix is handy when plotting the potentials and is actually used by the two functions \code{ExternalPotential} and \code{InternalPotential}. The function \code{MaskMatrix} which provides the matrix $M$ has the following syntax
 \begin{verbatim}
 S = MaskMatrixObstacles(X, Y, O, a);
 \end{verbatim}
