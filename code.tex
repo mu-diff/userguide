@@ -209,22 +209,19 @@ Tolerance used for the conditional statement (default $10^{-10}$).
 
 \subsection{Truncation of the Fourier series}
 
-To help the user, the formula (\ref{eqEqInt:CFIEDapp}) has been computed in \mudiff. The values of $\Np$ are stored in a Matlab vector of size $[1\times\Nscat]$ called \code{M\_modes} in \mudiff. Computing \code{M\_modes} only involves the geometry and the wavenumber \code{k}, which is assumed to be created by the user:
+To help the user, the formula (\ref{eqEqInt:CFIEDapp}) has been computed in \mudiff. The values of $\Np$ are stored in a Matlab vector of size $[1\times\code{N\_scat}]$ called \code{M\_modes} in \mudiff. Computing \code{M\_modes} only involves the radii of the disks and the wavenumber \code{k}, which is assumed to be created by the user:
 \begin{verbatim}
 M_modes = FourierTruncation(a, k);
 \end{verbatim}
-The resulting vector is such that \code{M\_modes(p)}=$\Np$ where $\Np$ satisfies (\ref{eqEqInt:CFIEDapp}), with obviously a minimum value of $0$ (which consists of only one mode). A different minimal value can be set with the following option
-\begin{verbatim}
-M_modes = FourierTruncation(a, k, 'Min', MIN);
-\end{verbatim}
-where then \code{M\_modes(p)} is either the min value between \code{MIN} and formula (\ref{eqEqInt:CFIEDapp}). The tolerance, set by default to $10^{-10}$ can also be changed:
-\begin{verbatim}
-M_modes = FourierTruncation(a, k, 'Tol', TOL);
-\end{verbatim}
-And the two optional arguments can obviously be put together
-\begin{verbatim}
-M_modes = FourierTruncation(a, k, 'Min', MIN, 'Tol', TOL);
-\end{verbatim}
+The resulting vector is such that \code{M\_modes(p)}=$\Np$ where $\Np$ satisfies (\ref{eqEqInt:CFIEDapp}), with obviously a minimum value of $0$ (which consists of only one mode). If \code{k} is a vector (one wavenumber per obstacle), then \code{FourierTruncation} compute formula (\ref{eqEqInt:CFIEDapp})  with \code{k(p)} as the wavenumber.
+
+The following options are moreover availabe:
+\begin{itemize}
+\item \code{M\_modes = FourierTruncation(\ldots, 'Min', MIN);}\\
+To force a minimal value: \code{M\_modes(p)} is then either the min value between \code{MIN} and formula (\ref{eqEqInt:CFIEDapp}). 
+\item\code{M\_modes = FourierTruncation(\ldots, 'Tol', TOL);}
+The tolerance, set by default to $10^{-10}$, is then set to \code{TOL}.
+\end{itemize}
 
 \subsection{Incident waves}
 
