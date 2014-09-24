@@ -669,6 +669,10 @@ then (s)he can do it with:
 F = FarField(O, a, M_modes, k, theta, [rho, lambda], [[1:p].', -[1:p].']);
 \end{verbatim}
 
+\begin{remark}
+The \code{FarField} function is also interfaced with ready-to-use function: \code{FarFieldSingleLayerPotential} and \code{FarFieldDoubleLayerPotential}. These are located in the \code{PostProcessing/FarField/Interface} directory.
+\end{remark}
+
 \subsubsection{Radar Cross Section (RCS)}
 
 The radar cross section of a far field can be computed either from the far field with \code{FarField\_to\_RCS} or directly from the density with \code{RCS}. In \mudiff, the radar cross section $\sigma$ is obtained by ($F$ being the far field)
@@ -684,6 +688,11 @@ where \code{F} has been computed by the \code{FarField} function. Otherwise, the
 R = RCS(O, a, M_modes, k, theta, Density, Weight);
 \end{verbatim}
 where the arguments are exactly the same as for the far field. In fact, \code{RCS} first calls \code{FarField} and then \code{FarField\_to\_RCS}.
+
+\begin{remark}
+The \code{RCS} functions is also interfaced with ready-to-use function: \code{RCSSingleLayerPotential} and \code{RCSDoubleLayerPotential}. These are located in the \code{PostProcessing/FarField/Interface} directory.
+\end{remark}
+
 
 \subsubsection{Near field: outside and inside the obstacles}
 
@@ -732,6 +741,9 @@ YY = [-10:0.1:10];
 U = InternalPotential(X, Y, O, a M_modes, k, [rho, lambda], [1, 1.5 ; 0.5, -1.5]);
 \end{verbatim}
 
+\begin{remark}
+The near field functions \code{ExternalPotential} and \code{InternalPotential} are also interfaced with ready-to-use function: \code{ExternalSingleLayerPotential}, \code{InternalSingleLayerPotential}, \code{ExternalDoubleLayerPotential} and \code{InternalDoubleLayerPotential}. These are located in the \code{PostProcessing/NearField/Interface} directory.
+\end{remark}
 
 \subsubsection{Incident wave}
 
