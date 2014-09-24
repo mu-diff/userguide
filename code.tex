@@ -207,6 +207,25 @@ Tolerance used for the conditional statement (default $10^{-10}$).
 [O,a] = RemoveDisk(O\_old, a\_old, 'XY', [2, 3; 5, 4]);
 \end{verbatim}
 
+\subsection{Truncation of the Fourier series}
+
+To help the user, the formula (\ref{eqEqInt:CFIEDapp}) has been computed in \mudiff. The values of $\Np$ are stored in a Matlab vector of size $[1\times\Nscat]$ called \code{M\_modes} in \mudiff. Computing \code{M\_modes} only involves the geometry and the wavenumber \code{k}, which is assumed to be created by the user:
+\begin{verbatim}
+M_modes = FourierTruncation(a, k);
+\end{verbatim}
+The resulting vector is such that \code{M\_modes(p)}=$\Np$ where $\Np$ satisfies (\ref{eqEqInt:CFIEDapp}), with obviously a minimum value of $0$ (which consists of only one mode). A different minimal value can be set with the following option
+\begin{verbatim}
+M_modes = FourierTruncation(a, k, 'Min', MIN);
+\end{verbatim}
+where then \code{M\_modes(p)} is either the min value between \code{MIN} and formula (\ref{eqEqInt:CFIEDapp}). The tolerance, set by default to $10^{-10}$ can also be changed:
+\begin{verbatim}
+M_modes = FourierTruncation(a, k, 'Tol', TOL);
+\end{verbatim}
+And the two optional arguments can obviously be put together
+\begin{verbatim}
+M_modes = FourierTruncation(a, k, 'Min', MIN, 'Tol', TOL);
+\end{verbatim}
+
 \subsection{Incident waves}
 
 \subsubsection{\code{Generalities}}
