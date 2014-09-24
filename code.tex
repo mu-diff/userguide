@@ -1,20 +1,50 @@
 \section{Generalities}
-The authors try to keep the notations between the mathematical background and the \matlab toolbox. In particular, lots of arguments are the same in the different functions and they are here presented once for all. A manual of every function is moreover provided by simply typing in the \matlab command window 
+An effort has been made to keep the same notations between the mathematical background and the \mudiff toolbox. A manual of every function is moreover provided by typing the classical \matlab command window 
 \begin{verbatim}
-help name_of_the_function
+help name_of_the_function;
 \end{verbatim}
-In all what follows, and if nothing is specified, then the following arguments refer to the below ones. The indices $p$ and $q$ vary from $1$ to $\Nscat$ where $\Nscat$ is the number of obstacles.
+
+Because \mudiff includes all the integral operators that are needed in scattering (traces and normal derivative
+traces of the single- and double-layer potentials), a large class of scattering problems can be solved. 
+Concerning the geometrical configurations, any deterministic or random distribution of disks is possible. Finally,
+\mudiff includes post-processing facilities like \eg: surface and far-fields computations, total and scattered exterior (near-field)
+visualization\ldots
+
+We now introduce the \mudiff  toolbox for Matlab by explaining the main predefined functions and their relations
+with the previous mathematical derivations.
+Section \ref{sectionPreProcessing}  shows how to define the scattering configuration (geometry and physical parameters). Section
+ \ref{ResolutionMuDiff}  presents the way the integral equations must be defined and solved.
+  Finally, section \ref{sectionPostProcessing} describes the data post-processing. 
+
+The \mudiff toolbox  is organized following the five subdirectories:
+\begin{itemize}
+\item \texttt{mudiff/PreProcessing/}: pre-processing data functions (incident wave and geometry) (section \ref{sectionPreProcessing}).
+\item \texttt{mudiff/IntOperators/}: functions for the four basic integral operators (dense and sparse structure)
+used in the definition of the integral equations to solve (section \ref{ResolutionMuDiff}). 
+\item \texttt{mudiff/PostProcessing/}: post-processing functions of the solution (trace and normal derivative traces,
+computation of the scattered/total wavefield 
+at some points of the spatial domain or on a grid, far-field and RCS) 
+(section \ref{sectionPostProcessing}).
+\item \texttt{mudiff/Common/}: this directory includes functions that are used in \mudiff but which does not need to be known
+from the standard user point of view.
+\item \texttt{mudiff/Examples/}: various scripts are presented for the user in standard configurations.
+\end{itemize}
+In addition, the \mudiff user-guide, licence and credits can be found under the directory \texttt{mudiff/Doc/}.
+
+\section{Common argument and notations}
+
+A large number of arguments of the \mudiff functions are the same. For the sake of conciseness and if nothing is specified, the following arguments refer to the below ones, where the indices $p$ and $q$ vary from $1$ to $M$ (or \code{N\_scat} in the \mudiff language). In addition, every function or value specific to \mudiff are written with this \code{font}. 
 
 \paragraph{Geometry:}
 
 \begin{center}
 %\rowcolors{1}{white}{gray}
 \begin{tabular}{|c |c | p{10cm}|}
-\hline Name & Size or Type & Content\\[0.2cm]\hline\hline
-\code{N\_scat} & $[1\times 1]$ & Number of obstacles $\Nscat$.\\\hline
-\code{O} & $[2\times \Nscat]$ & Matrix of the centers of the disks such that \code{O(1,p)} is the x-coordinate of the $p^{th}$ obstacle.\\\hline
-\code{Op} & $[2\times 1]$ & Coordinate of the $p^{th}$ scatterer.\\\hline
-\code{Oq} & $[2\times 1]$ & Coordinate of the $q^{th}$ scatterer.\\\hline
+\hline Name & Size & Content\\[0.2cm]\hline\hline
+\code{N\_scat} & $[1\times 1]$ & Number of obstacles $M$.\\\hline
+\code{O} & $[2\times \Nscat]$ & Matrix of the centers of the disks such that \code{O(1,p)} (resp. \code{O(2,p)}) is the $x-$coordinate (resp. $y-$coordinate) of the $p^{th}$ obstacle.\\\hline
+\code{Op} & $[2\times 1]$ & Coordinates of the $p^{th}$ scatterer.\\\hline
+\code{Oq} & $[2\times 1]$ & Coordinates of the $q^{th}$ scatterer.\\\hline
 \code{a} & $[1\times \Nscat]$ & Vector of the radii of the disks such that \code{a(p)} is the radius of the $p^{th}$ scatterer.\\\hline
 \code{ap} & $[1\times 1]$ & Radius of the $p^{th}$ scatterer.\\\hline
 \code{aq} & $[1\times 1]$ & Radius of the $q^{th}$ scatterer.\\\hline
@@ -24,48 +54,43 @@ In all what follows, and if nothing is specified, then the following arguments r
 \paragraph{Parameters (wavenumbers, incident waves, fourier series,\ldots):}
 \begin{center}
 \begin{tabular}{|c |c | p{10cm}|}
-\hline Name & Size or Type & Content\\[0.2cm]\hline\hline
-\code{beta\_inc} & $[1\times 1]$ & Angle of direction of a plane wave $e^{ik (\cos(\beta)x + \sin(\beta)y)}$.\\\hline
-\code{XS} & $[2\times 1]$ & Center $(x_s,y_s)$ of a point source: $x_s=$\code{XS(1)} and $y_s=$\code{XS(2)}. A point source wave is then given by $i/4\Hz(k\|\xx-\xx_s\|)$, with $\xx=(x,y)$ and $\xx_s=(x_s,y_s)$ and $\Hz$ the zeroth order Hankel function of first kind.\\\hline
+\hline Name & Size & Content\\[0.2cm]\hline\hline
+\code{beta\_inc} & $[1\times 1]$ & Angle of direction $\beta$ of a plane wave $e^{ik (\cos(\beta)x + \sin(\beta)y)}$.\\\hline
+\code{XS} & $[2\times 1]$ & Center $(x_s,y_s)$ of a point source: $x_s=$\code{XS(1)} and $y_s=$\code{XS(2)}. A point source wave is given by $i/4\Hz(k\|\xx-\xx_s\|)$, with $\xx=(x,y)$ and $\xx_s=(x_s,y_s)$ and $\Hz$ the zeroth order Hankel function of first kind.\\\hline
 \code{k} & $[1\times 1]$ & Wavenumber $k$ in the vacuum.\\\hline
-\code{k\_int} & $[1\times \Nscat]$ & Wavenumber in the obstacles: $\kintp=$\code{k\_int(p)}. If \code{k\_int} is a scalar then $\kintp$ = \code{k\_int} for all $p$.\\\hline
+\code{k\_int} & $[1\times \Nscat]$ & Wavenumbers in the obstacles: $\kintp=$\code{k\_int(p)}. If \code{k\_int} is a scalar then $\kintp$ = \code{k\_int} for all $p$.\\\hline
 \code{M\_modes} & $[1\times \Nscat]$ & Vector of index of truncation of the Fourier series, \ie \code{M\_modes(p)}=$\Np$\\\hline
 \code{Np} & $[1\times 1]$ & Corresponds to $\Np$, the truncation index in the Fourier serie.\\\hline
 \code{Nq} & $[1\times 1]$ & Corresponds to $\Nq$, the truncation index in the Fourier serie.\\\hline
 \end{tabular}
 \end{center}
 
-\paragraph{Incident wave:}
-\begin{center}
-\begin{tabular}{|c |c | p{10cm}|}
-\hline Name & Size or Type & Content\\[0.2cm]\hline\hline
-\code{PlaneWave} & $[1\times 1]$ & Wavenumber in the vacuum.\\\hline
-\end{tabular}
-\end{center}
-
-\paragraph{Integral operators:} they are indexed and named by the following table:
+\paragraph{Integral operators:} as explained in Section \ref{??}, they are indexed and named by the following table:
 \begin{center}
 \begin{tabular}{|c |c | c | p{9cm}|}
-\hline Index & Letter & Operator & \mudiff abreviation \\\hline\hline
-0 & - & - & Null operator \\
-1 & $I$ & \code{Identity} & Identity\\
-2 & $L$ & \code{SingleLayer} & Trace of the single-layer\\
-3 & $M$ & \code{DoubleLayer} & Trace of the double-layer\\
-4 & $N$  & \code{DnSingleLayer}& Normal derivative of the single-Layer\\
-5 & $D$  & \code{DnDoubleLayer}&Normal derivative of the double-Layer\\ 
-6 & $\hat{L}$  & \code{PrecondDirichlet}& Single-scattering preconditioned trace of the single-layer operator\\
-7 & $\hat{D}$  & \code{PrecondNeumann}& Single-scattering preconditioned normal derivative trace of the double-layer operator\\ \hline
+\hline Index & Letter & \mudiff abreviation & Operator \\\hline\hline
+0 & - & - & Null operator \\\hline
+1 & $I$ & \code{Identity} & Identity\\\hline
+2 & $L$ & \code{SingleLayer} & $\dsp L\rho = \int_{\Gamma}G(\xx,\yy)\rho(\yy)\;\dd\yy$\\\hline
+3 & $M$ & \code{DoubleLayer} & $\dsp M\lambda = -\int_{\Gamma}\dny G(\xx,\yy)\lambda(\yy)\;\dd\yy$\\\hline
+4 & $N$  & \code{DnSingleLayer}& $\dsp N\rho = \dnx\int_{\Gamma}G(\xx,\yy)\rho(\yy)\;\dd\yy$\\\hline
+5 & $D$  & \code{DnDoubleLayer}&$\dsp D\lambda = -\dnx\int_{\Gamma}\dny G(\xx,\yy)\lambda(\yy)\;\dd\yy$\\ \hline
+6 & $\hat{L}L$  & \code{PrecondDirichlet}& Single-scattering preconditioned trace of the single-layer operator (see (\ref{??}))\\\hline
+7 & $\hat{D}D$  & \code{PrecondNeumann}& Single-scattering preconditioned normal derivative trace of the double-layer operator (see (\ref{??}))\\ \hline
 \end{tabular}
 \end{center}
 
 
 \section{Pre-Processing}
 
-The pre-processing functions are located in the \code{PreProcessing} folder, which is divided in two parts: the construction of the obstacles in \code{Geometry}, and the computation of the right-hand side, \ie the incident waves on the obstacles, in \code{IncidentWave}.
+The pre-processing in \mudiff consists in defining the right-hand side (or the incident wave) and the geometry (the obstacles). The associated functions are  located respectively in \code{mudiff/PreProcessing/IncidentWave} and \code{mudiff/PreProcessing/Geometry}.
 
-\subsection{Creating Obstacles}
+\subsection{Geometry: creating the obstacles}
 
-\subsubsection{Manual placement}
+The obstacles are stored in memory as a row vector \code{a} containing the radii of the disks and a [$2\times\code{N\_scat}$] matrix \code{O} containing the centers of the disks (\code{O(1,p}=$x-$ and \code{O(2,p}=$y-$ coordinates of the center of the $p^{th}$ disk). These two arrays can be created either manually or using some built in functions.
+
+\subsubsection{Manually}
+
 The disks can be created manually by simply creating the two variables \code{O} and \code{a} containing respectively the coordinates of the disks and their radii. For example, for three obstacles placed on $(-1,2)$, $(5,5)$ and $(-15,10)$ with radii $0.1$, $0.5$ and $10$:
 \begin{verbatim}
 O = [-1, 5, 2 ; -15, 5, 10];
@@ -74,33 +99,42 @@ a = [0.1, 0.5, 10];
 
 \subsubsection{Periodic placement}
 
-Two build-in functions are available with the toolbox to create disks periodically, with a rectangular or a triangular lattice, as shown on figure \ref{??}. The two functions are called as follows, for the rectangular lattice:
+Two build-in functions are available with the toolbox to create disks periodically, with a rectangular or a triangular lattice, as shown on figure \ref{??}. The two functions must be called as follows, first for the rectangular lattice:
 \begin{verbatim}
 O = RectangularLattice(bx, by, Nx, Ny);
 \end{verbatim}
-and for the triangular lattice:
+and second for the triangular lattice:
 \begin{verbatim}
 O = TriangularLattice(bx,by,Nx,Ny);
 \end{verbatim}
-where :
+where the arguments are:
 \begin{itemize}
-\item \code{bx} and \code{by} are the distance separating two centers in the $x$ coordinate and \code{by} the distance between two rows in the $y$-direction. The two other parameter 
-\item \code{Nx}: number of disks in a row
-\item \code{Ny}: number of rows
+\item \code{bx}: distance separating two centers in the $x-$ direction (be careful with the radii of the disks to avoid overlapping!).
+\item \code{by}: distance separating two row of obstacles in the $y-$ direction.
+\item \code{Nx}: number of disks in a row.
+\item \code{Ny}: number of rows.
 \end{itemize}
-For both functions, the vector of radii must be built separately. If the disks are unitary then the following command can be used
+For both functions, the vector of radii must be built separately and manually. For a set of unitary disks, the following command does the work:
 \begin{verbatim}
+a = ones(size(O,2));
+\end{verbatim}
+
+\paragraph{Example:} Building a rectangle of $3$ unit disks and $4$ rows. Each disks is separated from a distance of $1.5$ (so the centers from a distance of $3.5$):
+\begin{verbatim}
+O = RectangularLattice(3.5, 3.5, 3, 4);
 a = ones(size(O,2));
 \end{verbatim}
 
 
 \subsubsection{Random placement}
 
-Finally, to place randomly obstacles in a box $[\code{xmin}, \code{xmax}]\times[\code{ymin},\code{ymax}]$ with also a random radius, a function \code{CreateRandomDisks} is very helpful. In its simplest version, the function is called as:
+\mudiff provides a function \code{CreateRandomDisks} to randomly place \code{N\_scat} obstacles in a box $[\code{xmin}, \code{xmax}]\times[\code{ymin},\code{ymax}]$ with also a random radius. In its simplest version, the function is called as:
 \begin{verbatim}
 [O, a] = CreateRandomDisks(xmin, xmax, ymin, ymax, N_scat);
 \end{verbatim}
-The function will then create \code{N\_scat} disk with unit radius in the desired box. This is however probably too simple and the function can be called in a more complex form:
+In that case, \code{CreateRandomDisks} builds \code{N\_scat} disk with unit radius in the desired box. The function takes care to not overlap the disks. Note that it is possible that the function does not succeed to place the obstacle (\eg if the user asks for too many obstacles in a small box) and hence a security has been set: only $500$ trials are allowed per disk. 
+
+The function comes along with a large set of optional arguments:
 \begin{verbatim}
 [O, a] = CreateRandomDisks(xmin, xmax, ymin, ymax, N_scat, 
            amin, amax, dmim, dmax, O_avoid, a_avoid, dmin_avoid, dmax_avoid);
@@ -118,59 +152,59 @@ where every additional arguments is optional (but the order must be kept (\code{
 \code{dmin\_avoid} & \code{[1 x N]} & \code{[]} & Minimal distance between an obstacle and a hole\\\hline
 \end{tabular}
 \end{center}
-These optional arguments are not mandatory in the function call. For example:
+The ``holes'', represented by the \code{*\_avoid} arguments, are disks where the obstacles must not overlap, for example where a point source is emitting a wave. 
+
+\paragraph{Example 1:} creating \code{N\_scat} random disks with random radii:
 \begin{verbatim}
 [O, a] = CreateRandomDisks(xmin, xmax, ymin, ymax, N_scat, amin, amax);
 \end{verbatim}
-will create random disks with random radii without taking into account the distances between the disks (except obviously the overlapping).
-
-For example, building 7 obstacles in the box $[-10,10]\times[-10,10]$ with radii between $0.1$ and $0.5$. The disks must be separated at minimum by a distance of $0.1$ and without maximum value. The command is then:
+\paragraph{Example 2:} building 7 obstacles in the box $[-10,10]\times[-10,10]$ with radii between $0.1$ and $0.5$. The disks must be separated at minimum by a distance of $0.1$ and without maximum value. The command is then:
 \begin{verbatim}
 [O, a] = CreateRandomDisks(-10, 10, -10, 10, 7, 0.1, 0.5, 0.1, -1);
 \end{verbatim}
-Now imagine that a point source is located on $(2,2)$ and that the obstacles must be separated from the source from at least $0.3$, then the ``\code{*\_avoid}'' arguments can be used and command can be
+\paragraph{Example 3:} now imagine that a point source is located on $(2,2)$ and that the obstacles must be separated from the source from at least a distance of $0.3$, then the ``\code{*\_avoid}'' arguments can be used and command can be
 \begin{verbatim}
 [O, a] = CreateRandomDisks(-10, 10, -10, 10, 7, 0.1, 0.5, 0.1, -1, [2;2], 0.3);
 \end{verbatim}
-the disk centered on $(2,2)$ with radius $0.3$ will then be avoided. A second option is to set \code{a\_void} to zero and set the minimal distance \code{dmin\_avoid} to $0.3$:
+The disk centered on $(2,2)$ with radius $0.3$ will then be avoided. A second option is to set \code{a\_void} to zero and set the minimal distance \code{dmin\_avoid} to $0.3$:
 \begin{verbatim}
 [O, a] = CreateRandomDisks(-10, 10, -10, 10, 7, 0.1, 0.5, 0.1, -1, [2;2], 0, 0.3);
 \end{verbatim}
 
 
 \begin{remark}
-To verify if a disk is well placed, \code{CreateRandomDisks} calls \code{CheckPlacement} function, which can also be useful for a user placing obstacles.
+To verify if a disk is well placed, \code{CreateRandomDisks} calls \code{CheckPlacement} function, which can also be useful for a user who is placing the obstacles manually.
 \end{remark}
 
 \subsubsection{Removing disks}
 
-The function \code{RemoveDisk} aims to remove some disks of the geometrical configuration, either disk by disk, by row or by column or by radius. Here is its syntax
+The function \code{RemoveDisk} aims to remove some disks of the geometrical configuration, either disk by disk, by row or by column or by radius. This can be useful for example to delete a row of disks. Here is its syntax
 \begin{verbatim}
 [O,a] = RemoveDisk(O_old, a_old, ...);
 \end{verbatim}
-where \code{O\_old} and \code{a\_old} are the centers and radii of the current geometry. Without optional argument, the function will return \code{[O\_old, a\_old]} and the available arguments are:
+where \code{O\_old} and \code{a\_old} are the centers and radii of the current geometry. Without optional argument, the function has no effect. The available arguments are:
 \begin{itemize}
-\item \code{[O,a] = RemoveDisk(..., 'X', [X1, X2, ..., XN]);}\\
-Remove all the points with X abscissa X1, X2, ..., or XN
-\item \code{[O,a] = RemoveDisk(...,  'Y', [Y1, Y2, ..., YN]);}\\
-Remove all the points with Y ordinate Y1, Y2, ..., or YN
-\item \code{[O,a] = RemoveDisk(..., 'XY', [[X1;Y1], [X2;Y2], ..., [XN;YN]]);}\\
-Remove all the points [X1;Y1], [X2;Y2], ..., and [XN;YN]
-\item \code{[O,a] = RemoveDisk(..., 'Radius', [a1, a2, ..., aN]);}\\
-Remove all the disk with radius a1, a2, ..., or aN
-\item \code{[O,a] = RemoveDisk(..., 'Verbosity', VERBOSITY);}\\
+\item \code{[O,a] = RemoveDisk(\ldots, 'X', [X1, X2, ..., XN]);}\\
+Remove all the disks which center has its $x-$abscissa equal to \code{X1}, \code{X2}, \ldots, or \code{XN}
+\item \code{[O,a] = RemoveDisk(\ldots,  'Y', [Y1, Y2, ..., YN]);}\\
+Remove all the which center has its $y$-ordinate \code{Y1}, \code{Y2}, ..., or \code{YN}
+\item \code{[O,a] = RemoveDisk(\ldots, 'XY', [[X1;Y1], [X2;Y2], \ldots, [XN;YN]]);}\\
+Remove all the which center has for coordinates \code{[X1;Y1]}, \code{[X2;Y2]}, \ldots, or \code{[XN;YN]}
+\item \code{[O,a] = RemoveDisk(\ldots, 'Radius', [a1, a2, ..., aN]);}\\
+Remove all the disk which radius is equal to \code{a1}, \code{a2}, \ldots, or \code{aN}
+\item \code{[O,a] = RemoveDisk(\ldots, 'Verbosity', VERBOSITY);}\\
 set VERBOSITY to 0 to avoid display message, to 1 to only show results, and to $>1$ to see everything (default).
-\item \code{[O,a] = RemoveDisk(..., 'Tol', TOL);}\\
+\item \code{[O,a] = RemoveDisk(\ldots, 'Tol', TOL);}\\
 Tolerance used for the conditional statement (default $10^{-10}$).
 \end{itemize}
 
-For example, to remove every obstacle on the row of $x-$abscissa $1$ and $y-$ordinate $2.5$:
+\paragraph{Example 1:} remove every obstacles that are either on the row of $x-$abscissa $1$ or on the column of $y-$ordinate $2.5$:
 \begin{verbatim}
 [O,a] = RemoveDisk(O\_old, a\_old, 'X', 1, 'Y', 2.5);
 \end{verbatim}
-Or, to remove the obstacles centered on $(2,5)$ and (3,4):
+\paragraph{Example 2:} remove the obstacles centered on $(2,5)$ and $(3,4)$:
 \begin{verbatim}
-[O,a] = RemoveDisk(O\_old, a\_old, 'XY', [2,3;5,4]);
+[O,a] = RemoveDisk(O\_old, a\_old, 'XY', [2, 3; 5, 4]);
 \end{verbatim}
 
 \subsection{Incident waves}

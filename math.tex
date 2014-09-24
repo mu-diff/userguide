@@ -331,7 +331,105 @@ A numerical study concerning the optimal choice of parameter $\eta_{BW}$, appear
 Recent works have been done on how to choose this parameter for much more general domains, see for example \cite[\S6]{ChaGraLan09} and \cite[\S5.1]{ChaGraLan12} for the case of large $k$ and \cite[\S2.6 and \S2.7]{BetChaGra11} for the case of small frequency $k$. Note also that, according to \cite[Remark 2.24]{ChaGraLan12}, these results apply to both $L_{BW}$ and the CFIE operator, since when $\alpha = 1/2$, these operators are adjoints (up to a factor of $1/2$) in the real $L^2$ inner product.
 \end{remark}
 
-\section{Neumann case}
+\section{Neumann boundary condition}
+
+Consider now the scattering of a wave by sound-hard obstacle (Neumann boundary condition): 
+$$
+\begin{cases}
+        \Delta u + k^2 u = 0 &\text{in }\Omega^+ \\
+        \dn u = - \dn u^{inc} & \text{on } \Gamma \\
+	u \text{ sortant.}
+\end{cases}
+$$
+Integral equations presented for a Dirichlet condition stays valid, only the equations change. The scattered field $u$ will be sough in the form of a linear combination with a single- and a double-layer potentials
+$$
+u(\xx) = \Lop\rho (\xx) + \Mop\lambda(\xx),\qquad\xx\in\Omegaps.
+$$
+For direct integral equation, let the internal and fictitious wave $\utm = \Lop\rho + \Mop\lambda +\uinc$ defined in $\Omegam$. On $\Gamma$, a boundary condition is hence enforced to the field $\utm$ such that it vanishes in $\Omegam$. In that case the jump relation (\ref{eqEqInt:jump}) become
+$$
+\begin{cases}
+\lambda =  - \ut|_\Gamma & \\
+\rho =  - \dn \ut|_\Gamma  = 0.& \\
+\end{cases}
+$$
+The Neumann condition then makes the density $\rho$ vanishing. The intern $\utm$ and extern $\ut$ waves are then sough as a double-layer potential:
+$$
+\utm(\xx) = \Mop \lambda(\xx) + \uinc(\xx) \qquad \forall \xx \in \Omegam,
+$$
+$$
+\ut = \Mop \lambda(\xx) + \uinc(\xx) \qquad \forall \xx \in \Omega^+.
+$$
+As previously, the boundary condition applied to $\utm$ is the integral equation to solve. Here is listed the four integral equations obtained in addition with their properties.
+\begin{itemize}
+\item[\textbullet] EFIE: applying a homogeneous Neumann condition to the wave $\utm$:
+\begin{equation}\label{eqEqInt:EFIEN}
+\dn \utm|_\Gamma = 0,
+\end{equation}
+ leads to the EFIE for  Neumann condition,
+$$
+D \lambda = - \duincg.
+$$
+This integral equation of the first kind is well posed and equivalent to the scattering problem as long as $k$ is not an irregular frequency for the interior Neumann homogeneous problem. If $k\in F_{N}(\Omegam)$ however, then after reconstruction, the solution obtained by the EFIE stays valid.
+\item[\textbullet] MFIE: applying a Dirichlet condition to the field $\utm$ 
+$$
+\utm|_\Gamma = 0,
+$$
+leads to the MFIE for a Neumann condition:
+\begin{equation}\label{eqEqInt:MFIEN}
+\MFIEN \lambda = - \uincg.
+\end{equation}
+This Fredholm second kind integral equation ($M$ est compact) is well posed and equivalent to the scattering problem as long as $k$ is not an irregular frequency for the interior Dirichlet problem. In that case, the solution obtained from the MFIE is altered.
+\item[\textbullet] CFIE: applying the same mixte condition (\ref{eqEqInt:CombinedEquation}) to the wave $\utm$:
+$$
+(1-\alpha) \dn\utm|_\Gamma + \alpha\eta\utm|_\Gamma = 0,
+$$
+with
+$$
+0 < \alpha < 1\qquad\text{et}\qquad \Im(\eta) \neq 0,
+$$
+will lead to the CFIE for a Neumann condition
+\begin{equation}\label{eqEqInt:CFIEN}
+\CFIEN \lambda = - \left[(1-\alpha) \duincg + \alpha\eta \uincg \right].
+\end{equation}
+This second kind integral equation is uniquely solvable for every wavenumber $k$ and is equivalent to the scattering problem.
+\item[\textbullet] Brackhage-Werner: the wave $\ut$ is sough as
+$$
+u = (-\Lop - \eta \Mop) \psi,
+$$
+with $\Im(\eta) \neq 0$, and applying the boundary condition on $\Gamma$ gives the BWIE
+\begin{equation}\label{eqEqInt:BWN}
+\left( -\eta D + \frac{1}{2}I - N \right) \psi = - \dn u^{inc}|_\Gamma.
+\end{equation}
+This second kind integral equation is also uniquely solvable for every $k > 0$ and equivalent to the scattering problem.
+\end{itemize}
+
+	%==========================================================================
+        \section{Summary}\label{secEqInt:recapitulatif}
+        %==========================================================================
+
+
+The following table summarizes the main properties of the different integral equations  for a Dirichlet (respectively Neumann) boundary condition:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\multicolumn{4}{|c|}{Condition de Dirichlet (resp. Neumann)}\\
+\hline
+Int. Eq. & Nature & Uniquely solvable for \ldots& Altering of solution? \ldots\\
+ \hline \hline
+EFIE &  $1^{st}$ kind & $k \not\in F_D(\Omegam)$ (resp. $ F_N(\Omegam)$) & no \\
+\hline
+MFIE &  Fredholm $2^{nd}$ kind& $k \not\in F_N(\Omegam)$ (resp. $ F_D(\Omegam)$)& yes\\
+\hline
+CFIE &  $2^{nd}$ kind &  $k > 0 $ & no \\
+\hline
+BWIE &  $2^{nd}$ kind & $k > 0 $ & no \\
+\hline
+\end{tabular}
+\end{center}
+
+
+
 
 \section{Penetrable case}
 

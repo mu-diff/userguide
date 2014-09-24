@@ -28,6 +28,8 @@
 \usepackage{xspace}
 %\usepackage[table]{xcolor}
 
+\usepackage{minitoc} % pour la table des matieres ˆ chaque chapitre
+
 
 %%% FOOTNOTE
 %\usepackage{footnpag}
@@ -69,6 +71,7 @@ Hasan Alzubaidi\footnotemark[3]}
 
 \renewcommand{\thefootnote}{\arabic{footnote}}
 
+\dominitoc
 \tableofcontents
 
 \chapter{Copyright}
@@ -77,22 +80,21 @@ Hasan Alzubaidi\footnotemark[3]}
 \chapter{Introduction}
 \input{introduction}
 
-\chapter{Boundary integral equations}
+
+
+\chapter{Boundary integral equations}\minitoc
 \input{math}
 
-\chapter{Multiple scattering by disks}
+\chapter{Multiple scattering by disks}\minitoc
 \input{fourier}
 
-\chapter{\mudiff Toolbox}
+\chapter{\mudiff Toolbox}\minitoc
 \input{code}
 
 \chapter{Conclusion}
 \input{conclusion}
 
 
-\medskip
-\textbf{Acknowledgments.}
-The second, third and fourth authors would like to thank the Institute of Scientific Research and Revival of Islamic Heritage at Umm Al-Qura University (Project ID 43405027) for the financial support. 
 
 
 \bibliographystyle{plain}
