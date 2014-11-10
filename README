@@ -1,0 +1,42 @@
+How to contibute to this userguide, written in LaTeX.
+
+1- Commands
+
+Except for the classical LaTeX command, here are set :
+
+Writting inline MATLAB code :
+- \code{My Matlab Code}
+- \tabcode{My Matlab Code} if in a tabular environement (weird behavior, also try to mixte with \code...)
+
+Writting the name of a folder:
+- \folder{MyFolder}
+
+Writting a listing of code (will get a solid box surrounding the code)
+- \lstlisting{
+a =2;
+b = a;
+}
+
+2- List of functions
+
+This is done thanks to :
+- An XML file containing every functions, their folder and a summary
+- A small code that translate this XML file to 2 LaTeX files, where the functions are ordered by name or folder
+
+FOR NAMEL ORDERING:
+    \funByName{Name}{Folder}{Summary}
+There is also
+\funByNameEven{Name}{Folder}{Summary}
+\funByNameUneven{Name}{Folder}{Summary}
+they are exactly as \funByName but one is grayed and the other one is whited
+
+FOR FOLDER ORDERING
+Highlighting a new folder (ordering by folder)
+	     \NewFolder{MyFolder}
+Displaying a function (ordering by
+	       \funByFolder{Name}{Summary}
+There is also
+\funByFolderEven{Name}{Summary}
+\funByFolderUneven{Name}{Summary}
+they are exactly as \funByFolder but one is grayed and the other one is whited
+

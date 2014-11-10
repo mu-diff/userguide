@@ -70,19 +70,21 @@
 \makeatother
 %To describe a function
 \definecolor{light-gray}{gray}{0.95}
-\newcommand{\funByName}[3]{\begin{mdframed}[hidealllines=true, backgroundcolor=blue!20, skipbelow=0pt, skipabove=0pt]\textbullet\;\;\texttt{#1} (\textit{#2})\\#3\end{mdframed}}
-\newcommand{\funByNameEven}[3]{\begin{mdframed}[hidealllines=true, backgroundcolor=light-gray, skipbelow=2pt, skipabove=2pt]\textbullet\;\;\texttt{#1} (\textit{#2})\\#3\end{mdframed}}
-\newcommand{\funByNameUneven}[3]{\begin{mdframed}[hidealllines=true, backgroundcolor=white, skipbelow=2pt, skipabove=2pt]\textbullet\;\;\texttt{#1} (\textit{#2})\\#3\end{mdframed}}
+\newcommand{\funByNameAux}[3]{\textbullet\;\;\texttt{#1} (\textit{#2})\\#3}
+\newcommand{\funByName}[3]{\begin{mdframed}[hidealllines=true, backgroundcolor=blue!20, skipbelow=0pt, skipabove=0pt]\funByNameAux{#1}{#2}{#3}\end{mdframed}}
+\newcommand{\funByNameEven}[3]{\begin{mdframed}[hidealllines=true, backgroundcolor=light-gray, skipbelow=2pt, skipabove=2pt]\funByNameAux{#1}{#2}{#3}\end{mdframed}}
+\newcommand{\funByNameUneven}[3]{\begin{mdframed}[hidealllines=true, backgroundcolor=white, skipbelow=2pt, skipabove=2pt]\funByNameAux{#1}{#2}{#3}\end{mdframed}}
 
 
 \newcounter{FolderCounter}
 \setcounter{FolderCounter}{0}
 
-
 \newcommand{\NewFolder}[1]{\stepcounter{FolderCounter}\medskip\textbf{\large #1}\\}
-\newcommand{\funByFolder}[2]{\textbullet\;\;\texttt{#1}: #2\\[0.1cm]}
-\newcommand{\funByFolderEven}[2]{\begin{mdframed}[hidealllines=true, backgroundcolor=light-gray, skipbelow=2pt, skipabove=2pt]\textbullet\;\;\texttt{#1}: #2\end{mdframed}}
-\newcommand{\funByFolderUneven}[2]{\begin{mdframed}[hidealllines=true, backgroundcolor=white, skipbelow=2pt, skipabove=2pt]\textbullet\;\;\texttt{#1}: #2\end{mdframed}}
+
+\newcommand{\funByFolderAux}[2]{\textbullet\;\;\texttt{#1}: #2}
+\newcommand{\funByFolder}[2]{\funByFolderAux{#1}{#2}\\[0.1cm]}
+\newcommand{\funByFolderEven}[2]{\begin{mdframed}[hidealllines=true, backgroundcolor=light-gray, skipbelow=2pt, skipabove=2pt]\funByFolderAux{#1}{#2}\end{mdframed}}
+\newcommand{\funByFolderUneven}[2]{\begin{mdframed}[hidealllines=true, backgroundcolor=white, skipbelow=2pt, skipabove=2pt]\funByFolderAux{#1}{#2}\end{mdframed}}
 
 
 
