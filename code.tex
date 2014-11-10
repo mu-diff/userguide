@@ -1,8 +1,8 @@
 \section{Generalities}
 An effort has been made to keep the same notations between the mathematical background and the \mudiff toolbox. A manual of every function is moreover provided by typing the classical \matlab command window 
-\begin{verbatim}
+\begin{lstlisting}
 help name_of_the_function;
-\end{verbatim}
+\end{lstlisting}
 
 Because \mudiff includes all the integral operators that are needed in scattering (traces and normal derivative
 traces of the single- and double-layer potentials), a large class of scattering problems can be solved. 
@@ -92,21 +92,21 @@ The obstacles are stored in memory as a row vector \code{a} containing the radii
 \subsubsection{Manually}
 
 The disks can be created manually by simply creating the two variables \code{O} and \code{a} containing respectively the coordinates of the disks and their radii. For example, for three obstacles placed on $(-1,2)$, $(5,5)$ and $(-15,10)$ with radii $0.1$, $0.5$ and $10$:
-\begin{verbatim}
+\begin{lstlisting}
 O = [-1, 5, 2 ; -15, 5, 10];
 a = [0.1, 0.5, 10];
-\end{verbatim}
+\end{lstlisting}
 
 \subsubsection{Periodic placement}
 
 Two build-in functions are available with the toolbox to create disks periodically, with a rectangular or a triangular lattice, as shown on figure \ref{fig:lattices}. The two functions must be called as follows, first for the rectangular lattice:
-\begin{verbatim}
+\begin{lstlisting}
 O = RectangularLattice(bx, by, Nx, Ny, OPTIONS);
-\end{verbatim}
+\end{lstlisting}
 and second for the triangular lattice:
-\begin{verbatim}
+\begin{lstlisting}
 O = TriangularLattice(bx, by, Nx, Ny, OPTIONS);
-\end{verbatim}
+\end{lstlisting}
 where the arguments are:
 \begin{itemize}
 \item \code{bx}: distance separating two centers in the $x-$ direction (be careful with the radii of the disks to avoid overlapping!).
@@ -115,9 +115,9 @@ where the arguments are:
 \item \code{Ny}: number of rows.
 \end{itemize}
 For both functions, the vector of radii must be built separately and manually. For a set of unitary disks, the following command does the work:
-\begin{verbatim}
+\begin{lstlisting}
 a = ones(size(O,2));
-\end{verbatim}
+\end{lstlisting}
 
 The available options are (same for \code{RectangularLattice} and \code{TriangularLattice}):
 \begin{itemize}
@@ -128,10 +128,10 @@ Pace the row in the increasing y-direction (DIR=+1) or decreasing y-diretion (DI
 \end{itemize}
 
 \paragraph{Example:} Building a rectangle of $3$ unit disks and $4$ rows. Each disks is separated from a distance of $1.5$ (so the centers from a distance of $3.5$):
-\begin{verbatim}
+\begin{lstlisting}
 O = RectangularLattice(3.5, 3.5, 3, 4);
 a = ones(size(O,2));
-\end{verbatim}
+\end{lstlisting}
 
 \begin{figure}
 \centering
@@ -152,16 +152,16 @@ a = ones(size(O,2));
 \subsubsection{Random placement}
 
 \mudiff provides a function \code{CreateRandomDisks} to randomly place \code{N\_scat} obstacles in a box $[\code{xmin}, \code{xmax}]\times[\code{ymin},\code{ymax}]$ with also a random radius. In its simplest version, the function is called as:
-\begin{verbatim}
+\begin{lstlisting}
 [O, a] = CreateRandomDisks(xmin, xmax, ymin, ymax, N_scat);
-\end{verbatim}
+\end{lstlisting}
 In that case, \code{CreateRandomDisks} builds \code{N\_scat} disk with unit radius in the desired box. The function takes care to not overlap the disks. Note that it is possible that the function does not succeed to place the obstacle (\eg if the user asks for too many obstacles in a small box) and hence a security has been set: only $500$ trials are allowed per disk. 
 
 The function comes along with a large set of optional arguments:
-\begin{verbatim}
+\begin{lstlisting}
 [O, a] = CreateRandomDisks(xmin, xmax, ymin, ymax, N_scat, 
            amin, amax, dmim, dmax, O_avoid, a_avoid, dmin_avoid, dmax_avoid);
-\end{verbatim}
+\end{lstlisting}
 where every additional arguments is optional (but the order must be kept (\code{amin} must be set, then \code{amax}, etc.!) and given by:
 \begin{center}
 \begin{tabular}{|c |c|c | p{10cm}|}
@@ -178,21 +178,21 @@ where every additional arguments is optional (but the order must be kept (\code{
 The ``holes'', represented by the \code{*\_avoid} arguments, are disks where the obstacles must not overlap, for example where a point source is emitting a wave. 
 
 \paragraph{Example 1:} creating \code{N\_scat} random disks with random radii:
-\begin{verbatim}
+\begin{lstlisting}
 [O, a] = CreateRandomDisks(xmin, xmax, ymin, ymax, N_scat, amin, amax);
-\end{verbatim}
+\end{lstlisting}
 \paragraph{Example 2:} building 7 obstacles in the box $[-10,10]\times[-10,10]$ with radii between $0.1$ and $0.5$. The disks must be separated at minimum by a distance of $0.1$ and without maximum value. The command is then:
-\begin{verbatim}
+\begin{lstlisting}
 [O, a] = CreateRandomDisks(-10, 10, -10, 10, 7, 0.1, 0.5, 0.1, -1);
-\end{verbatim}
+\end{lstlisting}
 \paragraph{Example 3:} now imagine that a point source is located on $(2,2)$ and that the obstacles must be separated from the source from at least a distance of $0.3$, then the ``\code{*\_avoid}'' arguments can be used and command can be
-\begin{verbatim}
+\begin{lstlisting}
 [O, a] = CreateRandomDisks(-10, 10, -10, 10, 7, 0.1, 0.5, 0.1, -1, [2;2], 0.3);
-\end{verbatim}
+\end{lstlisting}
 The disk centered on $(2,2)$ with radius $0.3$ will then be avoided. A second option is to set \code{a\_void} to zero and set the minimal distance \code{dmin\_avoid} to $0.3$:
-\begin{verbatim}
+\begin{lstlisting}
 [O, a] = CreateRandomDisks(-10, 10, -10, 10, 7, 0.1, 0.5, 0.1, -1, [2;2], 0, 0.3);
-\end{verbatim}
+\end{lstlisting}
 
 
 \begin{remark}
@@ -202,41 +202,41 @@ To verify if a disk is well placed, \code{CreateRandomDisks} calls \code{CheckPl
 \subsubsection{Removing disks}
 
 The function \code{RemoveDisk} aims to remove some disks of the geometrical configuration, either disk by disk, by row or by column or by radius. This can be useful for example to delete a row of disks. Here is its syntax
-\begin{verbatim}
+\begin{lstlisting}
 [O,a] = RemoveDisk(O_old, a_old, ...);
-\end{verbatim}
+\end{lstlisting}
 where \code{O\_old} and \code{a\_old} are the centers and radii of the current geometry. Without optional argument, the function has no effect. The available arguments are:
 \begin{itemize}
-\item \code{[O,a] = RemoveDisk(\ldots, 'X', [X1, X2, ..., XN]);}\\
+\item \code{[O,a] = RemoveDisk(..., 'X', [X1, X2, .., XN]);}\\
 Remove all the disks which center has its $x-$abscissa equal to \code{X1}, \code{X2}, \ldots, or \code{XN}
-\item \code{[O,a] = RemoveDisk(\ldots,  'Y', [Y1, Y2, ..., YN]);}\\
-Remove all the which center has its $y$-ordinate \code{Y1}, \code{Y2}, ..., or \code{YN}
-\item \code{[O,a] = RemoveDisk(\ldots, 'XY', [[X1;Y1], [X2;Y2], \ldots, [XN;YN]]);}\\
-Remove all the which center has for coordinates \code{[X1;Y1]}, \code{[X2;Y2]}, \ldots, or \code{[XN;YN]}
-\item \code{[O,a] = RemoveDisk(\ldots, 'Radius', [a1, a2, ..., aN]);}\\
+\item \code{[O,a] = RemoveDisk(...,  'Y', [Y1, Y2, ..., YN]);}\\
+Remove all the disks which center has its $y$-ordinate \code{Y1}, \code{Y2}, \ldots, or \code{YN}
+\item \code{[O,a] = RemoveDisk(..., 'XY', [[X1;Y1], [X2;Y2], ..., [XN;YN]]);}\\
+Remove all the disks which center has for coordinates \code{[X1;Y1]}, \code{[X2;Y2]}, \ldots, or \code{[XN;YN]}
+\item \code{[O,a] = RemoveDisk(..., 'Radius', [a1, a2, ..., aN]);}\\
 Remove all the disk which radius is equal to \code{a1}, \code{a2}, \ldots, or \code{aN}
-\item \code{[O,a] = RemoveDisk(\ldots, 'Verbosity', VERBOSITY);}\\
+\item \code{[O,a] = RemoveDisk(..., 'Verbosity', VERBOSITY);}\\
 set VERBOSITY to 0 to avoid display message, to 1 to only show results, and to $>1$ to see everything (default).
-\item \code{[O,a] = RemoveDisk(\ldots, 'Tol', TOL);}\\
+\item \code{[O,a] = RemoveDisk(..., 'Tol', TOL);}\\
 Tolerance used for the conditional statement (default $10^{-10}$).
 \end{itemize}
 
 \paragraph{Example 1:} remove every obstacles that are either on the row of $x-$abscissa $1$ or on the column of $y-$ordinate $2.5$:
-\begin{verbatim}
+\begin{lstlisting}
 [O,a] = RemoveDisk(O_old, a_old, 'X', 1, 'Y', 2.5);
-\end{verbatim}
+\end{lstlisting}
 \paragraph{Example 2:} remove the obstacles centered on $(2,5)$ and $(3,4)$:
-\begin{verbatim}
+\begin{lstlisting}
 [O,a] = RemoveDisk(O_old, a_old, 'XY', [2, 3; 5, 4]);
-\end{verbatim}
+\end{lstlisting}
 \paragraph{Example 3:} create a periodic placement of $11$ by $11$ unit disks, separated by a distance of $1$ then remove the middle line and the middle column, as shown on figure \ref{fig:removeDisks}. The central disk is moreover centered on $(0,0)$.
-\begin{verbatim}
+\begin{lstlisting}
 bx = 3; by = 3;
 Nx = 11; Ny = 11;
 O = RectangularLattice(bx, by, Nx, Ny, 'Center', [-15,-15]);
 a = ones(1, size(O, 2));
 [O, a] = RemoveDisk(O, a, 'X', 0, 'Y', 0);
-\end{verbatim}
+\end{lstlisting}
 
 \begin{figure}
 \centering
@@ -254,16 +254,16 @@ a = ones(1, size(O, 2));
 \subsection{Truncation of the Fourier series}
 
 To help the user, the formula (\ref{eqEqInt:CFIEDapp}) has been computed in \mudiff. The values of $\Np$ are stored in a Matlab vector of size $[1\times\code{N\_scat}]$ called \code{M\_modes} in \mudiff. Computing \code{M\_modes} only involves the radii of the disks and the wavenumber \code{k}, which is assumed to be created by the user:
-\begin{verbatim}
+\begin{lstlisting}
 M_modes = FourierTruncation(a, k);
-\end{verbatim}
+\end{lstlisting}
 The resulting vector is such that \code{M\_modes(p)}=$\Np$ where $\Np$ satisfies (\ref{eqEqInt:CFIEDapp}), with obviously a minimum value of $0$ (which consists of only one mode). If \code{k} is a vector (one wavenumber per obstacle), then \code{FourierTruncation} compute formula (\ref{eqEqInt:CFIEDapp})  with \code{k(p)} as the wavenumber.
 
 The following options are moreover availabe:
 \begin{itemize}
-\item \code{M\_modes = FourierTruncation(\ldots, 'Min', MIN);}\\
+\item \code{M\_modes = FourierTruncation(..., 'Min', MIN);}\\
 To force a minimal value: \code{M\_modes(p)} is then either the min value between \code{MIN} and formula (\ref{eqEqInt:CFIEDapp}). 
-\item\code{M\_modes = FourierTruncation(\ldots, 'Tol', TOL);}
+\item\code{M\_modes = FourierTruncation(..., 'Tol', TOL);}
 The tolerance, set by default to $10^{-10}$, is then set to \code{TOL}.
 \end{itemize}
 
@@ -284,9 +284,9 @@ The two main functions, \code{BlockIncidentWave} and \code{IncidentWave}, are no
 \subsubsection{\code{BlockIncidentWave}}
 
 This functions computes the block vector of \textbf{the opposite of} the coefficients of an incident wave, either the trace of the normal derivative trace, on one of the obstacles, in the Fourier bases. Its syntax is
-\begin{verbatim}
+\begin{lstlisting}
 Bp = BlockIncidentWave(Op, ap, Np, k, TypeOfWave, Param);
-\end{verbatim}
+\end{lstlisting}
 where \code{TypeOfWave} is a scalar value specifying the incident wave (see table \ref{table:Uinc}) and \code{Param} is the parameter of the wave: angle of direction, position of a point source, \ldots. The returned value \code{Bp} is a column vector of length $2\code{Np}+1$.
 \begin{table}
 \begin{tabular}{|c| c |c| p{9cm}| }
@@ -304,23 +304,23 @@ where \code{TypeOfWave} is a scalar value specifying the incident wave (see tabl
 
 \subsubsection{\code{IncidentWave}}
 
-\begin{verbatim}
+\begin{lstlisting}
 B = IncidentWave(O, a, M_modes, k, TypeOfWave, Param)
-\end{verbatim}
+\end{lstlisting}
 The resulting vector \code{B} is of size $\sum_{p=1}^{\Nscat}(2\code{M\_modes}(p)+1)$. The value \code{Param} is the same as for \code{BlockIncidentWave} whereas \code{TypeOfWave} is a vector of size $\Nscat$ where \code{TypeOfWave}(p) is the desired choice for the block $b_p$. In other word, the block $b_p$ will be built by calling \code{BlockIncidentWave(Op, ap, Np, k, TypeOfWave, Param);}. To simplify, if \code{TypeOfWave} is a scalar value, then it is considered as a vector of the same scalar value.
 
 \paragraph{Example1:} building a vector associated to the trace of an incident plane wave of direction \code{beta\_inc} is done thanks to the following command (the ``$1$ argument'' refers to \code{PlaneWave}):
-\begin{verbatim}
+\begin{lstlisting}
 B = IncidentWave(O, a, M_modes, k,  1, beta_inc);
-\end{verbatim}
+\end{lstlisting}
 or using the interface function
-\begin{verbatim}
+\begin{lstlisting}
 B = PlaneWave(O, a, M_modes, k, beta_inc);
-\end{verbatim}
+\end{lstlisting}
 \paragraph{Example 2:} For two obstacles and a point source centered on $(1,2)$, if $b_1$ is the trace of the wave and $b_2$ is the normal derivative trace, then
-\begin{verbatim}
+\begin{lstlisting}
 B = IncidentWave(O, a, M_modes, k,  [3;4],[1;2]);
-\end{verbatim}
+\end{lstlisting}
 In other words, this builds the vector (\code{[3,4]} can be translated as \code{PointSource, DnPointSource}):
 $$
 b = \left(\begin{array}{c}
@@ -386,9 +386,9 @@ $\hat{D}D$& 7 & \code{PrecondNeumann} & Dn Double-Layer preconditioned by its di
 \subsubsection{Building a block $\Abpq$}
 
 A sub matrix block can be created with the function \texttt{BlockIntegralOperator}:
-\begin{verbatim}
+\begin{lstlisting}
 	Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, TypeOfOperator, Weight);
-\end{verbatim}
+\end{lstlisting}
 The \code{Weight} argument is optional and set to $1$ by default. The quantity \code{TypeOfOperator} specifies the integral operator to compute, thanks to the numbering of Table \ref{table:IntOp}. If \code{TypeOfOperator} is a scalar (\eg $=2$) then the resulting matrix \code{Apq} is the submatrix of the associated operator (\eg $\Lbpq$). If \code{TypeOfOperator} is a row (\eg \code{[1,3]}) then the sum of the two operators is done (\eg $\Ibpq+\Mbpq$). Finally the \code{Weight} quantity, of the same size as \code{TypeOfOperator}, is the constant to multiply the block with. The block is hence:
 $$
 \Abpq = \sum_{\ell=1}^{N}\code{Weight}(\ell).\code{Operator}(\ell)
@@ -396,31 +396,31 @@ $$
 where \code{Operator}$(\ell)$ is one of the integral operator.
 
 \paragraph{Example 1:} Building the single-layer block $\Lbpq$:
-\begin{verbatim}
+\begin{lstlisting}
 Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, 1);
-\end{verbatim}
+\end{lstlisting}
 \paragraph{Example 2:} Build the whole matrix $0.5\Ibpq + \Nbpq$, appearing in the MFIE (\ref{eq:MFIE}):
-\begin{verbatim}
+\begin{lstlisting}
 Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, [1, 4], [0.5, 1]);
-\end{verbatim}
+\end{lstlisting}
 \paragraph{Example 3:} The sum of the four blocks: $0.5\Lbpq + 1.5\Mbpq + 2.5\Nbpq + 3.5\Dbpq$:
-\begin{verbatim}
+\begin{lstlisting}
 Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, [2, 3, 4, 5], 
                          [0.5, 1.5, 2.5, 3.5]);
-\end{verbatim}
+\end{lstlisting}
 
 
 \subsubsection{Assemble the matrix $\Ab$}
 
 Now that the construction of a block is well understood, building a matrix is very easy thanks to the frontal function
-\begin{verbatim}
+\begin{lstlisting}
 A = IntegralOperator(O, a, M_modes, k, TypeOfOperator, Weight);
-\end{verbatim}
+\end{lstlisting}
 As for \code{BlockIntegralOperator}, the quantity \code{Weight} is optional and set to $1$ by default. Roughly speaking, \code{IntegralOperator} will loop on every obstacle $p$ and $q$ and launch the following command
-\begin{verbatim}
+\begin{lstlisting}
 Apq = BlockIntegralOperator(O(:,p), a(p), M_modes(p), O(:,q), a(q), M_modes(q), 
                                                     k, Tpq, Wpq);
-\end{verbatim}
+\end{lstlisting}
 and places \code{Apq} in the right block of the whole matrix. The quantities \code{Tpq} and \code{Wpq} are given by \code{TypeOfOperator} and \code{Weight} such that (\code{Weight} is of the same size of \code{TypeOfOperator} and so \code{Wpq} follows the same rules as \code{Tpq}):
 \begin{itemize}
 \item If \code{TypeOfOperator} is a scalar then \code{Tpq} = \code{TypeOfOperator}. 
@@ -430,13 +430,13 @@ and places \code{Apq} in the right block of the whole matrix. The quantities \co
 \end{itemize}
 
 \paragraph{Example 1:} The single-layer potential $L$
-\begin{verbatim}
+\begin{lstlisting}
 L = IntegralOperator(O, a, M_modes, k, 2);
-\end{verbatim}
+\end{lstlisting}
 \paragraph{Example 2:} The operator of the MFIE for a Dirichlet boundary condition (\ref{eq:MFIE}), $0.5I + N$:
-\begin{verbatim}
+\begin{lstlisting}
 A_MFIE = IntegralOperator(O, a, M_modes, k, [1,4], [0.5,1]);
-\end{verbatim}
+\end{lstlisting}
 \paragraph{Example 3:} The following operator for two obstacles only
 $$
 \left(\begin{array}{c c}
@@ -445,23 +445,23 @@ D_{2,1} & 0.5 I_{2,2}+N_{2,2}
 \end{array}\right)
 $$
 can be computed using a $3D$ array and the null operator:
-\begin{verbatim}
+\begin{lstlisting}
 TypeOfOp = zeros(2,2,2); Weight = zeros(2,2,2);
 TypeOfOp(:, 1,1) = [1, 3]; Weight(:, 1,1) = [0.5, 1]; %block A_{1,1}
 TypeOfOp(:, 1,2) = [2, 0]; Weight(:, 1,2) = [1, 0]; %block A_{1,2}
 TypeOfOp(:, 2,1) = [5, 0]; Weight(:, 2,1) = [1, 0]; %block A_{2,1}
 TypeOfOp(:, 2,2) = [1, 4]; Weight(:, 2,2) = [0.5, 1]; %block A_{2,2}
 A = IntegralOperator(O, a, M_modes, k, TypeOfOp, Weight);
-\end{verbatim}
+\end{lstlisting}
 \paragraph{Example 4:} The Brakhage-Werner integral equation for a Dirichlet problem (\ref{eqEqInt:BW})
-\begin{verbatim}
+\begin{lstlisting}
 k = 1;
 beta_inc = pi;
 eta = i/k;
 Uinc = PlaneWave(O, a, M_modes, k, beta_inc);
 A = IntegralOperator(O, a, M_modes, k, [1, 2, 3], [0.5, -eta_BW, -1]);
 psi = A \ Uinc;
-\end{verbatim}
+\end{lstlisting}
 
 \subsection{Sparse storage}
 
@@ -562,23 +562,23 @@ The matrix vector product between $\Ab$ and $X$ is then done in a fast way (cros
 \subsubsection{\mudiff: assemble the matrix}
 
 The assembly process is very similar to the dense one, the difference being the prefix \code{Sp}. The block function is then called by
-\begin{verbatim}
+\begin{lstlisting}
 SpBlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, Nmax, k, TypeOfOperator, Weight);
-\end{verbatim}
+\end{lstlisting}
 The function returns three vectors corresponding to $\AbpqL$, $\AbpqM$ and $\AbpqR$. The major difference here is that \textbf{no linear combination of operators can be done during the assembly process} for the sparse representation. The quantity \code{TypeOfOperator} cannot hence be a vector but only a scalar. On the other hand, the full assembly of a matrix can be done through
-\begin{verbatim}
+\begin{lstlisting}
 A = SpIntegralOperator(O, a, M_modes, k, TypeOfOperator, Weight);
-\end{verbatim}
+\end{lstlisting}
 The result is a Matlab \code{cell} of three component, where each of them is a $3D-$array. The quantity \code{TypeOfOperator} can be a scalar or a matrix (not a $3D$ array nor a vector!). If \code{TypeOfOperator} is a matrix, then the block $\Abpq$ is assumed to be of type \code{TypeOfOperator(p,q)}. The linear combination of operators can still be done, but must be specified in the matrix-vector product (see below). Note that a function exists to add the (weighted-)identity to a sparse operator (see below).
 
 \paragraph{Example 1:} Creation of \mudiff sparse matrix of the single-layer operator $L$
-\begin{verbatim}
+\begin{lstlisting}
 L = SpIntegralOperator(O, a, M_modes, k, 2);
-\end{verbatim}
+\end{lstlisting}
 \code{L} is now a cell of $3$ components! Note that we can use the interface function
-\begin{verbatim}
+\begin{lstlisting}
 L = SpSingleLayer(O, a, M_modes, k);
-\end{verbatim}
+\end{lstlisting}
 \paragraph{Example 2:} For two obstacles, building the following matrix 
 $$
 \left(\begin{array}{c c}
@@ -587,88 +587,88 @@ M_{1,1} & 0.5L_{1,2}\\
 \end{array}\right)
 $$
 can be done with the below commands
-\begin{verbatim}
+\begin{lstlisting}
 TypeOfOp = zeros(2,2); Weight = zeros(2,2);
 TypeOfOp(1,1) = [3]; Weight(1,1) = [1]; %block A_{1,1}
 TypeOfOp(1,2) = [2,]; Weight(1,2) = [0.5]; %block A_{1,2}
 TypeOfOp(2,1) = [5]; Weight(2,1) = [1.5]; %block A_{2,1}
 TypeOfOp(2,2) = [4]; Weight(2,2) = [2.5]; %block A_{2,2}
 A = SpIntegralOperator(O, a, M_modes, k, TypeOfOp, Weight);
-\end{verbatim}
+\end{lstlisting}
 
 \subsubsection{Assembly: adding the identity}
 
 It is possible to add the identity (multiplied by a constant) to a sparse operator:
-\begin{verbatim}
+\begin{lstlisting}
 A = SpAddIdentity(A, alpha, M_modes);
-\end{verbatim}
+\end{lstlisting}
 which simply returns $A = A+\alpha I$.
 
 \paragraph{Example 1:} If \code{L} is the sparse representation of the single-layer operator, then
-\begin{verbatim}
+\begin{lstlisting}
 L = SpIntegralOperator(O, a, M_modes, k, 2);
 alpha_L = SpAddIdentity(L, 0.5, M_modes);
-\end{verbatim}
+\end{lstlisting}
 will compute $0.5L$.
 
 \subsubsection{\mudiff: sparse matrix-vector product}
 
 A matrix vector product $Y = \Ab X$ is done thanks to 
-\begin{verbatim}
+\begin{lstlisting}
 Y = SpMatVec(X, M_modes, ListOfOperators, Weight);
-\end{verbatim}
+\end{lstlisting}
 where \code{Weight} is optional. \code{ListOfOperators} is a \textbf{Matlab cell} (not an array! Make use of $\{\cdot\}$ instead of $[\cdot]$) containing every sparse matrices that the user want to use. The linear combination of the operators is done at that time at each matrix-vector product.
 
 \paragraph{Example 1:} Computing $Y = \Lb X$ is done as follows:
-\begin{verbatim}
+\begin{lstlisting}
 SpL = SpIntegralOperator(O, a, M_modes, k, 2);
 Y = SpMatVec(X, M_modes, SpL);
-\end{verbatim}
+\end{lstlisting}
 \paragraph{Example 2:} Calculating $Y =(0.5*I + N)X$, where $I$ is the identity (\textbf{Beware the $\{\cdot\}$ !}):
-\begin{verbatim}
+\begin{lstlisting}
 SpI = SpIdentity(O, a, M_modes);
 SpN = SpDnSingleLayer(O, a, M_modes, k);
 Y = SpMatVec(X, M_modes, {SpI, SpN}, [0.5, 1]);
-\end{verbatim}
+\end{lstlisting}
 This could also be done using \code{SpAddIdentity} function:
-\begin{verbatim}
+\begin{lstlisting}
 SpN = SpDnSingleLayer(O, a, M_modes, k);
 A = SpAddIdentity(SpN, 0.5, M_modes);
 Y = SpMatVec(X, M_modes, A);
-\end{verbatim}
+\end{lstlisting}
 
 \subsubsection{Solving a linear system}
 
 Now that the matrices and the right hand side have been assembled, the sparse linear system can solved iteratively. Using for example the GMRES solver \cite{SaaSch86}, the syntax to solve\ldots
 \paragraph{Example 1: The EFIE (\ref{eq:EFIE}):} $L\rho = -\uinc|_{\Gamma}$, would be
-\begin{verbatim}
+\begin{lstlisting}
 SpL = SpSingleLayer(O, a, M_modes, k);
 Uinc = PlaneWave(O, a, M_modes, k, beta_inc);
 rho = gmres(@(X)SpMatVec(X, M_modes, SpL), Uinc);
-\end{verbatim}
+\end{lstlisting}
 \paragraph{Example 2: The MFIE (\ref{eq:MFIE}):} $(I/2+N)\rho = -\dn\uinc|_{\Gamma}$:
-\begin{verbatim}
+\begin{lstlisting}
 SpN = SpDnSingleLayer(O, a, M_modes, k);
 SpI = SpIdentity(O, a, M_modes);
 DnUinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
 rho = gmres(@(X)SpMatVec(X, M_modes, {SpI, SpN}, [0.5, 1]), DnUinc);
-\end{verbatim}
+\end{lstlisting}
 or using the \code{SpAddIdentity} function
-\begin{verbatim}
+\begin{lstlisting}
 SpAMFIE = SpDnSingleLayer(O, a, M_modes, k);
 SpAMFIE = SpAddIdentity(SpAMFIE, 0.5, M_modes);
 DnUinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
 rho = gmres(@(X)SpMatVec(X, M_modes, SpAMFIE), DnUinc);
-\end{verbatim}
+\end{lstlisting}
 \paragraph{Example 3: The Brakhage-Werner integral equation} for a Dirichlet problem (\ref{eqEqInt:BW})
-\begin{verbatim}
+\begin{lstlisting}
 k = 1;
 beta_inc = pi;
 eta = i/k;
 Uinc = PlaneWave(O, a, M_modes, k, beta_inc);
 SpA = SpIntegralOperator(O, a, M_modes, k, [1, 2, 3], [0.5, -eta_BW, -1]);
 psi = gmres(@(X)SpMatVec(X, M_modes, SpA), Uinc);
-\end{verbatim}
+\end{lstlisting}
 
 
 \section{Post-Processing}
@@ -682,9 +682,9 @@ $$
 \sum_{p=1}^{\Nscat}\eta_p\Lop_p\rho_p + \gamma_p\Mop_p\lambda_p,
 $$
 is given by equation (\ref{eq:FFFourier}). The \code{FarField} function does the job properly:
-\begin{verbatim}
+\begin{lstlisting}
 F = FarField(O, a, M_modes, k, theta, Density, Weight);
-\end{verbatim}
+\end{lstlisting}
 where the parameters are:
 \begin{itemize}
 \item \code{theta} is the vector of receiving angles (in rad.)
@@ -696,22 +696,22 @@ $$
 \sum_{p=1}^{\code{N\_scat}}\code{Weight(p, 1)}\Lop\code{Density(:,1)} + \code{Weight(p,2)}\Mop\code{Density(:,2)}.
 $$
 \paragraph{Example 1:}  EFIE for the Dirichlet problem (\ref{eq:EFIE}, where the scattered field $u$ reads as $u = \Lop\rho$, its far field is then computed by
-\begin{verbatim}
+\begin{lstlisting}
 F = FarField(O, a, M_modes, k, theta, rho, [1,0]);
-\end{verbatim}
+\end{lstlisting}
 \paragraph{Example 2:} for the Brackage-Werner integral equation for the Dirichlet problem (\ref{eqEqInt:BW}),  the scattered field $u$ reads as $u = (-\eta\Lop-\Mop)\psi$, and its far field is computed by
-\begin{verbatim}
+\begin{lstlisting}
 eta = i/k;
 F = FarField(O, a, M_modes, k, theta, psi, [-eta,-1]);
-\end{verbatim}
+\end{lstlisting}
 \paragraph{Example 3:} $\rho$ and $\lambda$ are both computed and the user needs to compute for example
 $$
 \sum_{p=1}^{\Nscat} p\Lop_p\rho_p - p\Mop_p\lambda_p,
 $$
 then (s)he can do it with: 
-\begin{verbatim}
+\begin{lstlisting}
 F = FarField(O, a, M_modes, k, theta, [rho, lambda], [[1:p].', -[1:p].']);
-\end{verbatim}
+\end{lstlisting}
 
 \begin{remark}
 The \code{FarField} function is also interfaced with ready-to-use function: \code{FarFieldSingleLayerPotential} and \code{FarFieldDoubleLayerPotential}. These are located in the \code{PostProcessing/FarField/Interface} directory.
@@ -724,13 +724,13 @@ $$
 \sigma = 10\log_{10}(2\pi|F|^2).
 $$
 The computation is then done by typing:
-\begin{verbatim}
+\begin{lstlisting}
 R = FarField_to_RCS(F);
-\end{verbatim}
+\end{lstlisting}
 where \code{F} has been computed by the \code{FarField} function. Otherwise, the RSC can be computed directly from the densities by
-\begin{verbatim}
+\begin{lstlisting}
 R = RCS(O, a, M_modes, k, theta, Density, Weight);
-\end{verbatim}
+\end{lstlisting}
 where the arguments are exactly the same as for the far field. In fact, \code{RCS} first calls \code{FarField} and then \code{FarField\_to\_RCS}.
 
 \begin{remark}
@@ -743,9 +743,9 @@ The \code{RCS} functions is also interfaced with ready-to-use function: \code{RC
 The near field of a potential is given by equations (\ref{eqEqInt:Lphimpt}) and (\ref{eqEqInt:Mphimpt}) outside the obstacles and by (\ref{eqEqInt:LphimptINT}) and (\ref{eqEqInt:MphimptINT}) inside. In the same way, \mudiff separates the outside and the inside computation. 
 
 First is explained how to compute the field outside the obstacles. The user only needs to create a mesh using \eg \code{meshgrid} and launch \code{ExternalPotential}, which syntax is
-\begin{verbatim}
+\begin{lstlisting}
 U = ExternalPotential(X, Y, O, a, M_modes, k, Density, Weight, OPTIONS);
-\end{verbatim}
+\end{lstlisting}
 The resulting matrix \code{U} has $0$ value inside the obstacle. By default, the computation is not done on the boundary of the obstacles (this can be changed thanks to the options). The arguments are:
 \begin{itemize}
 \item The arguments \code{Density} and \code{Weight} are exactly the same as for \code{FarField},
@@ -758,9 +758,9 @@ $$
 \Lop_p\rho_p + \Mop_p\lambda_p
 $$
 In other words, the contributions of the other obstacles are not taken into account. In the same way as for the external potential, the computation is done in \mudiff with:
-\begin{verbatim}
+\begin{lstlisting}
 U = InternalPotential(X, Y, O, a, M_modes, k, Density, Weight, OPTIONS);
-\end{verbatim}
+\end{lstlisting}
 where \code{U} has zero value outside the obstacles and by default, also on the boundaries. The arguments are exactly the same as \code{ExternalPotential}.
 
 Finally, the common options for \code{ExternalPotential} and \code{InternalPotential} are described below. For the sake of clarity, the examples are shown with only \code{ExternalPotential} even if they work also for \code{InternalPotential}:
@@ -770,20 +770,20 @@ Finally, the common options for \code{ExternalPotential} and \code{InternalPoten
 \end{itemize}
 
 \paragraph{Example 1: }compute the single-layer potential $u=\Lop\rho$ on a grid:
-\begin{verbatim}
+\begin{lstlisting}
 XX = [-10:0.1:10];
 YY = [-10:0.1:10];
 [X,Y] = meshgrid(XX,YY);
 U = ExternalPotential(X, Y, O, a M_modes, k, rho, [1,0]);
-\end{verbatim}
+\end{lstlisting}
 
 \paragraph{Example 2: } consider two obstacles and compute $\Lop_1\rho_1 + 0.5\Lop_2\rho_2 + 1.5\Mop_1\lambda_1 -1.5\Mop_2\lambda_2$  inside the obstacle, where the densities are assumed to be computed:
-\begin{verbatim}
+\begin{lstlisting}
 XX = [-10:0.1:10];
 YY = [-10:0.1:10];
 [X,Y] = meshgrid(XX,YY);
 U = InternalPotential(X, Y, O, a M_modes, k, [rho, lambda], [1, 1.5 ; 0.5, -1.5]);
-\end{verbatim}
+\end{lstlisting}
 
 \begin{remark}
 The near field functions \code{ExternalPotential} and \code{InternalPotential} are also interfaced with ready-to-use function: \code{ExternalSingleLayerPotential}, \code{InternalSingleLayerPotential}, \code{ExternalDoubleLayerPotential} and \code{InternalDoubleLayerPotential}. These are located in the \code{PostProcessing/NearField/Interface} directory.
@@ -792,9 +792,9 @@ The near field functions \code{ExternalPotential} and \code{InternalPotential} a
 \subsubsection{Incident wave}
 
 The incident waves can be also computed on a grid using 
-\begin{verbatim}
+\begin{lstlisting}
 Uinc = IncidentWaveOnGrid(X, Y, k, TypeOfWave, Param);
-\end{verbatim}
+\end{lstlisting}
 where, as for the \code{IncidentWave} function from the PreProcessing part (see \S\ref{??}) :
 \begin{itemize}
 \item \code{X} and \code{Y} ares matrices coming from the \code{meshgrid} Matlab function
@@ -802,26 +802,26 @@ where, as for the \code{IncidentWave} function from the PreProcessing part (see 
 \item \code{TypeOfWave} is either a \code{char} or a scalar value 
 \end{itemize}
 \paragraph{Example:} computation of a plane wave of angle of direction \code{beta\_inc}=$\pi$:
-\begin{verbatim}
+\begin{lstlisting}
 beta_inc = pi;
 XX = [-10:0.1:10];
 YY = [-10:0.1:10];
 [X,Y] = meshgrid(XX,YY);
 Uinc = IncidentWaveOnGrid(X, Y, k, 'PlaneWave', beta_inc);
-\end{verbatim}
+\end{lstlisting}
 The last line could also be (switch \code{'PlaneWave'} with its identifier $1$):
-\begin{verbatim}
+\begin{lstlisting}
 Uinc = IncidentWaveOnGrid(X, Y, k, 1, beta_inc);
-\end{verbatim}
+\end{lstlisting}
 
  
 \subsubsection{Geometry: drawing the obstacles and creating mask matrices}
 
 The \mudiff toolbox also proposes some functions for the post processing of obstacles. 
-\paragraph{Drawing the disks with \code{PlotCircles}}
-\begin{verbatim}
+\paragraph{Drawing the disks with \code{PlotCircles}}\mbox{}
+\begin{lstlisting}
 PlotCircles(O, a, fig_index, OPTIONS);
-\end{verbatim}
+\end{lstlisting}
 where \code{fig\_index} is the Figure handle and the OPTIONS are
 \begin{itemize}
 \item \code{PlotCirclesOnFigure(..., 'Color', COLOR)}: apply the \code{COLOR} color to lines (same as the plot function)
@@ -829,11 +829,11 @@ where \code{fig\_index} is the Figure handle and the OPTIONS are
 \item \code{PlotCirclesOnFigure(..., 'zdata', ZDATA)}: set the zdata of the figure to \code{ZDATA} (same as the plot function)
 \end{itemize}
 Remark that, when drawing disks on a figure containing some values, do not forget to set the zdata to the max value! Examples: 
-\begin{verbatim}
+\begin{lstlisting}
 figure(1);
 surf(X,Y,U);
 PlotCirclesOnFigure(O, a, 1, 'zdata', max(max(U)));
-\end{verbatim}
+\end{lstlisting}
 
 \paragraph{Getting a mask matrix,} which is a matrix $S$ such that, if $X$ and $Y$ are obtained by \code{meshgrid}:
 $$
@@ -844,9 +844,9 @@ p+0.5 & \text{ if } (X(i,j),Y(i,j)) \in\Gamma_p.\\
 \end{cases}
 $$
 This kind of matrix is handy when plotting the potentials and is actually used by the two functions \code{ExternalPotential} and \code{InternalPotential}. The function \code{MaskMatrix} which provides the matrix $M$ has the following syntax
-\begin{verbatim}
+\begin{lstlisting}
 S = MaskMatrixObstacles(X, Y, O, a);
-\end{verbatim}
+\end{lstlisting}
 
 \paragraph{Extract the boundary points.} In the same way as the \code{MaskMatrixObstacles} function, \code{BoundaryOfObstacles} leads to a matrix $G$ where
 $$
@@ -857,10 +857,21 @@ p & \text{ if } (X(i,j),Y(i,j)) \in\Gamma_p.\\
 \end{cases}
 $$
 Similarly, $G$ is computed by
-\begin{verbatim}
+\begin{lstlisting}
 G = BoundaryOfObstacles(X, Y, O, a);
-\end{verbatim}
+\end{lstlisting}
 
 \section{Full Examples}
 
 Some examples are available in the \code{Examples} directory and especially in \code{Examples/Benchmark}, where each files is independent and solve a different problem (Dirichlet, Neumann or Penetrable). They should also be launched as a tested, to verify that \mudiff is correctly installed and working properly.
+
+
+
+
+
+
+
+
+
+
+

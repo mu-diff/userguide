@@ -9,7 +9,7 @@
 
 \usepackage{epsfig}
 \usepackage{mathrsfs}
-\usepackage{color}
+\usepackage[usenames,dvipsnames]{color}
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -42,12 +42,43 @@
 %% Mes macros ˆ moi
 \usepackage{MesCommandes}
 
+\usepackage[framed,numbered,autolinebreaks,useliterate]{mcode}
+
 
 %% HYPERREF (pdf interactif) A PLACER EN DERNIER !!!
 \usepackage[pdftex]{hyperref}
 
 
-\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\code}[1]{\mcode{#1}}
+\newcommand{\blockCode}[1]{\begin{lstlisting}{#1}\end{lstlisting}}
+
+
+%\newcommand{\hilight}[1]{\colorbox{yellow}{#1}}
+%\newcommand{\funByName}[3]{\textbullet\;\;\texttt{#1} (\textit{#2})\\#3\\[0.1cm]}
+
+\usepackage[framemethod=tikz]{mdframed}
+% To avoid vertical spacing... :
+\parindent0mm
+\let\svendmdframed\endmdframed
+\makeatletter
+\def\endmdframed{\svendmdframed\unskip\vspace{-6pt}}
+\makeatother
+%To describe a function
+\definecolor{light-gray}{gray}{0.95}
+\newcommand{\funByName}[3]{\begin{mdframed}[hidealllines=true, backgroundcolor=blue!20, skipbelow=0pt, skipabove=0pt]\textbullet\;\;\texttt{#1} (\textit{#2})\\#3\end{mdframed}}
+\newcommand{\funByNameEven}[3]{\begin{mdframed}[hidealllines=true, backgroundcolor=light-gray, skipbelow=2pt, skipabove=2pt]\textbullet\;\;\texttt{#1} (\textit{#2})\\#3\end{mdframed}}
+\newcommand{\funByNameUneven}[3]{\begin{mdframed}[hidealllines=true, backgroundcolor=white, skipbelow=2pt, skipabove=2pt]\textbullet\;\;\texttt{#1} (\textit{#2})\\#3\end{mdframed}}
+
+
+\newcounter{FolderCounter}
+\setcounter{FolderCounter}{0}
+
+
+\newcommand{\NewFolder}[1]{\stepcounter{FolderCounter}\medskip\textbf{\large #1}\\}
+\newcommand{\funByFolder}[2]{\textbullet\;\;\texttt{#1}: #2\\[0.1cm]}
+\newcommand{\funByFolderEven}[2]{\begin{mdframed}[hidealllines=true, backgroundcolor=light-gray, skipbelow=2pt, skipabove=2pt]\textbullet\;\;\texttt{#1}: #2\end{mdframed}}
+\newcommand{\funByFolderUneven}[2]{\begin{mdframed}[hidealllines=true, backgroundcolor=white, skipbelow=2pt, skipabove=2pt]\textbullet\;\;\texttt{#1}: #2\end{mdframed}}
+
 
 
 \title{\huge \mudiff Toolbox for Matlab: user guide}
@@ -97,9 +128,17 @@
 \chapter{\mudiff Toolbox}\minitoc
 \input{code}
 
+
 \chapter*{Conclusion}
 \input{conclusion}
 
+\appendix
+
+\chapter{List of \mudiff functions (alphabetic order)}\minitoc
+\section{Alphabetic order}
+\input{listOfFun/TableFromName}
+\chapter{List of \mudiff functions (folder name order)}\minitoc
+\input{listOfFun/TableFromFolder}
 
 
 
