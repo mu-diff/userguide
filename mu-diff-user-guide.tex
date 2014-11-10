@@ -42,16 +42,21 @@
 %% Mes macros ˆ moi
 \usepackage{MesCommandes}
 
-\usepackage[framed,numbered,autolinebreaks,useliterate]{mcode}
+%\usepackage[framed,numbered,autolinebreaks,useliterate]{mcode}
+\usepackage[framed,autolinebreaks,useliterate]{mcode}
 
 
 %% HYPERREF (pdf interactif) A PLACER EN DERNIER !!!
 \usepackage[pdftex]{hyperref}
 
-
+%Inline code in a text ...
 \newcommand{\code}[1]{\mcode{#1}}
+%.... and in a tabular
+\newcommand{\tabcode}[1]{\lstbasicfont{#1}}
+
 \newcommand{\blockCode}[1]{\begin{lstlisting}{#1}\end{lstlisting}}
 
+\newcommand{\folder}[1]{\texttt{#1}}
 
 %\newcommand{\hilight}[1]{\colorbox{yellow}{#1}}
 %\newcommand{\funByName}[3]{\textbullet\;\;\texttt{#1} (\textit{#2})\\#3\\[0.1cm]}

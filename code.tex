@@ -12,19 +12,19 @@ visualization\ldots
 
 We now introduce the \mudiff  toolbox for Matlab by explaining the main predefined functions and their relations
 with the previous mathematical derivations.
-Section \ref{sectionPreProcessing}  shows how to define the scattering configuration (geometry and physical parameters). Section
- \ref{ResolutionMuDiff}  presents the way the integral equations must be defined and solved.
-  Finally, section \ref{sectionPostProcessing} describes the data post-processing. 
+Section \ref{sec:PreProcessing}  shows how to define the scattering configuration (geometry and physical parameters). Section
+ \ref{sec:ResolutionMuDiff}  presents the way the integral equations must be defined and solved.
+  Finally, section \ref{sec:PostProcessing} describes the data post-processing. 
 
 The \mudiff toolbox  is organized following the five subdirectories:
 \begin{itemize}
-\item \texttt{mudiff/PreProcessing/}: pre-processing data functions (incident wave and geometry) (section \ref{sectionPreProcessing}).
+\item \texttt{mudiff/PreProcessing/}: pre-processing data functions (incident wave and geometry) (section \ref{sec:PreProcessing}).
 \item \texttt{mudiff/IntOperators/}: functions for the four basic integral operators (dense and sparse structure)
-used in the definition of the integral equations to solve (section \ref{ResolutionMuDiff}). 
+used in the definition of the integral equations to solve (section \ref{sec:sec:ResolutionMuDiff}). 
 \item \texttt{mudiff/PostProcessing/}: post-processing functions of the solution (trace and normal derivative traces,
 computation of the scattered/total wavefield 
 at some points of the spatial domain or on a grid, far-field and RCS) 
-(section \ref{sectionPostProcessing}).
+(section \ref{sec:PostProcessing}).
 \item \texttt{mudiff/Common/}: this directory includes functions that are used in \mudiff but which does not need to be known
 from the standard user point of view.
 \item \texttt{mudiff/Examples/}: various scripts are presented for the user in standard configurations.
@@ -41,13 +41,13 @@ A large number of arguments of the \mudiff functions are the same. For the sake 
 %\rowcolors{1}{white}{gray}
 \begin{tabular}{|c |c | p{10cm}|}
 \hline Name & Size & Content\\[0.2cm]\hline\hline
-\code{N\_scat} & $[1\times 1]$ & Number of obstacles $M$.\\\hline
-\code{O} & $[2\times \Nscat]$ & Matrix of the centers of the disks such that \code{O(1,p)} (resp. \code{O(2,p)}) is the $x-$coordinate (resp. $y-$coordinate) of the $p^{th}$ obstacle.\\\hline
-\code{Op} & $[2\times 1]$ & Coordinates of the $p^{th}$ scatterer.\\\hline
-\code{Oq} & $[2\times 1]$ & Coordinates of the $q^{th}$ scatterer.\\\hline
-\code{a} & $[1\times \Nscat]$ & Vector of the radii of the disks such that \code{a(p)} is the radius of the $p^{th}$ scatterer.\\\hline
-\code{ap} & $[1\times 1]$ & Radius of the $p^{th}$ scatterer.\\\hline
-\code{aq} & $[1\times 1]$ & Radius of the $q^{th}$ scatterer.\\\hline
+\tabcode{N\_scat} & $[1\times 1]$ & Number of obstacles $M$.\\\hline
+\tabcode{O} & $[2\times \Nscat]$ & Matrix of the centers of the disks such that \code{O(1,p)} (resp. \code{O(2,p)}) is the $x-$coordinate (resp. $y-$coordinate) of the $p^{th}$ obstacle.\\\hline
+\tabcode{Op} & $[2\times 1]$ & Coordinates of the $p^{th}$ scatterer.\\\hline
+\tabcode{Oq} & $[2\times 1]$ & Coordinates of the $q^{th}$ scatterer.\\\hline
+\tabcode{a} & $[1\times \Nscat]$ & Vector of the radii of the disks such that \code{a(p)} is the radius of the $p^{th}$ scatterer.\\\hline
+\tabcode{ap} & $[1\times 1]$ & Radius of the $p^{th}$ scatterer.\\\hline
+\tabcode{aq} & $[1\times 1]$ & Radius of the $q^{th}$ scatterer.\\\hline
 \end{tabular}
 \end{center}
 
@@ -55,13 +55,13 @@ A large number of arguments of the \mudiff functions are the same. For the sake 
 \begin{center}
 \begin{tabular}{|c |c | p{10cm}|}
 \hline Name & Size & Content\\[0.2cm]\hline\hline
-\code{beta\_inc} & $[1\times 1]$ & Angle of direction $\beta$ of a plane wave $e^{ik (\cos(\beta)x + \sin(\beta)y)}$.\\\hline
-\code{XS} & $[2\times 1]$ & Center $(x_s,y_s)$ of a point source: $x_s=$\code{XS(1)} and $y_s=$\code{XS(2)}. A point source wave is given by $i/4\Hz(k\|\xx-\xx_s\|)$, with $\xx=(x,y)$ and $\xx_s=(x_s,y_s)$ and $\Hz$ the zeroth order Hankel function of first kind.\\\hline
-\code{k} & $[1\times 1]$ & Wavenumber $k$ in the vacuum.\\\hline
-\code{k\_int} & $[1\times \Nscat]$ & Wavenumbers in the obstacles: $\kintp=$\code{k\_int(p)}. If \code{k\_int} is a scalar then $\kintp$ = \code{k\_int} for all $p$.\\\hline
-\code{M\_modes} & $[1\times \Nscat]$ & Vector of index of truncation of the Fourier series, \ie \code{M\_modes(p)}=$\Np$\\\hline
-\code{Np} & $[1\times 1]$ & Corresponds to $\Np$, the truncation index in the Fourier serie.\\\hline
-\code{Nq} & $[1\times 1]$ & Corresponds to $\Nq$, the truncation index in the Fourier serie.\\\hline
+\tabcode{beta\_inc} & $[1\times 1]$ & Angle of direction $\beta$ of a plane wave $e^{ik (\cos(\beta)x + \sin(\beta)y)}$.\\\hline
+\tabcode{XS} & $[2\times 1]$ & Center $(x_s,y_s)$ of a point source: $x_s=$\code{XS(1)} and $y_s=$\code{XS(2)}. A point source wave is given by $i/4\Hz(k\|\xx-\xx_s\|)$, with $\xx=(x,y)$ and $\xx_s=(x_s,y_s)$ and $\Hz$ the zeroth order Hankel function of first kind.\\\hline
+\tabcode{k} & $[1\times 1]$ & Wavenumber $k$ in the vacuum.\\\hline
+\tabcode{k\_int} & $[1\times \Nscat]$ & Wavenumbers in the obstacles: $\kintp=$\code{k\_int(p)}. If \code{k\_int} is a scalar then $\kintp$ = \code{k\_int} for all $p$.\\\hline
+\tabcode{M\_modes} & $[1\times \Nscat]$ & Vector of index of truncation of the Fourier series, \ie \code{M\_modes(p)}=$\Np$\\\hline
+\tabcode{Np} & $[1\times 1]$ & Corresponds to $\Np$, the truncation index in the Fourier serie.\\\hline
+\tabcode{Nq} & $[1\times 1]$ & Corresponds to $\Nq$, the truncation index in the Fourier serie.\\\hline
 \end{tabular}
 \end{center}
 
@@ -70,20 +70,20 @@ A large number of arguments of the \mudiff functions are the same. For the sake 
 \begin{tabular}{|c |c | c | p{9cm}|}
 \hline Index & Letter & \mudiff abreviation & Operator \\\hline\hline
 0 & - & - & Null operator \\\hline
-1 & $I$ & \code{Identity} & Identity\\\hline
-2 & $L$ & \code{SingleLayer} & $\dsp L\rho = \int_{\Gamma}G(\xx,\yy)\rho(\yy)\;\dd\yy$\\\hline
-3 & $M$ & \code{DoubleLayer} & $\dsp M\lambda = -\int_{\Gamma}\dny G(\xx,\yy)\lambda(\yy)\;\dd\yy$\\\hline
-4 & $N$  & \code{DnSingleLayer}& $\dsp N\rho = \dnx\int_{\Gamma}G(\xx,\yy)\rho(\yy)\;\dd\yy$\\\hline
-5 & $D$  & \code{DnDoubleLayer}&$\dsp D\lambda = -\dnx\int_{\Gamma}\dny G(\xx,\yy)\lambda(\yy)\;\dd\yy$\\ \hline
-6 & $\hat{L}L$  & \code{PrecondDirichlet}& Single-scattering preconditioned trace of the single-layer operator (see (\ref{??}))\\\hline
-7 & $\hat{D}D$  & \code{PrecondNeumann}& Single-scattering preconditioned normal derivative trace of the double-layer operator (see (\ref{??}))\\ \hline
+1 & $I$ & \tabcode{Identity} & Identity\\\hline
+2 & $L$ & \tabcode{SingleLayer} & $\dsp L\rho = \int_{\Gamma}G(\xx,\yy)\rho(\yy)\;\dd\yy$\\\hline
+3 & $M$ & \tabcode{DoubleLayer} & $\dsp M\lambda = -\int_{\Gamma}\dny G(\xx,\yy)\lambda(\yy)\;\dd\yy$\\\hline
+4 & $N$  & \tabcode{DnSingleLayer}& $\dsp N\rho = \dnx\int_{\Gamma}G(\xx,\yy)\rho(\yy)\;\dd\yy$\\\hline
+5 & $D$  & \tabcode{DnDoubleLayer}&$\dsp D\lambda = -\dnx\int_{\Gamma}\dny G(\xx,\yy)\lambda(\yy)\;\dd\yy$\\ \hline
+6 & $\hat{L}L$  & \tabcode{PrecondDirichlet}& Single-scattering preconditioned trace of the single-layer operator (see (\ref{??}))\\\hline
+7 & $\hat{D}D$  & \tabcode{PrecondNeumann}& Single-scattering preconditioned normal derivative trace of the double-layer operator (see (\ref{??}))\\ \hline
 \end{tabular}
 \end{center}
 
 
-\section{Pre-Processing}
+\section{Pre-Processing}\label{sec:PreProcessing}
 
-The pre-processing in \mudiff consists in defining the right-hand side (or the incident wave) and the geometry (the obstacles). The associated functions are  located respectively in \code{mudiff/PreProcessing/IncidentWave} and \code{mudiff/PreProcessing/Geometry}.
+The pre-processing in \mudiff consists in defining the right-hand side (or the incident wave) and the geometry (the obstacles). The associated functions are located respectively in the folder \folder{mudiff/PreProcessing/IncidentWave} and in \folder{mudiff/PreProcessing/Geometry}.
 
 \subsection{Geometry: creating the obstacles}
 
@@ -166,13 +166,13 @@ where every additional arguments is optional (but the order must be kept (\code{
 \begin{center}
 \begin{tabular}{|c |c|c | p{10cm}|}
 \hline Variable & Type & Default & Action\\\hline
-\code{amin} & scalar  & 1 & Minimal (random) radius of the obstacles allowed \\\hline
-\code{amax} & scalar  & 1 & Maximal (random) radius of the obstacles  allowed\\\hline
-\code{dmin} & scalar & \code{realmin} & Minimal distance allowed between two obstacle (not between the centers!). Setting $\leq 0$  value will set \code{dmin} to \code{realmin} (\ie ignore it)\\\hline
-\code{dmax} & scalar & \code{realmax} & Maximal distance allowed between two obstacle (not between the centers!). The maximal distance is quickly reached! Setting $\leq 0$  value will set \code{dmax} to \code{realmax} (\ie ignore it).\\\hline
-\code{O\_avoid} & \code{[2 x N]} & \code{[]} & Center of \code{N} hole(s) where the obstacles must not overlap. Usefull for example for point source location.\\\hline
-\code{a\_avoid} & \code{[1 x N]} & \code{[]} & Radii of the \code{N} holes\\\hline
-\code{dmin\_avoid} & \code{[1 x N]} & \code{[]} & Minimal distance between an obstacle and a hole\\\hline
+\tabcode{amin} & scalar  & 1 & Minimal (random) radius of the obstacles allowed \\\hline
+\tabcode{amax} & scalar  & 1 & Maximal (random) radius of the obstacles  allowed\\\hline
+\tabcode{dmin} & scalar & \tabcode{realmin} & Minimal distance allowed between two obstacle (not between the centers!). Setting $\leq 0$  value will set \code{dmin} to \code{realmin} (\ie ignore it)\\\hline
+\tabcode{dmax} & scalar & \tabcode{realmax} & Maximal distance allowed between two obstacle (not between the centers!). The maximal distance is quickly reached! Setting $\leq 0$  value will set \code{dmax} to \code{realmax} (\ie ignore it).\\\hline
+\tabcode{O\_avoid} & $[2 \times N]$ & \tabcode{[]} & Center of \code{N} hole(s) where the obstacles must not overlap. Usefull for example for point source location.\\\hline
+\tabcode{a\_avoid} & $[1 \times N]$ & \tabcode{[]} & Radii of the \code{N} holes\\\hline
+\tabcode{dmin\_avoid} & $[1 \times N]$ & \tabcode{[]} & Minimal distance between an obstacle and a hole\\\hline
 \end{tabular}
 \end{center}
 The ``holes'', represented by the \code{*\_avoid} arguments, are disks where the obstacles must not overlap, for example where a point source is emitting a wave. 
@@ -335,6 +335,7 @@ Remember that the resulting vector corresponds to the opposite of the trace or n
 
 
 \section{Integral operators}
+\label{sec:ResolutionMuDiff}
 
 \subsection{Generalities}
 
@@ -369,13 +370,13 @@ As for the incident wave, for every operator, there exists a function that build
 \begin{center}\begin{tabular}{|c| c| c|c|}
 \hline Int. Op. & Identifier & Function & Definition for $\xx\in\Gamma$\\\hline\hline
 - & 0 & - & Zero operator (null matrix)\\\hline
-$I$ & 1 & \code{Identity} & Identity\\\hline
-$L$ & 2 & \code{SingleLayer} & $\dsp L\rho(\xx) = \int_{\Gamma} G(\xx,\yy) \rho(\yy)\dd\yy$\\[0.25cm]\hline
-$M$ & 3 & \code{DoubleLayer} & $\dsp M\lambda(\xx) = -\int_{\Gamma} \dny G(\xx,\yy) \lambda(\yy)\dd\yy$\\[0.25cm]\hline
-$N$ & 4 & \code{DnSingleLayer} & $\dsp N\rho(\xx) = \dnx\int_{\Gamma} G(\xx,\yy) \rho(\yy)\dd\yy$\\[0.25cm]\hline
-$D$ & 5 & \code{DnDoubleLayer} & $\dsp D\lambda(\xx) = -\dnx\int_{\Gamma} \dny G(\xx,\yy) \lambda(\yy)\dd\yy$\\[0.25cm]\hline
-$\hat{L}L$ & 6 & \code{PrecondDirichlet} & Single-Layer preconditioned by its diagonal\\[0.25cm]\hline
-$\hat{D}D$& 7 & \code{PrecondNeumann} & Dn Double-Layer preconditioned by its diagonal\\[0.25cm]\hline
+$I$ & 1 & \tabcode{Identity} & Identity\\\hline
+$L$ & 2 & \tabcode{SingleLayer} & $\dsp L\rho(\xx) = \int_{\Gamma} G(\xx,\yy) \rho(\yy)\dd\yy$\\[0.25cm]\hline
+$M$ & 3 & \tabcode{DoubleLayer} & $\dsp M\lambda(\xx) = -\int_{\Gamma} \dny G(\xx,\yy) \lambda(\yy)\dd\yy$\\[0.25cm]\hline
+$N$ & 4 & \tabcode{DnSingleLayer} & $\dsp N\rho(\xx) = \dnx\int_{\Gamma} G(\xx,\yy) \rho(\yy)\dd\yy$\\[0.25cm]\hline
+$D$ & 5 & \tabcode{DnDoubleLayer} & $\dsp D\lambda(\xx) = -\dnx\int_{\Gamma} \dny G(\xx,\yy) \lambda(\yy)\dd\yy$\\[0.25cm]\hline
+$\hat{L}L$ & 6 & \tabcode{PrecondDirichlet} & Single-Layer preconditioned by its diagonal\\[0.25cm]\hline
+$\hat{D}D$& 7 & \tabcode{PrecondNeumann} & Dn Double-Layer preconditioned by its diagonal\\[0.25cm]\hline
 \end{tabular}\end{center}
 \caption{Available operators, their unique identifier, function name (interface) and the mathematical definition. The zero function does not have an interface function and the sparse version is obtained by prefixing by \code{Sp} (\code{SpSingleLayer}, \code{SpDnDoubleLayer},\ldots). The block interface functions are also prefixed by ``\code{Block}'' (\code{SpBlockSingleLayer}, \code{BlockSingleLayer},\ldots)}
 \label{table:IntOp}
@@ -387,7 +388,7 @@ $\hat{D}D$& 7 & \code{PrecondNeumann} & Dn Double-Layer preconditioned by its di
 
 A sub matrix block can be created with the function \texttt{BlockIntegralOperator}:
 \begin{lstlisting}
-	Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, TypeOfOperator, Weight);
+Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, TypeOfOperator, Weight);
 \end{lstlisting}
 The \code{Weight} argument is optional and set to $1$ by default. The quantity \code{TypeOfOperator} specifies the integral operator to compute, thanks to the numbering of Table \ref{table:IntOp}. If \code{TypeOfOperator} is a scalar (\eg $=2$) then the resulting matrix \code{Apq} is the submatrix of the associated operator (\eg $\Lbpq$). If \code{TypeOfOperator} is a row (\eg \code{[1,3]}) then the sum of the two operators is done (\eg $\Ibpq+\Mbpq$). Finally the \code{Weight} quantity, of the same size as \code{TypeOfOperator}, is the constant to multiply the block with. The block is hence:
 $$
@@ -527,9 +528,9 @@ The whole matrix $\Ab$ is thus stored in three different parts: $\AbL$, $\AbM$ a
 \begin{tabular}{| l | l | l | l |}
 \hline $3D$-array & \multicolumn{3}{c|}{Length in the dimension\ldots}\\\cline{2-4}
 & $1$ & $2$ & $3$\\\hline
-$\AbL$ & $\dsp \max_p(2\Np+1)$ & \code{N\_scat}& \code{N\_scat}\\[0.2cm]\hline
-$\AbM$ & $\dsp \max_{p}\max_{q\neq p}\left[(2\Np+1)+(2\Nq+1)-1\right]$& \code{N\_scat}& \code{N\_scat}\\[0.2cm]\hline
-$\AbR$ & $\dsp \max_p(2\Np+1)$& \code{N\_scat}& \code{N\_scat}\\[0.2cm]\hline
+$\AbL$ & $\dsp \max_p(2\Np+1)$ & \tabcode{N\_scat}& \tabcode{N\_scat}\\[0.2cm]\hline
+$\AbM$ & $\dsp \max_{p}\max_{q\neq p}\left[(2\Np+1)+(2\Nq+1)-1\right]$& \tabcode{N\_scat}& \tabcode{N\_scat}\\[0.2cm]\hline
+$\AbR$ & $\dsp \max_p(2\Np+1)$& \tabcode{N\_scat}& \tabcode{N\_scat}\\[0.2cm]\hline
 \end{tabular}\end{center}
 With this constraint, the vector $\AbL(:,p,q)$ can be larger than $2\Np+1$ and thus $\AbpqL$ must be extracted: $\AbpqL = \AbL(1:2\Np+1, p, p)$. The same occurs for $\AbM$ and $\AbR$. 
 
@@ -672,6 +673,7 @@ psi = gmres(@(X)SpMatVec(X, M_modes, SpA), Uinc);
 
 
 \section{Post-Processing}
+\label{sec:PostProcessing}
 
 Now that the system has been solved, the next step is to display some results. The \mudiff toolbox proposes some post-processing features such as computing the far-field (fast) or the near-field of the wave on a grid (Matlab \code{meshgrid}) or on some points only. In addition, other features are available such as drawing the disks on figures or the incident field. Both the near- and far-field computations can be done for a linear combination of a single- and double-layer potentials $\Lop\rho + \Mop\lambda$, only one of them (\eg $\Lop\rho$) or with the same density $(\Lop+\Mop)\psi$, with a single command line. Every post-processing functions are located in the \code{PostProcessing/} directory.
 
@@ -734,7 +736,7 @@ R = RCS(O, a, M_modes, k, theta, Density, Weight);
 where the arguments are exactly the same as for the far field. In fact, \code{RCS} first calls \code{FarField} and then \code{FarField\_to\_RCS}.
 
 \begin{remark}
-The \code{RCS} functions is also interfaced with ready-to-use function: \code{RCSSingleLayerPotential} and \code{RCSDoubleLayerPotential}. These are located in the \code{PostProcessing/FarField/Interface} directory.
+The \code{RCS} function is also interfaced with the two following ready-to-use functions \code{RCSSingleLayerPotential} and \code{RCSDoubleLayerPotential}. Both of them are located in the \folder{PostProcessing/FarField/Interface} directory.
 \end{remark}
 
 
@@ -765,8 +767,10 @@ where \code{U} has zero value outside the obstacles and by default, also on the 
 
 Finally, the common options for \code{ExternalPotential} and \code{InternalPotential} are described below. For the sake of clarity, the examples are shown with only \code{ExternalPotential} even if they work also for \code{InternalPotential}:
 \begin{itemize}
-\item \code{ExternalPotential(..., 'Verbosity', VERBOSITY} : VERBOSITY is a scalar, which when set to 0, stop displaying message (default = 1)
-\item \code{ExternalPotential(..., 'OnBoundary', ONBOUNDARY} : if ONBOUNDARY is set to $1$ then the boundary is also covered (beware of the jump relation\ldots) (default = 0)
+\item \code{ExternalPotential(..., 'Verbosity', VERBOSITY)}\\
+\code{VERBOSITY} is a scalar, which when set to 0, stop displaying message (default = 1)
+\item \code{ExternalPotential(..., 'OnBoundary', ONBOUNDARY)}\\
+if \code{ONBOUNDARY} is set to $1$ then the boundary is also covered (beware of the jump relation\ldots) (default = 0)
 \end{itemize}
 
 \paragraph{Example 1: }compute the single-layer potential $u=\Lop\rho$ on a grid:
@@ -786,7 +790,7 @@ U = InternalPotential(X, Y, O, a M_modes, k, [rho, lambda], [1, 1.5 ; 0.5, -1.5]
 \end{lstlisting}
 
 \begin{remark}
-The near field functions \code{ExternalPotential} and \code{InternalPotential} are also interfaced with ready-to-use function: \code{ExternalSingleLayerPotential}, \code{InternalSingleLayerPotential}, \code{ExternalDoubleLayerPotential} and \code{InternalDoubleLayerPotential}. These are located in the \code{PostProcessing/NearField/Interface} directory.
+The near field functions \code{ExternalPotential} and \code{InternalPotential} are also interfaced by: \code{ExternalSingleLayerPotential}, \code{InternalSingleLayerPotential}, for the single-layer and by \code{ExternalDoubleLayerPotential} and \code{InternalDoubleLayerPotential} for the double layer potential. These four ready-to-use functions are located in the folder \folder{PostProcessing/NearField/Interface}.
 \end{remark}
 
 \subsubsection{Incident wave}
