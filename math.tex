@@ -533,6 +533,7 @@ This proposition shows in particular that there is no need in computing the sing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Penetrable case}
 
+\subsection{Problem}
 Let assume that the obstacles are now penetrable with a contrast function $n$ such that
 $$
 n(\xx) = \begin{cases}
@@ -550,9 +551,52 @@ $$
 \multicolumn{4}{c}{(\ut-\uinc) \text{ is outgoing.}} 
 \end{array}\right.
 $$
-A scattered field can be ex
-
-
 \subsection{An example of an integral equation}
-\subsection{Using the Calder\'on projectors}
+To rewrite this problem as a boundary integral equation, let the field $\ut$ be rewritten as
+$$
+\ut =\begin{cases}
+\ups + \uinc &\text{ in }\Omegaps\\
+\um & \text{ in }\Omegam,
+\end{cases}
+$$
+where $\ups$ and $\um$ are solutions of the coupled problems
+$$
+\left\{\begin{array}{r c l l}
+(\Delta + k^2) \ups  &=& 0 &\text{ in } \Omegaps\\
+(\Delta + k^2n^2) \um  &=& 0 &\text{ in } \Omegam\\
+(\ups - \um)|_\Gamma &=& -\uinc|_\Gamma &\text{ on } \Gamma\\
+(\dn \ups-\dn\um)|_\Gamma &=& -\dn\uinc|_\Gamma &\text{ on } \Gamma\\
+\multicolumn{4}{c}{\ups \text{ is outgoing.}} 
+\end{array}\right.
+$$
+Following the EFIE procedure, let the two field $\ups$ and $\um$ be described as a single-layer potential only:
+$$
+\begin{cases}
+\dsp \ups(\xx)  = \Lop^+\rhops(\xx) = \int_\Gamma G^+(\xx,\yy)\rhops(\yy)\;\dd\yy & \text{ in }\Omegaps\\
+\dsp \um(\xx)  = \Lop^-\rhomi(\xx) = \int_\Gamma G^-(\xx,\yy)\rhomi(\yy)\;\dd\yy & \text{ in }\Omegam,
+\end{cases}
+$$
+where $G^+$ and $G^-$ correspond to the Green function with respectively the wavenumber $k$ and $kn$. The transmission conditions of the trace and normal derivative traces on $\Gamma$ leads to the following coupled boundary integral equations system:
+\begin{equation}\label{eq:SystPenet}
+\left(\begin{array}{c c}
+\dsp L^+ & -L^-\\
+\dsp -\frac{I}{2} + N^+ & \dsp -\frac{I}{2} - N^-
+\end{array}\right)
+\left(\begin{array}{c}
+\rhops\\
+\rhomi
+\end{array}\right)
+=
+\left(\begin{array}{c}
+-\uinc|_\Gamma\\
+-\dn\uinc|_\Gamma
+\end{array}\right).
+\end{equation}
+This integral equation can be proved to be well posed if $k$ is not an irregular frequency of the interior homogeneous Dirichlet problem. The example \code{BenchmarkPenetrable.m} located in \texttt{Examples/Benchmark} solves the penetrable scattering problem using this integral equation. Actually, the program has here be written in the dielectric case (not the acoustic one), and thus, the transmission condition on the normal derivative is there slightly changed by allowing a possible jump on the normal derivative: $ (\dn \ups-\frac{\mu}{\mu_0}\dn\um)|_\Gamma = -\dn\uinc|_\Gamma$, where $\mu_0$ is the magnetic permeability of the medium and $\mu = \mu_p$ in $\Omegamp$ is the magnetic permeability of the domain $\Omegamp$. The associated integral equation is then obtained by modifying the quantity $\dsp -\frac{I}{2} - N^-$ by $\dsp \mu\left(-\frac{I}{2} - N^-\right)$, in the matrix of (\ref{eq:SystPenet}).
 
+%\subsection{Calder\'on projectors}
+%
+%Taking back the Helmholtz representation of the scattered field ()
+%[I/2+M, L; D, I/2+N]
+%
+%The Calderon projectors is defined by
