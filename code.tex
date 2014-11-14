@@ -16,11 +16,11 @@ Section \ref{sec:PreProcessing}  shows how to define the scattering configuratio
  \ref{sec:ResolutionMuDiff}  presents the way the integral equations must be defined and solved.
   Finally, section \ref{sec:PostProcessing} describes the data post-processing. 
 
-The \mudiff toolbox  is organized following the five subdirectories:
+The \mudiff toolbox  is organized following the five subdirectories (see also figure \ref{fig:arbo} for a diagram of the arborescence):
 \begin{itemize}
 \item \texttt{mudiff/PreProcessing/}: pre-processing data functions (incident wave and geometry) (section \ref{sec:PreProcessing}).
 \item \texttt{mudiff/IntOperators/}: functions for the four basic integral operators (dense and sparse structure)
-used in the definition of the integral equations to solve (section \ref{sec:sec:ResolutionMuDiff}). 
+used in the definition of the integral equations to solve (section \ref{sec:ResolutionMuDiff}). 
 \item \texttt{mudiff/PostProcessing/}: post-processing functions of the solution (trace and normal derivative traces,
 computation of the scattered/total wavefield 
 at some points of the spatial domain or on a grid, far-field and RCS) 
@@ -30,6 +30,93 @@ from the standard user point of view.
 \item \texttt{mudiff/Examples/}: various scripts are presented for the user in standard configurations.
 \end{itemize}
 In addition, the \mudiff user-guide, licence and credits can be found under the directory \texttt{mudiff/Doc/}.
+
+
+\begin{figure}[p]
+\tikzstyle{every node}=[draw=black,thick,anchor=west]
+\begin{tikzpicture}[%
+  grow via three points={one child at (0.5,-0.7) and
+  two children at (0.5,-0.7) and (0.5,-1.4)},
+  edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
+  \node {mu-diff/}
+    child { node {Common}}
+    child { node {Doc}}
+    child { node {Examples}
+      child { node {Benchmark}}
+      child { node {TimeReversal}
+      	  child { node {FarField}
+      	    child { node {Common}}
+      	    child { node {NonPenetrable}}
+      	    child { node {Penetrable}}
+      }
+    }
+    }
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child { node {IntOperators}
+      child{node{Dense}
+         child{node{Interface}
+         child{node{Block}}
+         child{node{Full}}
+         }
+      }
+          child [missing] {}
+    child [missing] {}
+    child [missing] {}
+      child{node{Sparse}
+        child{node {Functions}}
+         child{node{Interface}
+           child{node{Block}}
+           child{node{Full}}
+         }
+      }
+    }
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child { node {PostProcessing}
+      child { node {FarField}
+        child { node {Interface}}
+       }
+       child [missing] {}
+      child { node {Geometry}}
+      child { node {IncidentWave}}
+      child { node {NearField}
+        child { node {Functions}}
+        child { node {Interface}}
+       }
+      }
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child [missing] {}
+    child { node {Preprocessing}
+        child { node {Fourier}}
+        child { node {Geometry}}
+        child { node {IncidentWave}
+           child { node {Full}}
+           child { node {Block}}
+         }
+	}
+;
+\end{tikzpicture}
+\caption{Arborescence of \mudiff toolbox.}
+\label{fig:arbo}
+\end{figure}
+
 
 \section{Common argument and notations}
 

@@ -431,11 +431,8 @@ BWIE &  $2^{nd}$ kind & $k > 0 $ & no \\
 
 
 
-\section{Penetrable case}
 
-\subsection{An example of an integral equation}
 
-\subsection{Using the Calder\'on projectors}
 
 %%%%%%%%%
 \section{Multiple scattering case}%Matrix form of the integral equation $A$ in the multiple scattering case}
@@ -531,3 +528,31 @@ where $I$ is the identity operator. Note that this preconditioning accelerates t
 When preconditioned by their single-scattering preconditioners, the EFIE, MFIE and CFIE become identical and similar to the preconditioned BWIE (equal up to an invertible operator). In other words, after being preconditioned, the four integral equations will lead to the same convergence rate of the iterative solver.
 \end{prop}
 This proposition shows in particular that there is no need in computing the single-scattering preconditioned version of every integral equations: only one is enough. because the resulting operator presents a good convergence rate for multiple scattering, it is hard coded in \mudiff for the Dirichlet and the Neumann cases. They are based on the single-layer potential for the Dirichlet case and the double-layer potential for the Neumann case (EFIE, MFIE or CFIE in both cases).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Penetrable case}
+
+Let assume that the obstacles are now penetrable with a contrast function $n$ such that
+$$
+n(\xx) = \begin{cases}
+n_p & \text{ if } \xx\in\Omegamp\\
+0&\text{ otherwise,}
+\end{cases}
+$$
+where $n_p$ are constant. The problem to be solved is now to find the total field $\ut$ such that
+$$
+\left\{\begin{array}{r c l l}
+(\Delta + k^2) \ut  &=& 0 &\text{ in } \Omegaps\\
+(\Delta + k^2n^2) \ut  &=& 0 &\text{ in } \Omegam\\
+\ut &=& 0 &\text{ on } \Gamma\\
+\dn \ut &=& 0 &\text{ on } \Gamma\\
+\multicolumn{4}{c}{(\ut-\uinc) \text{ is outgoing.}} 
+\end{array}\right.
+$$
+A scattered field can be ex
+
+
+\subsection{An example of an integral equation}
+\subsection{Using the Calder\'on projectors}
+

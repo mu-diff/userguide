@@ -1,0 +1,39 @@
+\mtcaddchapter[Installation]                          % solution pour minitoc
+\markboth{\uppercase{Installation}}{\uppercase{Installation}} 
+
+\section*{Requierement}
+
+\mudiff needs Matlab software, version 2011 or higher. The previous version should work fine, however without guarantee. Matlab can be bough and downloaded at \url{http://www.mathworks.com/}.
+
+\section*{Install}
+
+The install process is done as follows:
+\begin{enumerate}
+\item Download the \mudiff toolbox, either using \texttt{git} with
+\begin{verbatim}
+git clone http://mu-diff.math.cnrs.fr/git mu-diff
+\end{verbatim} 
+or by downloading the zip file and unzipping it here:
+\begin{center}
+\url{http://mu-diff.math.cnrs.fr/mu-diff/Download_files/mudiff.zip}
+\end{center}
+\item Add the \mudiff toolbox to Matlab's path (including subfolders !), using either the graphical interface of Matlab or the \code{addpath} and \code{save path} functions.
+\item Test the \mudiff function by typing in the Matlab command window:
+\begin{lstlisting}
+BenchmarkDirichlet;
+\end{lstlisting}
+This should solve the multiple scattering problem using classical boundary integral equation, described in chapter \ref{chap:math}, with in addition, the radar cross section and the history of GMRES of the boundary integral equations.
+\item Other test can be launched to be sure every integral operators are working fine:
+\begin{lstlisting}
+BenchmarkNeumann;
+BenchmarkPenetrable;
+BenchmarkCalderon;
+\end{lstlisting}
+\item If everything goes right: congratulation! you install of \mudiff is working!
+\end{enumerate}
+
+If you want to see some other use of \mudiff, you can try and launch the following time reversal experiment:
+\begin{lstlisting}
+DORT_NotPenetrable;
+DORT_dielectric;
+\end{lstlisting}
