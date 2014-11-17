@@ -179,7 +179,7 @@
 
 
 <fun>
-<name>SpBlockIntegralOperator.m</name>
+<name>SpIntegralOperator.m</name>
 <folder>IntOperators/Sparse</folder>
 <summary>Generic integral operator sparse matrix (full)</summary>
 </fun>

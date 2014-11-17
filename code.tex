@@ -185,6 +185,8 @@ a = [0.1, 0.5, 10];
 \end{lstlisting}
 
 \subsubsection{Periodic placement}
+\label{secFun:RectangularLattice}
+\label{secFun:TriangularLattice}
 
 Two build-in functions are available with the toolbox to create disks periodically, with a rectangular or a triangular lattice, as shown on figure \ref{fig:lattices}. The two functions must be called as follows, first for the rectangular lattice:
 \begin{lstlisting}
@@ -206,7 +208,7 @@ For both functions, the vector of radii must be built separately and manually. F
 a = ones(size(O,2));
 \end{lstlisting}
 
-The available options are (same for \code{RectangularLattice} and \code{TriangularLattice}):
+The available options are (same for \RectangularLattice and \TriangularLattice):
 \begin{itemize}
 \item \code{RectangularLattice(..., 'Center', Ostart)}
 Place the first disk on Ostart position, Ostart being a [2x1] vector. (Default: $[0;0]$).
@@ -237,12 +239,13 @@ a = ones(size(O,2));
 
 
 \subsubsection{Random placement}
+\label{secFun:CreateRandomDisks}
 
-\mudiff provides a function \code{CreateRandomDisks} to randomly place \code{N\_scat} obstacles in a box $[\code{xmin}, \code{xmax}]\times[\code{ymin},\code{ymax}]$ with also a random radius. In its simplest version, the function is called as:
+\mudiff provides a function \CreateRandomDisks to randomly place \code{N\_scat} obstacles in a box $[\code{xmin}, \code{xmax}]\times[\code{ymin},\code{ymax}]$ with also a random radius. In its simplest version, the function is called as:
 \begin{lstlisting}
 [O, a] = CreateRandomDisks(xmin, xmax, ymin, ymax, N_scat);
 \end{lstlisting}
-In that case, \code{CreateRandomDisks} builds \code{N\_scat} disk with unit radius in the desired box. The function takes care to not overlap the disks. Note that it is possible that the function does not succeed to place the obstacle (\eg if the user asks for too many obstacles in a small box) and hence a security has been set: only $500$ trials are allowed per disk. 
+In that case, \CreateRandomDisks builds \code{N\_scat} disk with unit radius in the desired box. The function takes care to not overlap the disks. Note that it is possible that the function does not succeed to place the obstacle (\eg if the user asks for too many obstacles in a small box) and hence a security has been set: only $500$ trials are allowed per disk. 
 
 The function comes along with a large set of optional arguments:
 \begin{lstlisting}
@@ -283,12 +286,14 @@ The disk centered on $(2,2)$ with radius $0.3$ will then be avoided. A second op
 
 
 \begin{remark}
-To verify if a disk is well placed, \code{CreateRandomDisks} calls \code{CheckPlacement} function, which can also be useful for a user who is placing the obstacles manually.
+\label{secFun:CheckPlacement}
+To verify if a disk is well placed, \CreateRandomDisks calls \CheckPlacement function, which can also be useful for a user who is placing the obstacles manually.
 \end{remark}
 
 \subsubsection{Removing disks}
+\label{secFun:RemoveDisk}
 
-The function \code{RemoveDisk} aims to remove some disks of the geometrical configuration, either disk by disk, by row or by column or by radius. This can be useful for example to delete a row of disks. Here is its syntax
+The function \RemoveDisk aims to remove some disks of the geometrical configuration, either disk by disk, by row or by column or by radius. This can be useful for example to delete a row of disks. Here is its syntax
 \begin{lstlisting}
 [O,a] = RemoveDisk(O_old, a_old, ...);
 \end{lstlisting}
@@ -339,12 +344,13 @@ a = ones(1, size(O, 2));
 
 
 \subsection{Truncation of the Fourier series}
+\label{secFun:FourierTruncation}
 
 To help the user, the formula (\ref{eqEqInt:CFIEDapp}) has been computed in \mudiff. The values of $\Np$ are stored in a Matlab vector of size $[1\times\code{N\_scat}]$ called \code{M\_modes} in \mudiff. Computing \code{M\_modes} only involves the radii of the disks and the wavenumber \code{k}, which is assumed to be created by the user:
 \begin{lstlisting}
 M_modes = FourierTruncation(a, k);
 \end{lstlisting}
-The resulting vector is such that \code{M\_modes(p)}=$\Np$ where $\Np$ satisfies (\ref{eqEqInt:CFIEDapp}), with obviously a minimum value of $0$ (which consists of only one mode). If \code{k} is a vector (one wavenumber per obstacle), then \code{FourierTruncation} compute formula (\ref{eqEqInt:CFIEDapp})  with \code{k(p)} as the wavenumber.
+The resulting vector is such that \code{M\_modes(p)}=$\Np$ where $\Np$ satisfies (\ref{eqEqInt:CFIEDapp}), with obviously a minimum value of $0$ (which consists of only one mode). If \code{k} is a vector (one wavenumber per obstacle), then \FourierTruncation compute formula (\ref{eqEqInt:CFIEDapp})  with \code{k(p)} as the wavenumber.
 
 The following options are moreover availabe:
 \begin{itemize}
@@ -356,19 +362,32 @@ The tolerance, set by default to $10^{-10}$, is then set to \code{TOL}.
 
 \subsection{Incident waves}
 
-\subsubsection{\code{Generalities}}
+\subsubsection{Generalities}
+\label{secFun:PlaneWave}
+\label{secFun:DnPlaneWave}
+\label{secFun:PointSource}
+\label{secFun:DnPointSource}
+\label{secFun:PlaneWavePrecond}
+\label{secFun:DnPlaneWavePrecond}
+\label{secFun:BlockPlaneWave}
+\label{secFun:BlockDnPlaneWave}
+\label{secFun:BlockPointSource}
+\label{secFun:BlockDnPointSource}
+\label{secFun:BlockPlaneWavePrecond}
+\label{secFun:BlockDnPlaneWavePrecond}
 
-Two different incident waves are available in the \mudiff toolbox: plane wave and point source wave. It should however be highlighted that the user can build his/her own incident wave. They are all located in \code{PreProcessing/IncidentWave/}.
+Two different incident waves are available in the \mudiff toolbox: plane wave and point source wave. It should however be highlighted that the user can build his/her own incident wave. They are all located in \folder{PreProcessing/IncidentWave/}.
 
-As explained in section \ref{secEqInt:SecondMembre}, a right-hand side $b$ is decomposed by blocks, each of these representing one obstacle: $b= (b_p)_{p=1,\ldots,\Nscat}$. A different condition can be applied on two different obstacles (\eg Dirichlet on $\Omega_1$ and Neumann on $\Omega_2$) or a different integral equation can be considered on it (\eg EFIE on $\Omega_1$ and MFIE on $\Omega_2$). To handle that, \mudiff builds each block separatly thanks to \code{BlockIncidentWave}, which computes the vector $b_p$. According to the input data, the function will build one of the available right-hand side described on table \ref{table:Uinc}.
+As explained in section \ref{secEqInt:SecondMembre}, a right-hand side $b$ is decomposed by blocks, each of these representing one obstacle: $b= (b_p)_{p=1,\ldots,\Nscat}$. A different condition can be applied on two different obstacles (\eg Dirichlet on $\Omega_1$ and Neumann on $\Omega_2$) or a different integral equation can be considered on it (\eg EFIE on $\Omega_1$ and MFIE on $\Omega_2$). To handle that, \mudiff builds each block separately thanks to \BlockIncidentWave, which computes the vector $b_p$. According to the input data, the function will build one of the available right-hand side described on table \ref{table:Uinc}.
 
-On the other hand, the frontal function \code{IncidentWave} computes the whole vector $b$. For every obstacle $p$, it calls \code{BlockIncidentWave} and assembles the whole vector. 
+On the other hand, the frontal function \IncidentWave computes the whole vector $b$. For every obstacle $p$, it calls \BlockIncidentWave and assembles the whole vector. 
 
-In addition to this, for every incident waves, an interface function is available. They build the whole vector on only one pattern (trace of plane wave, normal derivative of point source wave, \ldots) but are very easy to use. They are located in the \code{interface/} directory and their names are well chosen (see also table \ref{table:Uinc}, column \mudiff name): \code{PlaneWave}, \code{PointSource}, \code{DnPlaneWave},\ldots. Let us highlights that the help of the interface functions contains the mathematical description of the incident wave.
+In addition to this, for every incident waves, an interface function is available. They build the whole vector on only one pattern (trace of plane wave, normal derivative of point source wave, \ldots) but are very easy to use. They are located in the \folder{interface/} directory and their names are well chosen (see also table \ref{table:Uinc}, column \mudiff name): \PlaneWave, \PointSource, \DnPlaneWave,\ldots. Let us highlights that the help of the interface functions contains the mathematical description of the incident wave.
 
-The two main functions, \code{BlockIncidentWave} and \code{IncidentWave}, are now detailed.
+The two main functions, \BlockIncidentWave and \IncidentWave, are now detailed.
 
 \subsubsection{\code{BlockIncidentWave}}
+\label{secFun:BlockIncidentWave}
 
 This functions computes the block vector of \textbf{the opposite of} the coefficients of an incident wave, either the trace of the normal derivative trace, on one of the obstacles, in the Fourier bases. Its syntax is
 \begin{lstlisting}
@@ -390,11 +409,12 @@ where \code{TypeOfWave} is a scalar value specifying the incident wave (see tabl
 \end{table}
 
 \subsubsection{\code{IncidentWave}}
+\label{secFun:IncidentWave}
 
 \begin{lstlisting}
 B = IncidentWave(O, a, M_modes, k, TypeOfWave, Param)
 \end{lstlisting}
-The resulting vector \code{B} is of size $\sum_{p=1}^{\Nscat}(2\code{M\_modes}(p)+1)$. The value \code{Param} is the same as for \code{BlockIncidentWave} whereas \code{TypeOfWave} is a vector of size $\Nscat$ where \code{TypeOfWave}(p) is the desired choice for the block $b_p$. In other word, the block $b_p$ will be built by calling \code{BlockIncidentWave(Op, ap, Np, k, TypeOfWave, Param);}. To simplify, if \code{TypeOfWave} is a scalar value, then it is considered as a vector of the same scalar value.
+The resulting vector \code{B} is of size $\sum_{p=1}^{\Nscat}(2\code{M\_modes}(p)+1)$. The value \code{Param} is the same as for \BlockIncidentWave whereas \code{TypeOfWave} is a vector of size $\Nscat$ where \code{TypeOfWave}(p) is the desired choice for the block $b_p$. In other word, the block $b_p$ will be built by calling \code{BlockIncidentWave(Op, ap, Np, k, TypeOfWave, Param);}. To simplify, if \code{TypeOfWave} is a scalar value, then it is considered as a vector of the same scalar value.
 
 \paragraph{Example1:} building a vector associated to the trace of an incident plane wave of direction \code{beta\_inc} is done thanks to the following command (the ``$1$ argument'' refers to \code{PlaneWave}):
 \begin{lstlisting}
@@ -426,11 +446,11 @@ Remember that the resulting vector corresponds to the opposite of the trace or n
 
 \subsection{Generalities}
 
-The functions defining the integral operators are in the directory \code{IntOperators/} which has the \code{Dense/}
-and \code{Sparse/} subdirectories for the dense (matrix) and sparse (@function) representations of the four basic integral operators used in scattering,
+The functions defining the integral operators are in the directory \folder{IntOperators/} which has the \folder{Dense/}
+and \folder{Sparse/} subdirectories for the dense (matrix) and sparse (@function) representations of the four basic integral operators used in scattering,
 \ie $\Lb$, $\Mb$, $\Nb$ and $\Db$, given in their infinite version by respectively (\ref{eq:InfL}), (\ref{eq:InfM}), (\ref{eq:InfN}) and (\ref{eq:InfD}). Preconditioned versions of the operators by their single scattering operators \cite{Thi14}. In fact and following Proposition \ref{prop:SingleScat}, only $\widehat{L}L$ (EFIE Dirichlet) and $\widehat{D}D$ (EFIE Neumann) are available, as they are the only one needed for the Dirichlet and Neumann problems. These operators have moreover an analytic expression of every of their coefficients (see equations (\ref{eq:LL}) and (\ref{eq:DD}), in the infinite matrices case).
 
-Two different type of storage are available with the \mudiff toolbox: dense and sparse. The assembly of matrix is however similar for both cases (only a few differences). \mudiff is close to the mathematics for the assembly process, in the sense that the matrix $\Ab$ of an integral operator is built block by block ($\Abpq$). For both storage, two main functions exist: a ``block'' function (\code{BlockIntegralOperator} and \code{SpBlockIntegralOperator}) and a whole matrix function (\code{IntegralOperator} and \code{SpIntegralOperator}), which assembles every blocks into one matrix. This separation permits to the user to either build a ``simple'' matrix of one operator or to construct a more ``complex'' matrix where each block represents a different operator or a linear combination of them. Note also that, every operator has functions of interface (located in \code{Dense/Interface} or \code{Sparse/Interface} folders). For example \code{SingleLayer} is the interface function of \code{IntegralOperator} to build the single-layer operator, and \code{BlockSingleLayer} the one of \code{BlockIntegralOperator}. The same applies for the sparse storage with a prefix \code{Sp}:  \code{SpSingleLayer},  \code{SpBlockSingleLayer}.
+Two different type of storage are available with the \mudiff toolbox: dense and sparse. The assembly of matrix is however similar for both cases (only a few differences). \mudiff is close to the mathematics for the assembly process, in the sense that the matrix $\Ab$ of an integral operator is built block by block ($\Abpq$). For both storage, two main functions exist: a ``block'' function (\BlockIntegralOperator and \SpBlockIntegralOperator) and a whole matrix function (\IntegralOperator and \SpIntegralOperator), which assembles every blocks into one matrix. This separation permits to the user to either build a ``simple'' matrix of one operator or to construct a more ``complex'' matrix where each block represents a different operator or a linear combination of them. Note also that, every operator has functions of interface (located in \folder{Dense/Interface} or \folder{Sparse/Interface} folders). For example \SingleLayer is the interface function of \IntegralOperator to build the single-layer operator, and \BlockSingleLayer the one of \BlockIntegralOperator. The same applies for the sparse storage with a prefix \code{Sp}:  \SpSingleLayer,  \SpBlockSingleLayer.
 
 
 The dense storage should be preferred for solving small scale problem, when the memory and the CPU cost is not a problem, where the sparse storage must be used when the limits are reached. For the sparse storage, which is detailed later, the matrices are stored as vectors and the matrix-vector product is then fast. The drawback being however some instability, in particular when the truncation of the Fourier series is not done properly. The formula (\ref{eqEqInt:CFIEDapp}) seems to give a stable result though \cite{AntChnRam08}.
@@ -450,6 +470,22 @@ The dense storage should be preferred for solving small scale problem, when the 
 
 \subsection{Available integral operators and numbering}
 \label{seccode:IntOp}
+\label{secFun:BlockSingleLayer}
+\label{secFun:BlockDnSingleLayer}
+\label{secFun:BlockDoubleLayer}
+\label{secFun:BlockDnDoubleLayer}
+\label{secFun:BlockPrecondDirichlet}
+\label{secFun:BlockPrecondNeumann}
+\label{secFun:BlockCalderonProjector}
+\label{secFun:BlockIdentity}
+\label{secFun:SingleLayer}
+\label{secFun:DnSingleLayer}
+\label{secFun:DoubleLayer}
+\label{secFun:DnDoubleLayer}
+\label{secFun:PrecondDirichlet}
+\label{secFun:PrecondNeumann}
+\label{secFun:CalderonProjector}
+\label{secFun:Identity}
 
 As for the incident wave, for every operator, there exists a function that build the whole operator for the multiple scattering problem, both for dense and sparse storage. The available operators are listed on table \ref{table:IntOp}, with their unique identifier (integer), their name in \mudiff (useful to get their interface functions) and their definition.
 
@@ -465,15 +501,16 @@ $D$ & 5 & \tabcode{DnDoubleLayer} & $\dsp D\lambda(\xx) = -\dnx\int_{\Gamma} \dn
 $\hat{L}L$ & 6 & \tabcode{PrecondDirichlet} & Single-Layer preconditioned by its diagonal\\[0.25cm]\hline
 $\hat{D}D$& 7 & \tabcode{PrecondNeumann} & Dn Double-Layer preconditioned by its diagonal\\[0.25cm]\hline
 \end{tabular}\end{center}
-\caption{Available operators, their unique identifier, function name (interface) and the mathematical definition. The zero function does not have an interface function and the sparse version is obtained by prefixing by \code{Sp} (\code{SpSingleLayer}, \code{SpDnDoubleLayer},\ldots). The block interface functions are also prefixed by ``\code{Block}'' (\code{SpBlockSingleLayer}, \code{BlockSingleLayer},\ldots)}
+\caption{Available operators, their unique identifier, function name (interface) and the mathematical definition. The zero function does not have an interface function and the sparse version is obtained by prefixing by \code{Sp} (\SpSingleLayer, \SpDnDoubleLayer,\ldots). The block interface functions are also prefixed by ``\code{Block}'' (\SpBlockSingleLayer, \BlockSingleLayer,\ldots)}
 \label{table:IntOp}
 \end{table}
 
 
 \subsection{Dense storage}
 \subsubsection{Building a block $\Abpq$}
+\label{secFun:BlockIntegralOperator}
 
-A sub matrix block can be created with the function \texttt{BlockIntegralOperator}:
+A sub matrix block can be created with the function \BlockIntegralOperator:
 \begin{lstlisting}
 Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, TypeOfOperator, Weight);
 \end{lstlisting}
@@ -499,12 +536,13 @@ Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, [2, 3, 4, 5],
 
 
 \subsubsection{Assemble the matrix $\Ab$}
+\label{secFun:IntegralOperator}
 
 Now that the construction of a block is well understood, building a matrix is very easy thanks to the frontal function
 \begin{lstlisting}
 A = IntegralOperator(O, a, M_modes, k, TypeOfOperator, Weight);
 \end{lstlisting}
-As for \code{BlockIntegralOperator}, the quantity \code{Weight} is optional and set to $1$ by default. Roughly speaking, \code{IntegralOperator} will loop on every obstacle $p$ and $q$ and launch the following command
+As for \BlockIntegralOperator, the quantity \code{Weight} is optional and set to $1$ by default. Roughly speaking, \IntegralOperator will loop on every obstacle $p$ and $q$ and launch the following command
 \begin{lstlisting}
 Apq = BlockIntegralOperator(O(:,p), a(p), M_modes(p), O(:,q), a(q), M_modes(q), 
                                                     k, Tpq, Wpq);
@@ -516,6 +554,20 @@ and places \code{Apq} in the right block of the whole matrix. The quantities \co
 \item If \code{TypeOfOperator} is a matrix then \code{Tpq} = \code{TypeOfOperator(p,q)}. 
 \item If \code{TypeOfOperator} is a $3D-$array then \code{Tpq} is an array and is given by \code{Tpq(:)} = \code{TypeOfOperator(p,q,:)}. 
 \end{itemize}
+%
+%For example, this matrix will give,
+%$$
+%\left(\begin{array}{c c}
+%2& 3\\
+%4&5
+%\end{array}\right)
+%\longrightarrow
+%\left(\begin{array}{c c}
+%L^{1,1}& M^{2,1}\\
+%N^{1,2} & D^{2,2}
+%\end{array}\right)
+%$$
+
 
 \paragraph{Example 1:} The single-layer potential $L$
 \begin{lstlisting}
@@ -552,6 +604,19 @@ psi = A \ Uinc;
 \end{lstlisting}
 
 \subsection{Sparse storage}
+\label{secFun:SpBlockSingleLayer}
+\label{secFun:SpBlockDnSingleLayer}
+\label{secFun:SpBlockDoubleLayer}
+\label{secFun:SpBlockDnDoubleLayer}
+\label{secFun:SpBlockPrecondDirichlet}
+\label{secFun:SpBlockPrecondNeumann}
+\label{secFun:SpSingleLayer}
+\label{secFun:SpDnSingleLayer}
+\label{secFun:SpDoubleLayer}
+\label{secFun:SpDnDoubleLayer}
+\label{secFun:SpPrecondDirichlet}
+\label{secFun:SpPrecondNeumann}
+\label{secFun:SpIdentity}
 
 Storing the matrices in a sparse way leads to a significant reduction in memory storage and a faster matrix-vector product. The linear system must then however be solved using an iterative solver only, as the matrix is no more fully stored. Combining linearly the matrices is still possible but this is done during the matrix-vector product. Indeed, summing two matrices of two different integral operators is not guaranteed to keep the special structure. If the problem involves (at least) two different integral operators, they must hence be computed separately.
 
@@ -648,6 +713,8 @@ The matrix vector product between $\Ab$ and $X$ is then done in a fast way (cros
 
 
 \subsubsection{\mudiff: assemble the matrix}
+\label{secFun:SpBlockIntegralOperator}
+\label{secFun:SpIntegralOperator}
 
 The assembly process is very similar to the dense one, the difference being the prefix \code{Sp}. The block function is then called by
 \begin{lstlisting}
@@ -685,6 +752,7 @@ A = SpIntegralOperator(O, a, M_modes, k, TypeOfOp, Weight);
 \end{lstlisting}
 
 \subsubsection{Assembly: adding the identity}
+\label{secFun:SpAssIdentity}
 
 It is possible to add the identity (multiplied by a constant) to a sparse operator:
 \begin{lstlisting}
@@ -700,6 +768,8 @@ alpha_L = SpAddIdentity(L, 0.5, M_modes);
 will compute $0.5L$.
 
 \subsubsection{\mudiff: sparse matrix-vector product}
+\label{secFun:SpMatVec}
+\label{secFun:SpSingleMatVec}
 
 A matrix vector product $Y = \Ab X$ is done thanks to 
 \begin{lstlisting}
@@ -718,7 +788,7 @@ SpI = SpIdentity(O, a, M_modes);
 SpN = SpDnSingleLayer(O, a, M_modes, k);
 Y = SpMatVec(X, M_modes, {SpI, SpN}, [0.5, 1]);
 \end{lstlisting}
-This could also be done using \code{SpAddIdentity} function:
+This could also be done using \SpAddIdentity function:
 \begin{lstlisting}
 SpN = SpDnSingleLayer(O, a, M_modes, k);
 A = SpAddIdentity(SpN, 0.5, M_modes);
@@ -741,7 +811,7 @@ SpI = SpIdentity(O, a, M_modes);
 DnUinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
 rho = gmres(@(X)SpMatVec(X, M_modes, {SpI, SpN}, [0.5, 1]), DnUinc);
 \end{lstlisting}
-or using the \code{SpAddIdentity} function
+or using the \SpAddIdentity function
 \begin{lstlisting}
 SpAMFIE = SpDnSingleLayer(O, a, M_modes, k);
 SpAMFIE = SpAddIdentity(SpAMFIE, 0.5, M_modes);
@@ -762,15 +832,18 @@ psi = gmres(@(X)SpMatVec(X, M_modes, SpA), Uinc);
 \section{Post-Processing}
 \label{sec:PostProcessing}
 
-Now that the system has been solved, the next step is to display some results. The \mudiff toolbox proposes some post-processing features such as computing the far-field (fast) or the near-field of the wave on a grid (Matlab \code{meshgrid}) or on some points only. In addition, other features are available such as drawing the disks on figures or the incident field. Both the near- and far-field computations can be done for a linear combination of a single- and double-layer potentials $\Lop\rho + \Mop\lambda$, only one of them (\eg $\Lop\rho$) or with the same density $(\Lop+\Mop)\psi$, with a single command line. Every post-processing functions are located in the \code{PostProcessing/} directory.
+Now that the system has been solved, the next step is to display some results. The \mudiff toolbox proposes some post-processing features such as computing the far-field (fast) or the near-field of the wave on a grid (Matlab \code{meshgrid}) or on some points only. In addition, other features are available such as drawing the disks on figures or the incident field. Both the near- and far-field computations can be done for a linear combination of a single- and double-layer potentials $\Lop\rho + \Mop\lambda$, only one of them (\eg $\Lop\rho$) or with the same density $(\Lop+\Mop)\psi$, with a single command line. Every post-processing functions are located in the \folder{PostProcessing/} directory.
 
 \subsubsection{Far field}
+\label{secFun:FarField}
+\label{secFun:FarFieldSingleLayer}
+\label{secFun:FarFieldDoublleLayer}
 
 The far field of the single- and double-layer potentials
 $$
 \sum_{p=1}^{\Nscat}\eta_p\Lop_p\rho_p + \gamma_p\Mop_p\lambda_p,
 $$
-is given by equation (\ref{eq:FFFourier}). The \code{FarField} function does the job properly:
+is given by equation (\ref{eq:FFFourier}). The \FarField function does the job properly:
 \begin{lstlisting}
 F = FarField(O, a, M_modes, k, theta, Density, Weight);
 \end{lstlisting}
@@ -803,12 +876,16 @@ F = FarField(O, a, M_modes, k, theta, [rho, lambda], [[1:p].', -[1:p].']);
 \end{lstlisting}
 
 \begin{remark}
-The \code{FarField} function is also interfaced with ready-to-use function: \code{FarFieldSingleLayerPotential} and \code{FarFieldDoubleLayerPotential}. These are located in the \code{PostProcessing/FarField/Interface} directory.
+The \FarField function is also interfaced with ready-to-use function: \FarFieldSingleLayer and \FarFieldDoubleLayer. These are located in the \folder{PostProcessing/FarField/Interface} directory.
 \end{remark}
 
 \subsubsection{Radar Cross Section (RCS)}
+\label{secFun:RCS}
+\label{secFun:RCSSingleLayer}
+\label{secFun:RCSDoublleLayer}
+\label{secFun:FarFieldtoRCS}
 
-The radar cross section of a far field can be computed either from the far field with \code{FarField\_to\_RCS} or directly from the density with \code{RCS}. In \mudiff, the radar cross section $\sigma$ is obtained by ($F$ being the far field)
+The radar cross section of a far field can be computed either from the far field with \FarFieldtoRCS or directly from the density with \RCS. In \mudiff, the radar cross section $\sigma$ is obtained by ($F$ being the far field)
 $$
 \sigma = 10\log_{10}(2\pi|F|^2).
 $$
@@ -816,28 +893,36 @@ The computation is then done by typing:
 \begin{lstlisting}
 R = FarField_to_RCS(F);
 \end{lstlisting}
-where \code{F} has been computed by the \code{FarField} function. Otherwise, the RSC can be computed directly from the densities by
+where \code{F} has been computed by the \FarField function. Otherwise, the RSC can be computed directly from the densities by
 \begin{lstlisting}
 R = RCS(O, a, M_modes, k, theta, Density, Weight);
 \end{lstlisting}
-where the arguments are exactly the same as for the far field. In fact, \code{RCS} first calls \code{FarField} and then \code{FarField\_to\_RCS}.
+where the arguments are exactly the same as for the far field. In fact, \RCS first calls \FarField and then \FarFieldtoRCS.
 
 \begin{remark}
-The \code{RCS} function is also interfaced with the two following ready-to-use functions \code{RCSSingleLayerPotential} and \code{RCSDoubleLayerPotential}. Both of them are located in the \folder{PostProcessing/FarField/Interface} directory.
+The \RCS function is also interfaced with the two following ready-to-use functions \RCSSingleLayer and \RCSDoubleLayer. Both of them are located in the \folder{PostProcessing/FarField/Interface} directory.
 \end{remark}
 
 
 \subsubsection{Near field: outside and inside the obstacles}
+\label{secFun:ExternalPotential}
+\label{secFun:InternalPotential}
+\label{secFun:ExternalSingleLayerPotential}
+\label{secFun:ExternalDoubleLayerPotential}
+\label{secFun:InternalSingleLayerPotential}
+\label{secFun:InternalDoubleLayerPotential}
+\label{secFun:GetPotentialOptions}
+\label{secFun:BlockPotential}
 
 The near field of a potential is given by equations (\ref{eqEqInt:Lphimpt}) and (\ref{eqEqInt:Mphimpt}) outside the obstacles and by (\ref{eqEqInt:LphimptINT}) and (\ref{eqEqInt:MphimptINT}) inside. In the same way, \mudiff separates the outside and the inside computation. 
 
-First is explained how to compute the field outside the obstacles. The user only needs to create a mesh using \eg \code{meshgrid} and launch \code{ExternalPotential}, which syntax is
+First is explained how to compute the field outside the obstacles. The user only needs to create a mesh using \eg \code{meshgrid} and launch \ExternalPotential, which syntax is
 \begin{lstlisting}
 U = ExternalPotential(X, Y, O, a, M_modes, k, Density, Weight, OPTIONS);
 \end{lstlisting}
 The resulting matrix \code{U} has $0$ value inside the obstacle. By default, the computation is not done on the boundary of the obstacles (this can be changed thanks to the options). The arguments are:
 \begin{itemize}
-\item The arguments \code{Density} and \code{Weight} are exactly the same as for \code{FarField},
+\item The arguments \code{Density} and \code{Weight} are exactly the same as for \FarField,
 \item The quantities \code{X} and \code{Y} are the grid and they come from the Matlab \code{meshgrid} function
 \item The OPTIONS must be chosen from the options of the potential, see below (after the internal potential).
 \end{itemize}
@@ -850,9 +935,9 @@ In other words, the contributions of the other obstacles are not taken into acco
 \begin{lstlisting}
 U = InternalPotential(X, Y, O, a, M_modes, k, Density, Weight, OPTIONS);
 \end{lstlisting}
-where \code{U} has zero value outside the obstacles and by default, also on the boundaries. The arguments are exactly the same as \code{ExternalPotential}.
+where \code{U} has zero value outside the obstacles and by default, also on the boundaries. The arguments are exactly the same as \ExternalPotential.
 
-Finally, the common options for \code{ExternalPotential} and \code{InternalPotential} are described below. For the sake of clarity, the examples are shown with only \code{ExternalPotential} even if they work also for \code{InternalPotential}:
+Finally, the common options for \ExternalPotential and \InternalPotential are described below. For the sake of clarity, the examples are shown with only \ExternalPotential even if they work also for \InternalPotential:
 \begin{itemize}
 \item \code{ExternalPotential(..., 'Verbosity', VERBOSITY)}\\
 \code{VERBOSITY} is a scalar, which when set to 0, stop displaying message (default = 1)
@@ -877,16 +962,17 @@ U = InternalPotential(X, Y, O, a M_modes, k, [rho, lambda], [1, 1.5 ; 0.5, -1.5]
 \end{lstlisting}
 
 \begin{remark}
-The near field functions \code{ExternalPotential} and \code{InternalPotential} are also interfaced by: \code{ExternalSingleLayerPotential}, \code{InternalSingleLayerPotential}, for the single-layer and by \code{ExternalDoubleLayerPotential} and \code{InternalDoubleLayerPotential} for the double layer potential. These four ready-to-use functions are located in the folder \folder{PostProcessing/NearField/Interface}.
+The near field functions \ExternalPotential and \InternalPotential are also interfaced by: \ExternalSingleLayerPotential, \InternalSingleLayerPotential, for the single-layer and by \ExternalDoubleLayerPotential and \InternalDoubleLayerPotential for the double layer potential. These four ready-to-use functions are located in the folder \folder{PostProcessing/NearField/Interface}.
 \end{remark}
 
 \subsubsection{Incident wave}
+\label{secFun:IncidentWaveOnGrid}
 
 The incident waves can be also computed on a grid using 
 \begin{lstlisting}
 Uinc = IncidentWaveOnGrid(X, Y, k, TypeOfWave, Param);
 \end{lstlisting}
-where, as for the \code{IncidentWave} function from the PreProcessing part (see \S\ref{??}) :
+where, as for the \IncidentWave function from the PreProcessing part (see \S\ref{secFun:IncidentWave}) :
 \begin{itemize}
 \item \code{X} and \code{Y} ares matrices coming from the \code{meshgrid} Matlab function
 \item \code{Param} is either the angle of direction for a plane wave (scalar) or the location of a point source ($[2\times1]$ vector)
@@ -907,9 +993,13 @@ Uinc = IncidentWaveOnGrid(X, Y, k, 1, beta_inc);
 
  
 \subsubsection{Geometry: drawing the obstacles and creating mask matrices}
+\label{secFun:PlotCircles}
+\label{secFun:MaskMatrixObstacles}
+\label{secFun:BoundaryOfObstacles}
+
 
 The \mudiff toolbox also proposes some functions for the post processing of obstacles. 
-\paragraph{Drawing the disks with \code{PlotCircles}}\mbox{}
+\paragraph{Drawing the disks with \PlotCircles}\mbox{}
 \begin{lstlisting}
 PlotCircles(O, a, fig_index, OPTIONS);
 \end{lstlisting}
@@ -934,12 +1024,12 @@ p & \text{ if } (X(i,j),Y(i,j)) \in\Omega_p,\\
 p+0.5 & \text{ if } (X(i,j),Y(i,j)) \in\Gamma_p.\\
 \end{cases}
 $$
-This kind of matrix is handy when plotting the potentials and is actually used by the two functions \code{ExternalPotential} and \code{InternalPotential}. The function \code{MaskMatrix} which provides the matrix $M$ has the following syntax
+This kind of matrix is handy when plotting the potentials and is actually used by the two functions \ExternalPotential and \InternalPotential. The function \MaskMatrixObstacles which provides the matrix $M$ has the following syntax
 \begin{lstlisting}
 S = MaskMatrixObstacles(X, Y, O, a);
 \end{lstlisting}
 
-\paragraph{Extract the boundary points.} In the same way as the \code{MaskMatrixObstacles} function, \code{BoundaryOfObstacles} leads to a matrix $G$ where
+\paragraph{Extract the boundary points.} In the same way as the \MaskMatrixObstacles function, \BoundaryOfObstacles leads to a matrix $G$ where
 $$
 G(i,j) = \begin{cases}
 0 & \text{ if } (X(i,j),Y(i,j)) \text{ is outside the obstacles,}\\
@@ -954,7 +1044,7 @@ G = BoundaryOfObstacles(X, Y, O, a);
 
 \section{Full Examples}
 
-Some examples are available in the \code{Examples} directory and especially in \code{Examples/Benchmark}, where each files is independent and solve a different problem (Dirichlet, Neumann or Penetrable). They should also be launched as a tested, to verify that \mudiff is correctly installed and working properly.
+Some examples are available in the \folder{Examples/} directory and especially in \folder{Examples/Benchmark}, where each files is independent and solve a different problem (Dirichlet, Neumann or Penetrable). They should also be launched as a tested, to verify that \mudiff is correctly installed and working properly. Next chapter also present some classical examples.
 
 
 

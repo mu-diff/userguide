@@ -1,1 +1,300 @@
-copy/paste the theory
+
+\section{Dirichlet boundary value problem using CFIE}
+
+\subsection{Advice}
+
+The authors suggest that, for that kind of problem, the single-scattering preconditioned integral equation is used, as is presented on \S\ref{secEx:PrecondD}. This system has no irregular frequency and is well conditioned: the iterative solver will converge vastly.
+
+\subsection{Preprocessing}
+
+Consider a collection of three unit sound-soft obstacles (Dirichlet boundary value problem), with a wavenumber $k=2\pi$ and an incident plane wave of direction $\beta = 0$. The code in Matlab and using \mudiff for the pre-processing part is then:
+\begin{lstlisting}
+%% Preprocessing
+% Three unit disks 
+O = [-5, 0, 5; -2, 0, 2];
+a = [1, 1, 1];
+%Set the parameters...
+k = 1; %wavenumber
+beta_inc = 0; %incident angle
+%Fourier truncation parameter
+M_modes = FourierTruncation(a, k, 'Min', 1);
+\end{lstlisting}
+
+Now, let the problem be solved, using the different boundary integral equations presented in this paper. For every integral equation, only the assembling, solving and post-processing is shown, the pre-processing being assumed to be the above one. Note that every integral equations described here is also presented on the file \texttt{BenchmarkDirichlet.m} located in \folder{Examples/Benchmark}. The file can be launched directly in Matlab by typing (when \mudiff is installed)
+\begin{lstlisting}
+BenchmarkDirichlet;
+\end{lstlisting}
+
+\subsection{Using the EFIE}
+
+\subsubsection{Dense storage}
+
+This integral formulation reads as
+$$
+\left\{\begin{array}{r c l}
+u &=& \Lop\rho\\
+L\rho &=& -\uinc|_{\Gamma},
+\end{array}\right.
+$$
+where the first line is the integral representation of $u$ and the second one, the integral equation to solve. In \mudiff, the operator $L$ as the quantity $\uinc|_{\Gamma}$ are ready to be used:
+\begin{lstlisting}
+%Right hand side
+Uinc = PlaneWave(O, a, M_modes, k, beta_inc);
+%% Assembling
+%Matrix of the system (the two following lines are the same)
+L = SingleLayer(O, a, M_modes, k);
+%% Solving (here, direct)
+rho = L \ Uinc;
+\end{lstlisting}
+
+Now, if the user needs to check the radar cross section (RCS) of the scattered field, using the single-layer representation of $u$:
+\begin{lstlisting}
+%% Post processing
+%Angles of reception
+theta_RCS = 0:360;
+theta_RCS_rad = theta_RCS*2*pi/360;
+%Radar Cross Section of the single-layer potential (<-> [1,0])
+myRCS = RCS(O, a, M_modes, k, theta_RCS_rad, rho, [1,0]);
+plot(theta_RCS, myRCS, 'k');
+\end{lstlisting}
+
+\subsubsection{Sparse storage}
+
+For the sparse storage version, only the assembling of the matrix and the resolution is modified (no direct solver possible), as follows:
+\begin{lstlisting}
+%Matrix of the system (the two following lines are the same)
+SpL = SpSingleLayer(O, a, M_modes, k);
+%% Solving (here, direct)
+rho = gmres(@(X)SpMatVec(X, M_modes, SpL), Uinc);
+\end{lstlisting}
+
+\subsection{Using the MFIE}
+
+\subsubsection{Dense storage}
+
+The MFIE reads as
+$$
+\left\{\begin{array}{r c l}
+u &=& \Lop\rho\\
+\dsp \left(\frac{I}{2}+N\right)\rho &=& -\dn\uinc|_{\Gamma}.
+\end{array}\right.
+$$
+The operator $\left(\frac{I}{2}+N\right)$ can be computed in one line thanks to the frontal function \IntegralOperator, by giving it two arguments: the type of the operators (identity and $N$, see table \ref{table:IntOp}) and their weight ($0.5$ and $1$). 
+\begin{lstlisting}
+%Right hand side
+DnUinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
+%% Assembling
+%Matrix of the system (the two following lines are the same)
+A_MFIE = IntegralOperator(O, a, M_modes, k, [1, 4], [0.5, 1]);
+%% Solving (here, direct)
+rho = A_MFIE \ DnUinc;
+\end{lstlisting}
+
+The post-processing part is exactly the same as for the EFIE, since the integral representation is the same.
+
+\subsubsection{Sparse storage}
+
+The sparse storage version is almost the same except for the assembling of the matrix and the resolution. Indeed, the matrix $I$ and $N$ cannot be computed in the same function, the sparse equivalent function \SpIntegralOperator to \IntegralOperator is not able to sum different operators. It is however possible to add the identity to a ``sparse operator'' thanks to \SpAddIdentity:
+\begin{lstlisting}
+SpN = SpDnSingleLayer(O, a, M_modes, k);
+%Add I/2 to N:
+SpA_MFIE = SpAddIdentity(SpN, 0.5, M_modes)
+rho = gmres(@(X)SpMatVec(X, M_modes, SpA_MFIE), DnUinc);
+\end{lstlisting}
+
+
+\subsection{Using the CFIE}
+
+For a collection of sound-soft obstacles (Dirichlet boundary value problem), a possibility is to apply the Combined Field Integral Equation (CFIE, (\ref{eq:cfie})). This integral equation is well posed and well conditioned. It reads as
+$$
+\left\{\begin{array}{r c l}
+u &=& \Lop\rho\\
+\dsp \left[\alpha\eta L  + (1-\alpha)\left(\frac{I}{2}+N\right)\right]\rho &=& -\alpha\eta\uinc|_{\Gamma} - (1-\alpha) \dn\uinc|_{\Gamma},
+\end{array}\right.
+$$
+The parameters are here set to $\alpha=0.5$ and $\eta = i/k$. Again, $(1-\alpha)\left(\frac{I}{2}+N\right) + \alpha\eta$ is computed in one line in \mudiff using \IntegralOperator function, and the post-processing is unchanged:
+\begin{lstlisting}
+%CFIE
+alpha = 0.5;
+eta = i/k;
+%Right hand side
+Uinc = PlaneWave(O, a, M_modes, k, beta_inc);
+DnUinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
+BCFIE = alpha*eta*Uinc + (1-alpha)*DnUinc;
+%% Assembling
+%Matrix of the system (the two following lines are the same)
+ACFIE = IntegralOperator(O, a, M_modes, k, [2, 1, 4], [alpha*eta, 0.5*(1-alpha), 1-alpha]);
+%% Solving (here, direct)
+rho = ACFIE \ BCFIE;
+\end{lstlisting}
+
+\subsubsection{Sparse storage}
+
+The sparse storage version changes compared to the dense one: the operators $I/2 + N$ and $L$ are computed separately and merged during the matrix-vector products. This is done in the \SpMatVec function:
+\begin{lstlisting}
+SpL = SpSingleLayer(O, a, M_modes, k);
+SpN = SpDnSingleLayer(O, a, M_modes, k);
+SpA_MFIE = SpAddIdentity(SpN, 0.5, M_modes)
+%% Solving and combining operators:
+rho = gmres(@(X)SpMatVec(X,M_modes,{SpL, SpA_MFIE}, [alpha*eta, 1-alpha]), B_CFIE);
+\end{lstlisting}
+
+
+\subsection{Using the single scattering preconditioned integral equation}
+\label{secEx:PrecondD}
+The authors strongly suggest to use the single scattering preconditioned version of the EFIE, which is the same as the MFIE and CFIE and, up to an invertible operator, to every other boundary integral equation (see Proposition \ref{prop:SingleScat}). The EFIE version is available in \mudiff and is represented as
+$$
+\begin{cases}
+u = \Lop\rho.\\
+\Lsgl L \rho = -\Lsgl\uinc.
+\end{cases}
+$$
+In \mudiff, the quantity $-\Lsgl\uinc|_{\Gamma}$ is provided by \PlaneWavePrecond whereas $\Lsgl L$ is obtained with \PrecondDirichlet. The syntax is then the following, for the dense version and for three unit circular obstacles:
+\begin{lstlisting}
+[...]
+%Right hand side
+UincPrecond = PlaneWavePrecond(O, a, M_modes, k, beta_inc);
+%Matrix of the system (the two following lines are the same)
+APrecond = PrecondDirichlet(O, a, M_modes, k);
+%Solving (here, directly)
+rho = APrecond \ UincPrecond;
+[...]
+\end{lstlisting}
+
+
+\subsubsection{Sparse storage}
+
+The sparse storage is here almost the same as the dense one, thanks to \SpPrecondDirichlet:
+\begin{lstlisting}
+SpPrecond = SpPrecondDirichlet(O, a, M_modes, k);
+%% Solving and combining operators:
+rho = gmres(@(X)SpMatVec(X,M_modes, SpPrecond), UincPrecond);
+\end{lstlisting}
+
+
+\section{Neumann boundary value problem}
+
+When the obstacles are all sound-hard (Neumann boundary value problem), the advice is the same as for Dirichlet, but using the preconditioned version for sound-hard obstacles. Two quantities must then be changed: \PrecondDirichlet by \PrecondNeumann and the right-hand side \PlaneWavePrecond by \DnPlaneWavePrecond. Note that for the Neumann case, the preconditioned boundary integral equation is based on the double-layer representation
+$$
+u = \Mop\lambda.
+$$
+\begin{lstlisting}
+% Three unit disks 
+O = [-5, 0, 5; -2, 0, 2];
+a = [1, 1, 1];
+%Set the parameters...
+k = 1; %wavenumber
+beta_inc = 0; %incident angle
+%Fourier truncation parameter
+M_modes = FourierTruncation(a, k, 'Min', 1);
+%Right hand side
+DnUincPrecond = DnPlaneWavePrecond(O, a, M_modes, k, beta_inc);
+%Matrix of the system (the two following lines are the same)
+APrecond = PrecondNeumann(O, a, M_modes, k);
+%Solving (here, direct)
+lambda = APrecond \ DnUincPrecond;
+\end{lstlisting}
+
+The post-processing is after based on the double-layer potential only (compared to Dirichlet, the change is located in \RCS function, the last argument \code{[1,0]} becomes \code{[0,1]}):
+\begin{lstlisting}
+%Angles of reception
+theta_RCS = 0:360;
+theta_RCS_rad = theta_RCS*2*pi/360;
+%Radar Cross Section of the single-layer potential
+myRCS = RCS(O, a, M_modes, k, theta_RCS_rad, lambda, [0,1]);
+plot(theta_RCS, myRCS, 'k');
+\end{lstlisting}
+
+\section{Mixte of sound-soft and sound-hard obstacles (Dirichlet and Neumann)}
+
+For these kind of collection, the preconditioned version is no more useable as-is. An efficient possibility is to apply the Combined Field Integral Equation for mixte problem, given by equation (\ref{eq:CFIEMixte2}), written as $(I/2 +A)\varphi = b$, where the the matrix $A$, given by  (\ref{eq:CFIEMixteApq}), is recalled to have the following coefficients
+$$
+A(p,q) = 
+\begin{cases}
+(1-\alpha) N^{p,q} + \alpha\eta L^{p,q}, & \text{ if } q \leq M_D,\\
+(1-\alpha) D^{p,q} + \alpha\eta M^{p,q}, & \text{ if } q > M_D.\\
+\end{cases}
+$$
+This is particularly easy to compute in \mudiff thanks to the frontal function \IntegralOperator. To do that, two three dimensional arrays, \code{Assembling} and \code{Weight}, will be built such that
+$$
+\code{Assembling}(:, p,q) = 
+\begin{cases}
+[4,2], & \text{ if } q \leq M_D,\\
+[5,3], & \text{ if } q > M_D,
+\end{cases}\qquad\text{and}\qquad
+\code{Weight}(:, p,q) = [(1-\alpha), \alpha\eta].
+$$
+The indices in \code{Assembling} corresponds to the indices of the boundary integral operators ($2=L^{p,q}$, $3=M^{p,q}$, $4=N^{p,q}$, $5=D^{p,q}$). The assembling will be taken cared of by \IntegralOperator.
+\begin{lstlisting}
+% Two Dirichlet obstacles (unit diks)
+OD = [-5, -5; -5, 5];
+aD = [1, 1];
+N_scatD = length(aD);
+% Two Neumann obstacles (unit diks)
+ON = [5, 5; -5, 5];
+aN = [1, 1];
+N_scatN = length(aN);
+%All obstacles
+O = [OD, ON];
+a = [aD, aN];
+N_scat = N_scatD + N_scatN;
+%Set the parameters...
+k = 1; %wavenumber
+beta_inc = 0; %incident angle
+%Fourier truncation parameter (Dirichlet, Neumann, All)
+M_modesD = FourierTruncation(aD, k, 'Min', 1);
+M_modesN = FourierTruncation(aN, k, 'Min', 1);
+M_modes = [M_modesD, M_modesN];
+%Right hand side
+Uinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
+DnUinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
+B = alpha*eta*Uinc + (1-alpha)*DnUinc;
+%% ASSEMBLING
+Assembling = zeros(2, N_scat, N_scat);
+Weight = zeros(2, N_scat, N_scat);
+for p=1:N_scatD
+	for q=1:N_scat
+		Assembling(:,p,q) = [4;2];
+		Weight(:,p,q) = [1-alpha; alpha*eta];
+	end
+end
+for p=N_scatD+1:N_scat
+	for q=1:N_scat
+		Assembling(:,p,q) = [5;3];
+		Weight(:,p,q) = [1-alpha; alpha*eta];
+	end
+end
+%Frontal function
+A = IntegralOperator(O, a, M_modes, k, Assembling, Weight);
+%Solving (here, direct)
+density = A \ B;
+\end{lstlisting}
+
+The post processing is then done by specifying to \mudiff how the density must be used: for the first $M_D$ obstacles, a single-layer potential is used, then for the other ones, a double-layer potential is required. The \RCS function can simply do that, it just needs an array \code{TypeOfOp} of size $\code{N\_scat}\times 2$ such that
+$$
+\code{TypeOfOp}(p,:) = \begin{cases}
+[1,0], &\text{ if } p \leq M_D,\\
+[0,1], &\text{ if } p > M_D.
+\end{cases}
+$$
+In \mudiff language, this will mean ``Apply the single-layer potential (multiplied by $1$) for the first $M_D$ part of the density and a double layer potential (multiplied by $1$) for the other ones.''
+\begin{lstlisting}
+%Preparing TypeOfOp
+TypeOfOp = zeros(N_scat, 2);
+for p =1:N_scat
+	if(p <= N_scatD)
+		TypeOfOp(p,1) = 1;
+	else
+		TypeOfOp(p,2) = 1;
+	end
+end
+%Angles of reception
+theta_RCS = 0:360;
+theta_RCS_rad = theta_RCS*2*pi/360;
+%Radar Cross Section of the single-layer potential
+myRCS = RCS(O, a, M_modes, k, theta_RCS_rad, density, TypeOfOp);
+plot(theta_RCS, myRCS, 'k');
+\end{lstlisting}
+
+
+

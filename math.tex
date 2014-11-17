@@ -5,7 +5,7 @@ This chapter begins by presenting the potential theory and the four classical bo
 
 %=======================================================================
 \section{Classical integral equation for acoustic scattering}\label{secEqInt:EqInt}
-\sectionmark{Classical integral equation for acoustic scattering}
+\sectionmark{Classical integral equation for acoustic scattering with not penetrable obstacles}
 %=======================================================================
 
 Here is presented a techniques to derive classical direct integral equation in case of impenetrable obstacle. Even if \mudiff can be used to solve the penetrable case, studying the impenetrable case is a good way to introduce the boundary integral operators and their properties. This section is strongly inspired by a lecture from Bendali and Fares \cite{BenFar07} and the PhD thesis of Thierry \cite{ThierryThesis} (in french).
@@ -274,10 +274,10 @@ For every irregular frequency $k$ of $F_{N}(\Omegam)$, the operator $\MFIED$ is 
 \subsubsection{CFIE (\textit{Combined Field Integral Equation})}
 
 To avoid the irregular frequencies problem, Burton and Miller \cite{BurMil70} considered a linear combination of the EFIE and the MFIE by imposing a Fourier-Robin boundary condition to $\utm$ on $\Gamma$:
-$$
+\begin{equation}\label{eqEqInt:CombinedEquation}
 %(1-\alpha) \dn\utm + \alpha \eta \utm = 0,
 A = (1-\alpha) \gammaum + \alpha \eta \gammazm,
-$$
+\end{equation}
 with
 \begin{equation}\label{eq:condAlphaEta}
 0 <\alpha <1 \qquad\text{ and } \qquad \Im(\eta) \neq 0,
@@ -331,7 +331,7 @@ A numerical study concerning the optimal choice of parameter $\eta_{BW}$, appear
 Recent works have been done on how to choose this parameter for much more general domains, see for example \cite[\S6]{ChaGraLan09} and \cite[\S5.1]{ChaGraLan12} for the case of large $k$ and \cite[\S2.6 and \S2.7]{BetChaGra11} for the case of small frequency $k$. Note also that, according to \cite[Remark 2.24]{ChaGraLan12}, these results apply to both $L_{BW}$ and the CFIE operator, since when $\alpha = 1/2$, these operators are adjoints (up to a factor of $1/2$) in the real $L^2$ inner product.
 \end{remark}
 
-\section{Neumann boundary condition}
+\subsection{Neumann boundary condition}
 
 Consider now the scattering of a wave by sound-hard obstacle (Neumann boundary condition): 
 $$
@@ -404,7 +404,7 @@ This second kind integral equation is also uniquely solvable for every $k > 0$ a
 \end{itemize}
 
 	%==========================================================================
-        \section{Summary}\label{secEqInt:recapitulatif}
+        \subsection{Summary}\label{secEqInt:recapitulatif}
         %==========================================================================
 
 
@@ -485,7 +485,15 @@ L^{M,1} & L^{M,2} & \ldots & L^{M,M} \\
 \uinc|_{\Gamma_M} \\
 \end{array}\right].
 $$
-The same procedure can be applied to the other volume operator $\Mop$ and the other boundary integral operators $M,N$ and $D$.
+The same procedure can be applied to the other volume operator $\Mop$ and the other boundary integral operators $M,N$ and $D$ to obtain the following ones:
+$$
+\begin{array}{l l c l @{\quad\qquad}l c l}
+L^{p,q} : & H^{-1/2}(\Gammaq) & \longrightarrow & \dsp{H^{1/2}(\Gammap),} & \dsp{L\rhoq(\xx)} &  =  &\dsp{ \int_{\Gammaq} G(\xx,\yy) \rhoq(\yy) \dd\Gammaq(\yy)}, \\[0.3cm]
+M^{p,q} : & H^{1/2}(\Gammaq) & \longrightarrow & \dsp{H^{1/2}(\Gammap),} & \dsp{M\lambdaq(\xx) } &  =  &\dsp{  -\int_{\Gammaq} \dny G(\xx,\yy)\lambdaq(\yy) \dd\Gammaq(\yy)}, \\[0.3cm]
+N^{p,q} : & H^{-1/2}(\Gammaq) & \longrightarrow & \dsp{H^{-1/2}(\Gammap),} & \dsp{N\rhoq(\xx)  }&  =  &\dsp{  \int_{\Gammaq} \dnx G(\xx,\yy) \rhoq(\yy) \dd\Gammaq(\yy)}, \\[0.3cm]
+D^{p,q} : & H^{1/2}(\Gammaq) & \longrightarrow & \dsp{H^{-1/2}(\Gammap),} &\dsp{D\lambdaq (\xx) }  &  =  &\dsp{  -\dnx \int_{\Gammaq} \dny G(\xx,\yy)\lambdaq (\yy) \dd\Gammaq(\yy)},
+\end{array}
+$$
 
 %--------------------------
 \subsection{Single scattering preconditioning}%Matrix form of the integral equation $A$ in the multiple scattering case}
@@ -529,6 +537,150 @@ When preconditioned by their single-scattering preconditioners, the EFIE, MFIE a
 \end{prop}
 This proposition shows in particular that there is no need in computing the single-scattering preconditioned version of every integral equations: only one is enough. because the resulting operator presents a good convergence rate for multiple scattering, it is hard coded in \mudiff for the Dirichlet and the Neumann cases. They are based on the single-layer potential for the Dirichlet case and the double-layer potential for the Neumann case (EFIE, MFIE or CFIE in both cases).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Mixte Dirichlet/Neumann}
+
+Assume that the collection of $M$ obstacles is such that there is $M_D$ sound-soft obstacles and $M_N$ sound-hard, with obviously $M_D+M_N=M$. Without lost of generality, let the sound-soft obstacles $\Omegamp$ be numbered for $p=1,\ldots, M_D$ and the sound-hard one for $p=M_D+1,\ldots, M_D+M_N$. The problem then reads as
+$$
+\left\{\begin{array}{ r c l l}
+(\Delta + k^2) u &=& 0 & \text{ in }\Omegaps\\
+u &=& - \uinc & \text{ on }\Gammap, \quad p=1,\ldots,M_D\\
+\dn u &=& - \dn\uinc & \text{ on }\Gammap, \quad p=M_D+1,\ldots,M_D+M_N\\
+u & \multicolumn{3}{l}{\text{ outgoing.}}
+\end{array}\right.
+$$
+The field is then represented as a linear combination of single- and double-layer potentials
+$$
+u = \sum_{q=1}^{M} \Lop_q\rho_q + \sum_{q=1}^{M} \Mop_q\lambda_q,
+$$
+where $\Lop_p$ is given by (\ref{eqEqInt:Mopq}) and $\Mop_q$ by
+\begin{equation}\label{eqEqInt:Mopq}
+\begin{array}{r c c  l}
+\Mop_{q} : &   H^{1/2}(\Gammaq) & \longrightarrow& H^{1}_{loc}(\Rb^{d}) \\
+ & \lambdaq &\longmapsto& \dsp{\Mopq\lambdaq, \qquad\forall\xx\in\Rb^{d}, \quad \Mopq\lambdaq(\xx) = \int_{\Gammaq} \dny G(\xx,\yy)\lambdaq(\yy)\;\dd\yy}.
+ \end{array}
+\end{equation}
+A possibility to solve this problem is to apply the CFIE of both collections. To derive the CFIE, a fictitious field is introduced and  the mixte condition (\ref{eqEqInt:CombinedEquation}) is applied on it. Following the theory, this would lead to
+$$
+\begin{cases}
+\lambda_q = 0 & \text{ for } q = 1,\ldots,M_D\\
+\rho_q = 0 & \text{ for } q = M_D+1,\ldots,M_D+M_N,
+\end{cases}
+$$
+and the scattered field $u$ will be represented as
+$$
+u = \sum_{q=1}^{M_D} \Lop_q\rho_q + \sum_{q=1+M_D}^{M_D+M_N} \Mop_q\lambda_q.
+$$
+To simplify, assume now that there are only two obstacles, the first one being sound-soft and the second one, sound-hard. The passage to $M$ scatterers being simple. The mixte condition (\ref{eqEqInt:CombinedEquation}) applied on the interior fictitious field leads to the 
+$$
+\left(\begin{array}{c c}
+A_1 \Lop_1 & A_1 \Mop_2\\
+A_2 \Lop_1& A_2 \Mop_2
+\end{array}\right),
+$$
+where $A_p$ represents the boundary condition (\ref{eqEqInt:CombinedEquation}) on $\Gammap$ only:
+$$
+A_p =(1-\alpha) \gamma_{1,p}^- + \alpha \eta \gamma_{0,p}^-.
+$$
+Applying the traces formulae leads to the sough system:
+$$
+\left(\begin{array}{c c}
+\dsp (1-\alpha) \left(\frac{I}{2}+N_{1,1}\right) +\alpha\eta L_{1,1} &\dsp (1-\alpha)D_{2,1} + \alpha\eta M_{2,1}\\
+\dsp (1-\alpha) N_{1,2} +\alpha\eta L_{1,2}& \dsp(1-\alpha) D_{2,2} + \alpha\eta \left(\frac{I}{2}+M_{2,2}\right)
+\end{array}\right)
+\left(\begin{array}{c}
+\rho_1\\
+\lambda_2
+\end{array}\right)
+=
+\left(\begin{array}{c}
+b_1\\
+b_2
+\end{array}\right),
+$$
+with $b_p = (1-\alpha) \uinc|_{\Gamma_p} + \alpha \eta \dn\uinc|_{\Gamma_p}$. For $M$ obstacles, the same procedure can be done to obtain
+\begin{equation}\label{eq:CFIEMixte2}
+\left(\frac{I}{2} + A\right)\varphi = b,
+\end{equation}
+where 
+\begin{itemize}
+\item The matrix $A$ of size $M\times M$ is such that
+\begin{equation}\label{eq:CFIEMixteApq}
+A^{p,q} = 
+\begin{cases}
+(1-\alpha) N^{p,q} + \alpha\eta L^{p,q}, & \text{ if } q \leq M_D,\\
+(1-\alpha) D^{p,q} + \alpha\eta M^{p,q}, & \text{ if } q > M_D.\\
+\end{cases}
+\end{equation}
+\item The unknown $\varphi = (\varphi_q)_{1\leq q\leq M}$ is the concatenation of the unknown densities:
+$$
+\varphi_q = 
+\begin{cases}
+\rho_q, & \text{ if } q \leq M_D,\\
+\lambda_q, & \text{ if } q > M_D.\\
+\end{cases}
+$$
+\item The right hand side $b = (b_p)_{1\leq p\leq M}$ is given by
+$$
+b_p = (1-\alpha) \uinc|_{\Gamma_p} + \alpha \eta \dn\uinc|_{\Gamma_p}.
+$$
+\end{itemize}
+%system will have the following structure
+%\begin{equation}\label{eq:cfieMixte}
+%\left(\begin{array}{c c}
+%\dsp (1-\alpha) \left(\frac{I}{2}+N_{D,D}\right) +\alpha\eta L_{D,D} & \dsp (1-\alpha)D_{N,D} + \alpha\eta M_{N,D}\\
+%\dsp (1-\alpha) N_{D,N} +\alpha\eta L_{D,N}& \dsp(1-\alpha) D_{N,N} + \alpha\eta \left(\frac{I}{2}+M_{N,N}\right)
+%\end{array}\right),
+%\left(\begin{array}{c}
+%\dsp \rho_D\\
+%\dsp \lambda_N
+%\end{array}\right)
+%=
+%\left(\begin{array}{c}
+%\dsp b_D\\
+%\dsp b_N
+%\end{array}\right),
+%\end{equation}
+%where, $\rho_D = (\rho_1,\ldots,\rho_{M_D})^t$, $\lambda_N = (\lambda_{M_D+1},\ldots,\lambda_{M_D+M_N})^t$, $b_D= (b_1,\ldots,b_{M_D})^t$ and $b_N = (b_{M_D+1}, \ldots, b_{M_D+M_N})^t$,
+%then the quantities involved are given by:
+%\begin{itemize}
+%\item $N_{D,D}$ and $L_{D,D}$ are of size $M_D\times M_D$ and such that (same for $L_{D,D}$)
+%$$
+%N_{D,D} = \left(\begin{array}{c c c c}
+%N^{1,1} & N^{1,2} & \ldots & N^{1,M_D}\\
+%N^{2,1} & N^{2,2} & \ldots & N^{2,M_D}\\
+%\vdots & \vdots & \ddots & \vdots\\
+%N^{M_D,1} & N^{M_D,2} & \ldots & N^{M_D,M_D}\\
+%\end{array}\right).
+%$$
+%\item $N_{N,D}$ and $L_{N,D}$ are of size $M_D\times M_N$ and such that (same for $L_{N,D}$)
+%$$
+%N_{N,D} = \left(\begin{array}{c c c c}
+%N^{M_D+1,1} & N^{M_D+1,2} & \ldots & N^{M_D+M_N, M_D}\\
+%N^{M_D+2,1} & N^{M_D+2,2} & \ldots & N^{M_D+M_N, M_D}\\
+%\vdots & \vdots & \ddots & \vdots\\
+%N^{M_D+M_N,1} & N^{M_D+M_N,2} & \ldots & N^{M_D+M_N, M_D}\\
+%\end{array}\right).
+%$$
+%\item $M_{D,N}$ and $D_{D,N}$ are of size $M_N\times M_D$ and such that (same for $D_{N,D}$)
+%$$
+%M_{D,N} = \left(\begin{array}{c c c c}
+%M^{1,M_D+1} & M^{1,M_D+2} & \ldots & M^{1, M_D+M_N}\\
+%M^{2,M_D+1} & M^{2,M_D+2} & \ldots & M^{2, M_D+M_N}\\
+%\vdots & \vdots & \ddots & \vdots\\
+%M^{M_D,M_D+1} & M^{M_N,M_D+2} & \ldots & M^{M_D, M_D+M_N}\\
+%\end{array}\right).
+%$$
+%\item $M_{N,N}$ and $D_{N,N}$ are of size $M_N\times M_N$ and such that (same for $M_{N,N}$)
+%$$
+%M_{N,N} = \left(\begin{array}{c c c c}
+%M^{M_D+1,M_D+1} & M^{M_D+1,M_D+2} & \ldots & M^{M_D+1,M_D+ M_N}\\
+%M^{M_D+2,M_D+1} & M^{M_D+2,M_D+2} & \ldots & M^{M_D+2, M_D+M_N}\\
+%\vdots & \vdots & \ddots & \vdots\\
+%M^{M_D+M_N,1} & M^{M_D+M_N,2} & \ldots & M^{M_D+M_N, M_D+M_N}\\
+%\end{array}\right).
+%$$
+%\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Penetrable case}
@@ -594,9 +746,39 @@ where $G^+$ and $G^-$ correspond to the Green function with respectively the wav
 \end{equation}
 This integral equation can be proved to be well posed if $k$ is not an irregular frequency of the interior homogeneous Dirichlet problem. The example \code{BenchmarkPenetrable.m} located in \texttt{Examples/Benchmark} solves the penetrable scattering problem using this integral equation. Actually, the program has here be written in the dielectric case (not the acoustic one), and thus, the transmission condition on the normal derivative is there slightly changed by allowing a possible jump on the normal derivative: $ (\dn \ups-\frac{\mu}{\mu_0}\dn\um)|_\Gamma = -\dn\uinc|_\Gamma$, where $\mu_0$ is the magnetic permeability of the medium and $\mu = \mu_p$ in $\Omegamp$ is the magnetic permeability of the domain $\Omegamp$. The associated integral equation is then obtained by modifying the quantity $\dsp -\frac{I}{2} - N^-$ by $\dsp \mu\left(-\frac{I}{2} - N^-\right)$, in the matrix of (\ref{eq:SystPenet}).
 
-%\subsection{Calder\'on projectors}
-%
-%Taking back the Helmholtz representation of the scattered field ()
-%[I/2+M, L; D, I/2+N]
-%
-%The Calderon projectors is defined by
+\subsection{Calder\'on projectors}
+
+Taking back the Helmholtz representation of the interior field $\um$:
+$$
+\um =\Mop(\um|_\Gamma) +  \Lop(\dn\um|_\Gamma),
+$$
+then it appears that
+$$
+\begin{cases}
+\dsp \um|_\Gamma = \left(\frac{I}{2}+M^-\right)(\um|_\Gamma) + L^-(\dn\um|_\Gamma),\\
+\dsp \dn\um|_\Gamma = D^-(\um|_\Gamma) + \left(\frac{I}{2}+N^-\right)(\dn\um|_\Gamma).
+\end{cases}
+$$
+This leads to the following equation
+$$
+\left(\begin{array}{c}
+\um|_\Gamma\\
+\dn\um|_\Gamma
+\end{array}\right)
+=\left(\begin{array}{c c}
+\dsp \left(\frac{I}{2}+M^-\right) & L^-\\
+D^- & \dsp \left(\frac{I}{2}+N^-\right)
+\end{array}\right)
+\left(\begin{array}{c}
+\um|_\Gamma\\
+\dn\um|_\Gamma
+\end{array}\right),
+$$
+and thus the Calder\'on projector $P^-$ is defined by
+$$
+P^-=
+\left(\begin{array}{c c}
+\dsp \left(\frac{I}{2}+M^-\right) & L^-\\
+D^- & \dsp \left(\frac{I}{2}+N^-\right)
+\end{array}\right)
+$$
