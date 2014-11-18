@@ -138,7 +138,7 @@ A large number of arguments of the \mudiff functions are the same. For the sake 
 \end{tabular}
 \end{center}
 
-\paragraph{Parameters (wavenumbers, incident waves, fourier series,\ldots):}
+\paragraph{Parameters (wavenumbers, incident waves, fourier series, \ldots):}
 \begin{center}
 \begin{tabular}{|c |c | p{10cm}|}
 \hline Name & Size & Content\\[0.2cm]\hline\hline
@@ -156,14 +156,14 @@ A large number of arguments of the \mudiff functions are the same. For the sake 
 \begin{center}
 \begin{tabular}{|c |c | c | p{9cm}|}
 \hline Index & Letter & \mudiff abreviation & Operator \\\hline\hline
-0 & - & - & Null operator \\\hline
-1 & $I$ & \tabcode{Identity} & Identity\\\hline
-2 & $L$ & \tabcode{SingleLayer} & $\dsp L\rho = \int_{\Gamma}G(\xx,\yy)\rho(\yy)\;\dd\yy$\\\hline
-3 & $M$ & \tabcode{DoubleLayer} & $\dsp M\lambda = -\int_{\Gamma}\dny G(\xx,\yy)\lambda(\yy)\;\dd\yy$\\\hline
-4 & $N$  & \tabcode{DnSingleLayer}& $\dsp N\rho = \dnx\int_{\Gamma}G(\xx,\yy)\rho(\yy)\;\dd\yy$\\\hline
-5 & $D$  & \tabcode{DnDoubleLayer}&$\dsp D\lambda = -\dnx\int_{\Gamma}\dny G(\xx,\yy)\lambda(\yy)\;\dd\yy$\\ \hline
-6 & $\hat{L}L$  & \tabcode{PrecondDirichlet}& Single-scattering preconditioned trace of the single-layer operator (see (\ref{??}))\\\hline
-7 & $\hat{D}D$  & \tabcode{PrecondNeumann}& Single-scattering preconditioned normal derivative trace of the double-layer operator (see (\ref{??}))\\ \hline
+0 & - & - & Null operator \\[0.2cm]\hline
+1 & $I$ & \tabcode{Identity} & Identity\\[0.2cm]\hline
+2 & $L$ & \tabcode{SingleLayer} & $\dsp L\rho = \int_{\Gamma}G(\xx,\yy)\rho(\yy)\;\dd\yy$\\[0.2cm]\hline
+3 & $M$ & \tabcode{DoubleLayer} & $\dsp M\lambda = -\int_{\Gamma}\dny G(\xx,\yy)\lambda(\yy)\;\dd\yy$\\[0.2cm]\hline
+4 & $N$  & \tabcode{DnSingleLayer}& $\dsp N\rho = \dnx\int_{\Gamma}G(\xx,\yy)\rho(\yy)\;\dd\yy$\\[0.2cm]\hline
+5 & $D$  & \tabcode{DnDoubleLayer}&$\dsp D\lambda = -\dnx\int_{\Gamma}\dny G(\xx,\yy)\lambda(\yy)\;\dd\yy$\\[0.2cm] \hline
+6 & $\hat{L}L$  & \tabcode{PrecondDirichlet}& Single-scattering preconditioned trace of the single-layer operator (see (\S\ref{sec:SingleScat}))\\[0.2cm]\hline
+7 & $\hat{D}D$  & \tabcode{PrecondNeumann}& Single-scattering preconditioned normal derivative trace of the double-layer operator (see (\S\ref{sec:SingleScat}))\\ \hline
 \end{tabular}
 \end{center}
 
@@ -610,6 +610,7 @@ psi = A \ Uinc;
 \label{secFun:SpBlockDnDoubleLayer}
 \label{secFun:SpBlockPrecondDirichlet}
 \label{secFun:SpBlockPrecondNeumann}
+\label{secFun:SpBlockIdentity}
 \label{secFun:SpSingleLayer}
 \label{secFun:SpDnSingleLayer}
 \label{secFun:SpDoubleLayer}
@@ -752,7 +753,7 @@ A = SpIntegralOperator(O, a, M_modes, k, TypeOfOp, Weight);
 \end{lstlisting}
 
 \subsubsection{Assembly: adding the identity}
-\label{secFun:SpAssIdentity}
+\label{secFun:SpAddIdentity}
 
 It is possible to add the identity (multiplied by a constant) to a sparse operator:
 \begin{lstlisting}
@@ -882,7 +883,7 @@ The \FarField function is also interfaced with ready-to-use function: \FarFieldS
 \subsubsection{Radar Cross Section (RCS)}
 \label{secFun:RCS}
 \label{secFun:RCSSingleLayer}
-\label{secFun:RCSDoublleLayer}
+\label{secFun:RCSDoubleLayer}
 \label{secFun:FarFieldtoRCS}
 
 The radar cross section of a far field can be computed either from the far field with \FarFieldtoRCS or directly from the density with \RCS. In \mudiff, the radar cross section $\sigma$ is obtained by ($F$ being the far field)

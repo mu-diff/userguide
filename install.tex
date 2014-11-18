@@ -3,7 +3,7 @@
 
 \section*{Requierement}
 
-\mudiff needs Matlab software, version 2011 or higher. The previous version should work fine, however without guarantee. Matlab can be bough and downloaded at \url{http://www.mathworks.com/}.
+\mudiff requires Matlab software, version 2011 or higher. \mudiff should work fine with previous version of Matlab, however without guarantee. Please note that Matlab is not provided with \mudiff, it can be bough and downloaded at \url{http://www.mathworks.com/}.
 
 \section*{Install}
 
@@ -13,12 +13,13 @@ The install process is done as follows:
 \begin{verbatim}
 git clone http://mu-diff.math.cnrs.fr/git mu-diff
 \end{verbatim} 
-or by downloading the zip file and unzipping it here:
+or by downloading the following zip file and unzipping it in your matlab working directory (or whereelse you prefer):
 \begin{center}
 \url{http://mu-diff.math.cnrs.fr/mu-diff/Download_files/mudiff.zip}
 \end{center}
+Note that \texttt{git} should be prefered to stay up to date easily.
 \item Add the \mudiff toolbox to Matlab's path (including subfolders !), using either the graphical interface of Matlab or the \code{addpath} and \code{save path} functions.
-\item Test the \mudiff function by typing in the Matlab command window:
+\item Test the \mudiff install by typing in the Matlab command window:
 \begin{lstlisting}
 BenchmarkDirichlet;
 \end{lstlisting}
@@ -29,10 +30,10 @@ BenchmarkNeumann;
 BenchmarkPenetrable;
 BenchmarkCalderon;
 \end{lstlisting}
-\item If everything goes right: congratulation! you install of \mudiff is working!
+\item If everything went right: congratulation! Your \mudiff installation is working!
 \end{enumerate}
 
-If you want to see some other use of \mudiff, you can try and launch the following time reversal experiment:
+If you want to see some other examples using \mudiff, you can try and launch the following time reversal experiments:
 \begin{lstlisting}
 DORT_NotPenetrable;
 DORT_dielectric;
