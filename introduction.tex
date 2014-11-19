@@ -48,13 +48,13 @@ Everything is done using \mudiff function except for the solving part which is d
   [node distance=.8cm,
   start chain=going below,]
      \node[punktchain] (math) {Mathematical problem};
-     \node[punktchain, below=of math] (choice)      {Reformule the problem as an integral formulation};
+     \node[punktchain, below=of math] (choice)      {Reformulate the problem as an integral formulation};
       \node[punktchain, below left=of choice] (inteq)      {Integral equation};
 	 \node[punktchain, below right=of choice] (intrep)      {Integral representation};
-      \node[punktchain, below =of inteq] (inteq2)      {\textbf{Pre processing}: geometry and right hand side $b$};
-      \node[punktchain, below =of inteq2] (inteq3)      {\textbf{Assembling} the matrix $A$};
-      \node[punktchain, below =of inteq3] (inteq4)      {Solving the linear system};
-      \node[punktchain, below right = of inteq4] (postpro)      {\textbf{Post processing}:
+      \node[punktchain, below =of inteq] (inteq2)      {\textbf{Pre-processing}: geometry and right hand side $b$};
+      \node[punktchain, below =of inteq2] (inteq3)      {\textbf{Assemble} the matrix $A$};
+      \node[punktchain, below =of inteq3] (inteq4)      {Solve the linear system};
+      \node[punktchain, below right = of inteq4] (postpro)      {\textbf{Post-processing}:
       \begin{itemize}
       \item Far field
       \item Near field
@@ -78,7 +78,7 @@ Everything is done using \mudiff function except for the solving part which is d
   %    \draw[->] (postpro) to (nearfield);
 %      \draw[->] (postpro) to (misc);
  \end{tikzpicture}
- \caption{Diagram on ``How to use \mudiff''.}
+ \caption{Diagram: ``How to use \mudiff''.}
  \label{fig:howto}
  \end{figure}
   
