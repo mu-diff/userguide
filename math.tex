@@ -753,18 +753,14 @@ The upper index $\pm$ on the boundary integral operators specifies the Green fun
 \label{secFun:BenchmarkCalderon}
 
 
-The $M$ interior field $\ump$, defined on $\Omegamp$ and which were implicit previously, must here be introduced:
-$$
-\ump = \um|_{\Omegamp} = \Mop^-_p(\ump|_{\Gammap}) +  \Lop^-_p(\dn\ump|_{\Gammap}).
-$$
-Taking back the Helmholtz representation of the interior field $\um$ and the exterior one:
+Taking back the Helmholtz representation of the interior field $\utm = \um$ and the exterior one:
 $$
 \begin{cases}
-\ut^+ =-\Mop^+(\ups|_\Gamma) -  \Lop^+(\dn\ups|_\Gamma) + \uinc,\\
-\ut^- = \um =\Mop_p^-(\um|_\Gamma) +  \Lop_p^-(\dn\um|_\Gamma), & \forall p=1,\ldots,M,
+\ut^+ =\uinc+-\Mop^+(\ups|_\Gamma) -  \Lop^+(\dn\ups|_\Gamma),\\
+\ump = \ut^-|_{\Omegap} = \Mop_p^-(\um|_\Gamma) +  \Lop_p^-(\dn\um|_\Gamma), & \forall p=1,\ldots,M,
 \end{cases}
 $$
-where again the $\pm$ upper index specifies the interior or exterior Green function. The idea is to obtain two sets of $M$ equations, one taken from the interior and the other one from the exterior. Then, by summing or differentiating them, the system to be solved is obtained. Let us first concentrate on the $M$ interior problems and take the trace and normal derivative trace on their respective boundary of the interior fields:
+where again the $\pm$ upper index specifies the interior or exterior Green function. Note that the interior total field $\utm$ is equal to the interior ``scattered'' field $\um$, however in the propagation domain, the total field $\ut^+$ is obtained by summing the scattered wave $\ups$ by the incident wave $\uinc$. The idea is to obtain two sets of $M$ equations, one taken from the interior and the other one from the exterior, and combine them. Let us first concentrate on the $M$ interior problems and take the trace and normal derivative trace on their respective boundary of the interior fields (see (\ref{eqEqInt:trace}) for the traces formulae):
 $$
 \forall p=1,\ldots,M,\qquad\begin{cases}
 \dsp \ump|_{\Gammap} = \left(\frac{I}{2}+M^-_p\right)(\ump|_{\Gammap}) + L^-_p(\dn\ump|_{\Gammap}),\\
@@ -790,7 +786,11 @@ M^-_{p,p}  & L^-_{p,p}\\
 \dsp D^-_{p,p} & \dsp N^-_{p,p}
 \end{array}\right).
 $$
-The operator $L^-_{p,p}$ being the operator $L^{p,p}$ with the internal Green function (same for the three others). The Calder\'on projector $\Pb_p^-$ is here hidden and is defined by: $\Pb_p^- = \frac{I}{2} + \Ab_p$. This set of equation can be rewritten in the following matrix form:
+The operator $L^-_{p,p}$ being the operator $L^{p,p}$ with the internal Green function (same for the three others):
+$$
+L_{p,p}^-\rhop = \left(\int_{\Gammap}G^-(k\|\xx-\yy\|)\rhop\;\dd\Gammap\right)|_{\Gammap}.
+$$
+Note that the Calder\'on projector $\Pb_p^-$, defined by: $\Pb_p^- = \frac{I}{2} + \Ab_p$, is here hidden. This set of equation can be rewritten in the following matrix form:
 \begin{equation}\label{eq:CalSet1}
 \left(\begin{array}{c c c c c}
 \dsp - \frac{I}{2}+ \Ab_{1,1}^-  & 0 & 0 & \ldots & 0\\
@@ -810,11 +810,11 @@ The operator $L^-_{p,p}$ being the operator $L^{p,p}$ with the internal Green fu
 \end{array}\right).
 \end{equation}
 
-Now, a second set of equations must be obtained, thanks to the exterior part. Following the same idea, the trace and normal derivative trace of $\ups$ on $\Gammap$ can be computed, however here, the $M$ contributions appear:
+Now, a second set of equations must be obtained, thanks to the exterior part. Following the same idea, the trace and normal derivative trace of $\ut^+$ on $\Gammap$ can be computed, however here, the $M$ contributions appear:
 $$
 \forall p=1,\ldots,M,\qquad\begin{cases}
-\dsp \ut^+|_{\Gammap} = \uinc|_{\Gammap} + \frac{I}{2}\ups|_{\Gammap} - \sum_{q=1}^M\left[\left(+M_{p,q}^+\right)(\ups|_{\Gammaq}) + L^+_{p,q}(\dn\ups|_{\Gammaq})\right],\\
-\dsp \dn\ut^+|_{\Gammap} = \dn\uinc|_{\Gammap} +\frac{I}{2}\dn\ups|_{\Gammap} - \left[D_{p,q}^+(\ups|_{\Gammaq}) + \left(N^+_{p,q}\right)(\dn\ups|_{\Gammaq})\right],
+\dsp \ut^+|_{\Gammap} = \uinc|_{\Gammap} + \frac{I}{2}\ups|_{\Gammap} - \sum_{q=1}^M\left[M_{p,q}^+(\ups|_{\Gammaq}) + L^+_{p,q}(\dn\ups|_{\Gammaq})\right],\\
+\dsp \dn\ut^+|_{\Gammap} = \dn\uinc|_{\Gammap} +\frac{I}{2}\dn\ups|_{\Gammap} - \left[D_{p,q}^+(\ups|_{\Gammaq}) + N^+_{p,q}(\dn\ups|_{\Gammaq})\right],
 \end{cases}
 $$
 which can be rewritten as
@@ -832,6 +832,10 @@ $$
 M^+_{p,q}  & L^+_{p,q}\\
 \dsp D^+_{p,q} & \dsp N^+_{p,q}
 \end{array}\right).
+$$
+The operator $L^-_{p,q}$ being given by (same for the three others)
+$$
+L_{p,q}^-\rhoq = \left(\int_{\Gammaq}G^-(k\|\xx-\yy\|)\rhoq\;\dd\Gammaq\right)|_{\Gammap}.
 $$
 Finally, this second set of equations can be also rewritten in the following matrix form:
 \begin{equation}\label{eq:CalSet2}
