@@ -728,7 +728,7 @@ $$
 \dsp \um(\xx)  = \Lop^-\rhomi(\xx) = \int_\Gamma G^-(\xx,\yy)\rhomi(\yy)\;\dd\yy & \text{ in }\Omegam,
 \end{cases}
 $$
-where $G^+$ and $G^-$ correspond to the Green function with respectively the wavenumber $k$ and $kn$. The transmission conditions of the trace and normal derivative traces on $\Gamma$ leads to the following coupled boundary integral equations system:
+where $G^{\pm}= \frac{i}{4}\Hz(k^{\pm}\|\xx-\yy\|)$ corresponds to the Green function with respectively the wavenumber $k^+=k$ and $k^-kn$ (note that $k^-$ can differ from one obstacle to another). The transmission conditions of the trace and normal derivative traces on $\Gamma$ leads to the following coupled boundary integral equations system:
 \begin{equation}\label{eq:SystPenet}
 \left(\begin{array}{c c}
 \dsp L^+ & -L^-\\
@@ -744,41 +744,118 @@ where $G^+$ and $G^-$ correspond to the Green function with respectively the wav
 -\dn\uinc|_\Gamma
 \end{array}\right).
 \end{equation}
-This integral equation can be proved to be well posed if $k$ is not an irregular frequency of the interior homogeneous Dirichlet problem. The example \code{BenchmarkPenetrable.m} located in \texttt{Examples/Benchmark} solves the penetrable scattering problem using this integral equation. Actually, the program has here be written in the dielectric case (not the acoustic one), and thus, the transmission condition on the normal derivative is there slightly changed by allowing a possible jump on the normal derivative: $ (\dn \ups-\frac{\mu}{\mu_0}\dn\um)|_\Gamma = -\dn\uinc|_\Gamma$, where $\mu_0$ is the magnetic permeability of the medium and $\mu = \mu_p$ in $\Omegamp$ is the magnetic permeability of the domain $\Omegamp$. The associated integral equation is then obtained by modifying the quantity $\dsp -\frac{I}{2} - N^-$ by $\dsp \mu\left(-\frac{I}{2} - N^-\right)$, in the matrix of (\ref{eq:SystPenet}).
+The upper index $\pm$ on the boundary integral operators specifies the Green function used in their expression. For instance, $L^{\pm}\rho = \int_{\Gamma} G^{\pm}(\xx,\yy)\rho(\yy)\;\dd\yy$. This integral equation can be proved to be well posed if $k$ is not an irregular frequency of the interior homogeneous Dirichlet problem. The example \code{BenchmarkPenetrable.m} located in \texttt{Examples/Benchmark} solves the penetrable scattering problem using this integral equation. Actually, the program has here be written in the dielectric case (not the acoustic one), and thus, the transmission condition on the normal derivative is there slightly changed by allowing a possible jump on the normal derivative: $ (\dn \ups-\frac{\mu}{\mu_0}\dn\um)|_\Gamma = -\dn\uinc|_\Gamma$, where $\mu_0$ is the magnetic permeability of the medium and $\mu = \mu_p$ in $\Omegamp$ is the magnetic permeability of the domain $\Omegamp$. The associated integral equation is then obtained by modifying the quantity $\dsp -\frac{I}{2} - N^-$ by $\dsp \mu\left(-\frac{I}{2} - N^-\right)$, in the matrix of (\ref{eq:SystPenet}).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Calder\'on projectors}
+\label{secFun:CalderonProjector}
+\label{secFun:BlockCalderonProjector}
+\label{secFun:BenchmarkCalderon}
 
-Taking back the Helmholtz representation of the interior field $\um$:
+
+The $M$ interior field $\ump$, defined on $\Omegamp$ and which were implicit previously, must here be introduced:
 $$
-\um =\Mop(\um|_\Gamma) +  \Lop(\dn\um|_\Gamma),
+\ump = \um|_{\Omegamp} = \Mop^-_p(\ump|_{\Gammap}) +  \Lop^-_p(\dn\ump|_{\Gammap}).
 $$
-then it appears that
+Taking back the Helmholtz representation of the interior field $\um$ and the exterior one:
 $$
 \begin{cases}
-\dsp \um|_\Gamma = \left(\frac{I}{2}+M^-\right)(\um|_\Gamma) + L^-(\dn\um|_\Gamma),\\
-\dsp \dn\um|_\Gamma = D^-(\um|_\Gamma) + \left(\frac{I}{2}+N^-\right)(\dn\um|_\Gamma).
+\ut^+ =-\Mop^+(\ups|_\Gamma) -  \Lop^+(\dn\ups|_\Gamma) + \uinc,\\
+\ut^- = \um =\Mop_p^-(\um|_\Gamma) +  \Lop_p^-(\dn\um|_\Gamma), & \forall p=1,\ldots,M,
 \end{cases}
 $$
-This leads to the following equation
+where again the $\pm$ upper index specifies the interior or exterior Green function. The idea is to obtain two sets of $M$ equations, one taken from the interior and the other one from the exterior. Then, by summing or differentiating them, the system to be solved is obtained. Let us first concentrate on the $M$ interior problems and take the trace and normal derivative trace on their respective boundary of the interior fields:
 $$
-\left(\begin{array}{c}
-\um|_\Gamma\\
-\dn\um|_\Gamma
-\end{array}\right)
-=\left(\begin{array}{c c}
-\dsp \left(\frac{I}{2}+M^-\right) & L^-\\
-D^- & \dsp \left(\frac{I}{2}+N^-\right)
-\end{array}\right)
-\left(\begin{array}{c}
-\um|_\Gamma\\
-\dn\um|_\Gamma
+\forall p=1,\ldots,M,\qquad\begin{cases}
+\dsp \ump|_{\Gammap} = \left(\frac{I}{2}+M^-_p\right)(\ump|_{\Gammap}) + L^-_p(\dn\ump|_{\Gammap}),\\
+\dsp \dn\ump|_{\Gammap} = D^-_p(\ump|_{\Gammap}) + \left(\frac{I}{2}+N^-_p\right)(\dn\ump|_{\Gammap}).
+\end{cases}
+$$
+Then, by introducing the following quantities
+$$
+\forall p=1,\ldots,M,\qquad \Uttmp = \left(\begin{array}{c}
+\ump|_{\Gammap}\\
+\dn\ump|_{\Gammap}
 \end{array}\right),
 $$
-and thus the Calder\'on projector $P^-$ is defined by
+the previous set of equations can be rewritten as
 $$
-P^-=
+\forall p=1,\ldots,M,\qquad\left(\Ab_{p,p}^- - \frac{I}{2} \right) \Uttmp = 0,
+$$
+where
+$$
+\Ab_{p,p}^-=
 \left(\begin{array}{c c}
-\dsp \left(\frac{I}{2}+M^-\right) & L^-\\
-D^- & \dsp \left(\frac{I}{2}+N^-\right)
-\end{array}\right)
+M^-_{p,p}  & L^-_{p,p}\\
+\dsp D^-_{p,p} & \dsp N^-_{p,p}
+\end{array}\right).
 $$
+The operator $L^-_{p,p}$ being the operator $L^{p,p}$ with the internal Green function (same for the three others). The Calder\'on projector $\Pb_p^-$ is here hidden and is defined by: $\Pb_p^- = \frac{I}{2} + \Ab_p$. This set of equation can be rewritten in the following matrix form:
+\begin{equation}\label{eq:CalSet1}
+\left(\begin{array}{c c c c c}
+\dsp - \frac{I}{2}+ \Ab_{1,1}^-  & 0 & 0 & \ldots & 0\\
+0 & \dsp - \frac{I}{2} +\Ab_{2,2}^- & 0 & \ldots & 0\\
+\vdots & \ddots & \ddots & \ddots &\vdots\\
+0 & 0 & 0 & \ldots & \dsp - \frac{I}{2} + \Ab_{M,M}^-
+\end{array}\right)
+\left(\begin{array}{c}
+\dsp \Uttm_1\\
+\dsp \Uttm_2\\
+\vdots\\
+\dsp \Uttm_M\\
+\end{array}\right)
+=
+\left(\begin{array}{c}
+0\\0\\\vdots \\ 0
+\end{array}\right).
+\end{equation}
+
+Now, a second set of equations must be obtained, thanks to the exterior part. Following the same idea, the trace and normal derivative trace of $\ups$ on $\Gammap$ can be computed, however here, the $M$ contributions appear:
+$$
+\forall p=1,\ldots,M,\qquad\begin{cases}
+\dsp \ut^+|_{\Gammap} = \uinc|_{\Gammap} + \frac{I}{2}\ups|_{\Gammap} - \sum_{q=1}^M\left[\left(+M_{p,q}^+\right)(\ups|_{\Gammaq}) + L^+_{p,q}(\dn\ups|_{\Gammaq})\right],\\
+\dsp \dn\ut^+|_{\Gammap} = \dn\uinc|_{\Gammap} +\frac{I}{2}\dn\ups|_{\Gammap} - \left[D_{p,q}^+(\ups|_{\Gammaq}) + \left(N^+_{p,q}\right)(\dn\ups|_{\Gammaq})\right],
+\end{cases}
+$$
+which can be rewritten as
+$$
+\forall p=1,\ldots,M,\qquad \frac{I}{2}\Uttps_p + \sum_{q=1}^M\Ab^+_{p,q}\Uttps_q = 0,
+$$
+with the following quantities
+$$
+\Uttps_p = \left(\begin{array}{c}
+\ut^+|_{\Gammap}\\
+\dn\ut^+|_{\Gammap}
+\end{array}\right),\qquad\text{and}\qquad
+\Ab^+_{p,q}=
+\left(\begin{array}{c c}
+M^+_{p,q}  & L^+_{p,q}\\
+\dsp D^+_{p,q} & \dsp N^+_{p,q}
+\end{array}\right).
+$$
+Finally, this second set of equations can be also rewritten in the following matrix form:
+\begin{equation}\label{eq:CalSet2}
+\left(\begin{array}{c c c c c}
+\dsp \frac{I}{2} + \Ab_{1,1}^+  & \Ab_{1,2}^+ & \Ab_{1,3}^+ & \ldots & \Ab_{1,M}^+\\
+\Ab_{2,1}^+ & \dsp  \frac{I}{2} + \Ab_{2,2}^+ & \Ab_{2,3}^+ & \ldots & \Ab_{2,M}^+\\
+\vdots & \ddots & \ddots & \ddots &\vdots\\
+\Ab_{M,1}^+ & \Ab_{M,2}^+ & \Ab_{M,3}^+ & \ldots & \dsp \frac{I}{2} + \Ab_{M,M}^+
+\end{array}\right)
+\left(\begin{array}{c}
+\dsp \Uttps_1 - \Uttinc_1\\
+\dsp \Uttps_2 - \Uttinc_2\\
+\vdots\\
+\dsp \Uttps_M - \Uttinc_M\\
+\end{array}\right)
+=
+\left(\begin{array}{c}
+0\\0\\\vdots \\ 0
+\end{array}\right).
+\end{equation}
+
+To obtain only one set of equation, systems (\ref{eq:CalSet1}) and (\ref{eq:CalSet2}) must be combined. A first kind integral equation is obtained by doing ``(\ref{eq:CalSet1}) + (\ref{eq:CalSet2})'', which is known to have a poor condition number but is robust, and a second kind integral equation can be obtained by doing ``(\ref{eq:CalSet1}) - (\ref{eq:CalSet2})'', which is well conditioned but can provide inaccurate solution. These two integral equations are solved in the example function \BenchmarkCalderon. The matrix $\Ab^{\pm}_{p,q}$ is computed by the \BlockCalderonProjector function and the whole matrix $(\Ab_{p,q}^{\pm})_{p,q}$ by \CalderonProjector.
+
+
+
+
+
