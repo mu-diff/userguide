@@ -25,7 +25,7 @@ Note that \texttt{git} should be prefered to stay up to date easily.
 BenchmarkDirichlet;
 \end{lstlisting}
 This should solve the multiple scattering problem based on classical boundary integral equations, as described in chapter \ref{chap:math}, 
-and displays the Radar Cross Section and the history of GMRES for the various boundary integral equations.
+and displays the Radar Cross Section and the history of GMRES for the various boundary integral equations, as Figure \ref{fig:install}.
 \item Other tests can be launched to check that all evaluations of the integral operators works correctly
 \begin{lstlisting}
 BenchmarkNeumann;
@@ -36,7 +36,16 @@ BenchmarkCalderon;
 \end{enumerate}
 
 If you want to see some other examples by using \mudiff, you can try and launch the following time reversal experiments
-\begin{lstlisting}
-DORT_NotPenetrable;
-DORT_dielectric;
-\end{lstlisting}
+\begin{itemize}
+\item \code{DORT_NotPenetrable;}
+\item
+\code{DORT_dielectric;}
+\end{itemize}
+
+\begin{figure}
+\subfigure[Obstacles]{\includegraphics[width=0.45\textwidth]{img/install/obstacles.pdf}}
+\subfigure[Absolute value of the total field]{\includegraphics[width=0.45\textwidth]{img/install/absut.png}}
+\subfigure[Radar cross section]{\includegraphics[width=0.45\textwidth]{img/install/rcs.pdf}}
+\subfigure[History of convergence of the GMRES]{\includegraphics[width=0.45\textwidth]{img/install/gmres.pdf}}
+\caption{4 of the different figures that pop up after launching \texttt{BenchmarkDirichlet;}. The first figure shows the two obstacles and the second one the total field. The two others figures, (c) and (d) represent respectively the radar cross section for the different boundary integral equations and the history of convergence of the GMRES solver.}
+\end{figure}
