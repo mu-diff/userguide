@@ -1,47 +1,56 @@
-\mtcaddchapter[Introduction]                          % solution pour minitoc
-\markboth{\uppercase{Introduction}}{\uppercase{Introduction}} 
+\mtcaddchapter[Introduction to the user guide]                          % solution pour minitoc
+\markboth{\uppercase{Introduction to the user guide}}{\uppercase{Introduction to the user guide}} 
 
 \section*{What is \mudiff?}
 
-\mudiff is a toolbox for solving two dimensional acoustic multiple scattering problem by disks using boundary integral equations. The toolbox is a set of Matlab functions that compute easily and in a fast way the classical integral operators with in addition pre and post-processing facilities. When the boundary integral formulation has been written mathematically, the translation to the computer side is easily done in \mudiff (it can be clearly implemented in less than a day). Solving the linear system is done thanks to Matlab's rich framework. No particular computation skills are needed, except knowing the Matlab's language.
-
-Mathematically, the boundary integral operators are discretized in the Fourier basis, thanks to the circular shape of the obstacles. This leads to an accurate solution and a small size system, compared to \eg Boundary Element Method (BEM). For high frequency and/or large number of scatterers, an adapted algorithm is moreover proposed, that takes advantage of the the particular structure of the matrix (Toeplitz).
+The toolbox \mudiff has been developed  for solving two dimensional acoustic multiple scattering problems by disks based on boundary integral equations. The toolbox is a set of Matlab functions that compute accurately and efficiently the standard integral operators with in addition pre- and post-processing facilities. When the boundary integral formulation has been written mathematically, the coding part can be easily done in \mudiff. Solving the linear system is realized within the Matlab 
+ framework. No particular computational skill is needed, except  basic notions in Matlab.
+The boundary integral operators are spectrally discretized in Fourier basis, thanks to the circular shape of the obstacles.
+ This leads to an accurate solution and a smaller size linear systems to solve, compared to usual Boundary Element Methods (BEMs). For high-frequency
+  and/or a large number of scatterers, an adapted algorithm is moreover used that takes advantage of the the particular structure of the matrix (block Toeplitz).
 
 \section*{What is not \mudiff?}
 
-Even if \mudiff is designed to solve multiple scattering problem, it is not a black box that solves a particular problem. By that, we mean that \mudiff will not not chose the integral equation formulation to be used to solve a particular problem: this theoretical aspect is let to the user. However, for non-specialist of boundary integral equation, this user guide provides a quick survey on boundary integral equations, in chapter \ref{chap:math}, and some examples of efficient integral equations in classical cases (Dirichlet/Neumann boundary condition, penetrable scatterers). This should help non specialist of boundary integral equation to use \mudiff for their work.
+Even if \mudiff is designed to solve multiple scattering problem, it is not a black-box that only solves a particular problem, i.e.  \mudiff does not
+\textit{a priori}  fix the integral equation formulation to be used for solving a particular problem. This theoretical aspect is rather let to the user. However,
+ for users who are not fluent with boundary integral equations, this user guide provides a rapid survey on boundary integral equations (see chapter \ref{chap:math}).
+ Furthermore, some examples of efficient solutions based on integral equations in classical cases (Dirichlet/Neumann boundary condition, penetrable scatterers)
+ are detailled. We expect that these elements will help a non-specialist of boundary integral equation to use \mudiff for solving multiple scattering problems.
 
 \section*{How to use \mudiff?}
 
-It is hard to describe how to use \mudiff without talking about integral equation and hence, an example answers the question better as thousand words. Assume that there is a (circular) sound-soft scatterer $\Omegam$ in the medium which is  illuminated by an incident plane wave. The mathematical problem to compute the scattered field is to solve the Helmholtz equation in the propagation domain
+It is difficult to  describe the way to  use \mudiff without speaking about integral equations. To simplify the presentation, we provide a basic example.
+Let us assume that  a (circular) sound-soft scatterer $\Omegam$ is placed within a homogeneous medium which is  illuminated by an incident plane wave.
+ The mathematical problem is to compute the scattered field  solution to the Helmholtz equation in the propagation domain
 $$
 \begin{cases}
 (\Delta+k^2)u = 0 & \text{ in }\Rb^2\setminus\overline{\Omegam}\\
 u = -\uinc&\text{ on }\partial\Omegam\\
-\text{Radiation condition at infinity}
+\text{+ Sommerfeld's radiation condition at infinity}
 \end{cases}
 $$
-A possible integral representation of the scattered field $u$ can be the following
+A possible integral representation of the scattered field $u$ is the following
 $$
 u(\xx) = \int_{\partial\Omegam} G(\xx,\yy)\rho(\yy)\dd\yy, \qquad \forall \xx\in\Rb\setminus\overline{\Omegam},
 $$
-where $G$ is the Green function and $\rho$ is the density, solution of a boundary integral equation, which can be the EFIE (see \ref{chap:math}):
+where $G$ is the Green function and $\rho$ is the density, solution of a boundary integral equation, which can be e.g. the EFIE (see chapter \ref{chap:math})
 $$
 L\rho = -\uinc, \qquad \text{with } L\rho(\xx) = \int_{\partial\Omegam} G(\xx,\yy)\rho(\yy)\dd\yy, \quad \forall \xx\in\partial\Omegam.
 $$
-The problem is hence reduced to this boundary integral equation only: knowing $\rho$ leads to the knowledge of $u$ on every point $\xx$ of the propagation domain. Note that, in addition, its far field of $u$ can be computed easily thanks to its integral representation. The theoretical part of the problem ends here and the computational part is handled now by \mudiff by following these steps:
+The problem is hence reduced to solving this boundary integral equation: knowing $\rho$ leads to the possible computation of $u$ at any point $\xx$ of the propagation domain. Note that, in addition, the far-field can be obtained easily thanks to its integral representation. The theoretical part of the problem ends here and the computational part is handled now by \mudiff through the four following steps
 \begin{enumerate}
-\item Pre-processing: 
+\item Pre-processing
 \begin{enumerate}
 \item Creating the obstacles
-\item Building the right hand side ($-\uinc$)
+\item Building the right-hand side ($-\uinc$)
 \end{enumerate}
 \item Assembling the matrix of the integral operator(s)
-\item Solving the linear system
-\item Post-processing: computing the far-field, near-field (on a point or a grid), \ldots
+\item Solving the resulting linear system
+\item Post-processing: computing the far-field, near-field (at a point of the  domain or on a grid), or any other physical quantity of interest \ldots
 \end{enumerate}
 
-Everything is done using \mudiff function except for the solving part which is done thanks to Matlab's rich framework: direct solver (backslash operator ``\textbackslash'') or iterative solver (GMRES, \ldots). This is summarized as a diagram on figure \ref{fig:howto}.
+Most of the steps call some \mudiff functions except for the linear system solution  which uses the already existing and optimized Matlab's functions for the
+ direct  (backslash operator ``\textbackslash'') and iterative solvers (GMRES, \ldots). This is summarized as a diagram in Figure \ref{fig:howto}.
 
 \begin{figure}
 \begin{tikzpicture}
@@ -51,9 +60,9 @@ Everything is done using \mudiff function except for the solving part which is d
      \node[punktchain, below=of math] (choice)      {Reformulate the problem as an integral formulation};
       \node[punktchain, below left=of choice] (inteq)      {Integral equation};
 	 \node[punktchain, below right=of choice] (intrep)      {Integral representation};
-      \node[punktchain, below =of inteq] (inteq2)      {\textbf{Pre-processing}: geometry and right hand side $b$};
+      \node[punktchain, below =of inteq] (inteq2)      {\textbf{Pre-processing}: geometry and right-hand side $\mathbf{b}$};
       \node[punktchain, below =of inteq2] (inteq3)      {\textbf{Assemble} the matrix $A$};
-      \node[punktchain, below =of inteq3] (inteq4)      {Solve the linear system};
+      \node[punktchain, below =of inteq3] (inteq4)      {Solve the linear system: $A\mathbf{u}=\mathbf{b}$};
       \node[punktchain, below right = of inteq4] (postpro)      {\textbf{Post-processing}:
       \begin{itemize}
       \item Far field
@@ -78,21 +87,38 @@ Everything is done using \mudiff function except for the solving part which is d
   %    \draw[->] (postpro) to (nearfield);
 %      \draw[->] (postpro) to (misc);
  \end{tikzpicture}
- \caption{Diagram: ``How to use \mudiff''.}
+ \caption{Schematic structure of a $\mu$-diff script.}
  \label{fig:howto}
  \end{figure}
   
 \section*{To whom \mudiff is designed to?}
 
-To every scientists or people in need of a fast and efficient way to either solve the acoustic multiple scattering problem by disks or to compute boundary integral operators. Indeed, the \mudiff toolbox can be used:
+The toolbox \mudiff is designed for any  scientist who needs an easy-to-use and efficient way to either solve accurately the acoustic multiple scattering problem  or
+ to compute boundary integral operators for a collection of disks. Indeed, the \mudiff toolbox can be used
 \begin{itemize}
-\item As a solver of the multiple scattering problem%: \mudiff can be handled easily to get an accurate solution of the problem
-\item As a framework for more theoretical studies on boundary integral equations%: the accurate representation of the integral operators can lead to study their spectral properties of the operators, or develop a new preconditioners, \ldots
+\item as a solver of the multiple scattering problem,%: \mudiff can be handled easily to get an accurate solution of the problem
+\item as a framework for more theoretical studies on boundary integral equations.%: the accurate representation of the integral operators can lead to study their spectral properties of the operators, or develop a new preconditioners, \ldots
 \end{itemize}
 
-Note that, to help non specialist on boundary integral equations, this user guide contains a chapter entirely dedicated to it, containing in particular some classical and still quite efficient boundary integral equation in different case (see chapter \ref{chap:math}).
+%Note that, to help non specialist on boundary integral equations, this user guide contains a chapter entirely dedicated to it, containing in particular some classical and still quite efficient boundary integral equation in different case (see chapter \ref{chap:math}).
 
 \section*{What does this user guide contain?}
 
-The first chapter recalls some well-known properties of the boundary integral equations. Even if this part is clearly theoretical, some practical boundary integral equations are also provided for the impenetrable case and some examples of robust integral equation are also given for the penetrable case. Moreover, some examples of usage are provided with the \mudiff toolbox. The chapter \ref{chap:fourier} explains the theory on which the \mudiff toolbox is based. More precisely, the boundary integral operators are here projected on the Fourier bases. Their associated matrix are derived, in addition to other practical quantities, such as the far field or the near field of the scattered wave. Then, the \mudiff toolbox is detailed on chapter  \ref{chap:code}: each function is detailed, with its options and with examples. Note that a list of every functions is given in the appendix, in the alphabetic order \ref{app:funFromName}, and arranged by folder location in appendix \ref{app:funFromFolder}.
+The first chapter recalls some well-known properties of the boundary integral equations. Even if this part is mostly theoretical, some practical
+aspects of boundary integral equations are also provided for the impenetrable case and some examples of robust integral equations are given for the
+ penetrable case. Moreover, some examples of usage are provided with the \mudiff toolbox. Chapter \ref{chap:fourier} explains the theory on which the \mudiff toolbox is based. More precisely, the boundary integral operators are projected in the Fourier bases. Their associated matrices are derived, in addition to other physical
+  quantities of interest such as the far- or the near-fields. The \mudiff toolbox is detailed in chapter  \ref{chap:code}: each function is explained and
+   examples are provided. Simple example are provided in chapter \ref{chap:examples}.
+   Let us note that the list of available functions is given in the appendix  \ref{app:funFromName}, in the alphabetic order, and arranged by folder location in appendix \ref{app:funFromFolder}.
+
+\section*{How to cite $\mu$-diff?}
+
+Please cite the following reference if you use $\mu$-diff
+
+\medskip
+
+B. Thierry, X. Antoine, C. Chniti, H. Alzubaidi, \textit{$\mu$-diff: an open Matlab toolbox for computing multiple scattering problems by disks},
+Computer Physics Communications, to appear, 2015.
+
+
 

@@ -1,39 +1,41 @@
-\mtcaddchapter[Installation]                          % solution pour minitoc
-\markboth{\uppercase{Installation}}{\uppercase{Installation}} 
+\mtcaddchapter[How to install $\mu$-diff]                          % solution pour minitoc
+\markboth{\uppercase{How to install $\mu$-diff}}{\uppercase{How to install $\mu$-diff}} 
 
-\section*{Requierement}
+\section*{Requirement}
 
-\mudiff requires Matlab software, version 2011 or higher. \mudiff should work fine with previous version of Matlab, however without guarantee. Please note that Matlab is not provided with \mudiff, it can be bough and downloaded at \url{http://www.mathworks.com/}.
+The toolbox \mudiff requires the installation of the Matlab software (\url{http://www.mathworks.com/}), version 2011 or higher. Furthermore,
+\mudiff should work fine with previous versions of Matlab, however without any guarantee.
 
-\section*{Install}
+\section*{Installation}
 
-The install process is done as follows:
+The install process is realized as follows
 \begin{enumerate}
-\item Download the \mudiff toolbox, either using \texttt{git} with
+\item Download the \mudiff toolbox, either by using \texttt{git} with
 \begin{verbatim}
 git clone http://mu-diff.math.cnrs.fr/git mu-diff
 \end{verbatim} 
-or by downloading the following zip file and unzipping it in your matlab working directory (or whereelse you prefer):
+or by downloading the following zip file and unzipping it in your Matlab working directory (or in any other directory that you fix yourself)
 \begin{center}
 \url{http://mu-diff.math.cnrs.fr/mu-diff/Download_files/mudiff.zip}
 \end{center}
 Note that \texttt{git} should be prefered to stay up to date easily.
-\item Add the \mudiff toolbox to Matlab's path (including subfolders !), using either the graphical interface of Matlab or the \code{addpath} and \code{save path} functions.
-\item Test the \mudiff install by typing in the Matlab command window:
+\item Add the \mudiff toolbox to the Matlab's path (including subfolders!), by using either the graphical interface of Matlab or the \code{addpath} and \code{save path} functions.
+\item Test the \mudiff install by typing in the Matlab command window
 \begin{lstlisting}
 BenchmarkDirichlet;
 \end{lstlisting}
-This should solve the multiple scattering problem using classical boundary integral equation, described in chapter \ref{chap:math}, with in addition, the radar cross section and the history of GMRES of the boundary integral equations.
-\item Other test can be launched to be sure every integral operators are working fine:
+This should solve the multiple scattering problem based on classical boundary integral equations, as described in chapter \ref{chap:math}, 
+and displays the Radar Cross Section and the history of GMRES for the various boundary integral equations.
+\item Other tests can be launched to check that all evaluations of the integral operators works correctly
 \begin{lstlisting}
 BenchmarkNeumann;
 BenchmarkPenetrable;
 BenchmarkCalderon;
 \end{lstlisting}
-\item If everything went right: congratulation! Your \mudiff installation is working!
+\item If everything went right: congratulation! Your \mudiff installation is  working!
 \end{enumerate}
 
-If you want to see some other examples using \mudiff, you can try and launch the following time reversal experiments:
+If you want to see some other examples by using \mudiff, you can try and launch the following time reversal experiments
 \begin{lstlisting}
 DORT_NotPenetrable;
 DORT_dielectric;

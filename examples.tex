@@ -1,44 +1,72 @@
+The aim of this chapter is to provide some examples of multiple scattering problems solved by  the \mudiff toolbox.
+The impenetrable case with a Dirichlet, a Neumann or a mixed of both boundary conditions  set on the boundaries of the obstacles are
+fully treated.
 
-\section{Dirichlet boundary value problem}
 
-\subsection{Advice}
+\section{The Dirichlet boundary-value problem}
 
-The authors suggest that, for that kind of problem, the single-scattering preconditioned integral equation is used, as is presented on \S\ref{secEx:PrecondD}. This system has no irregular frequency and is well conditioned: the iterative solver will converge vastly.
+Let us consider the scattering problem by a collection of sound-soft obstacles
+$$
+\left\{\begin{array}{r c l l}
+(\Delta +k^2)u & = & 0, & \text{ in }\Omegaps,\\
+u & = & -\uinc, & \text{ on }\Gamma,\\
+\multicolumn{4}{l}{\qquad \qquad u \text{ outgoing},}
+\end{array}\right.
+$$
+with  $\Omegam = \bigcup_{p=1}^{M}\Omegamp$.
+We propose to solve this problem through various integral equations: the EFIE (\ref{eq:EFIE}), the MFIE (\ref{eq:MFIE}), the 
+CFIE (\ref{eq:CFIE}) and the single-scattering preconditioned integral equations (\ref{eqEqINt:LAsglLA}). We show how
+ to use both the full and  sparse storages of the matrices.
+Before starting, we recommend to use the  single-scattering preconditioned integral equation as presented in \S\ref{secEx:PrecondD}. 
+Indeed, the resulting system is well-posed and is well-conditioned leading to an efficient solution by a Krylov subspace iterative solver.
 
-\subsection{Preprocessing}
+\subsection{Pre-processing}
 
-Consider a collection of three unit sound-soft obstacles (Dirichlet boundary value problem), with a wavenumber $k=2\pi$ and an incident plane wave of direction $\beta = 0$. The code in Matlab and using \mudiff for the pre-processing part is then:
+Let us first consider a collection of three sound-soft unit circular cylinders. The  wavenumber is 
+$k=2\pi$ and the direction of  incidence of the
+ wave is $\beta = 0$ degree. The resulting  \mudiff pre-processing code for setting  these parameters is then
 \begin{lstlisting}
-%% Preprocessing
+%% Pre-processing
 % Three unit disks 
 O = [-5, 0, 5; -2, 0, 2];
 a = [1, 1, 1];
 %Set the parameters...
 k = 1; %wavenumber
 beta_inc = 0; %incident angle
-%Fourier truncation parameter
+%Fourier series truncation parameter
 M_modes = FourierTruncation(a, k, 'Min', 1);
 \end{lstlisting}
 
-Now, let the problem be solved, using the different boundary integral equations presented in this paper. For every integral equation, only the assembling, solving and post-processing is shown, the pre-processing being assumed to be the above one. Note that every integral equations described here is also presented on the file \texttt{BenchmarkDirichlet.m} located in \folder{Examples/Benchmark}. The file can be launched directly in Matlab by typing (when \mudiff is installed)
+For each integral equation, we now present the assembly process, the computation of the solution and finally the post-processing of the computed wave
+fields. 
+The common pre-processing part is the one described above. All the functionalities presented here are also available in  the
+ file \texttt{BenchmarkDirichlet.m} which is located in the  \folder{Examples/Benchmark} folder.
+ To launch the computations, it is sufficient to type the following command
 \begin{lstlisting}
 BenchmarkDirichlet;
 \end{lstlisting}
+in the Matlab window once $\mu$-diff has been installed.
 
-\subsection{Using the EFIE}
+\subsection{The case of the EFIE}
 
-\subsubsection{Dense storage}
 
 This integral formulation reads as
 $$
 \left\{\begin{array}{r c l}
-u &=& \Lop\rho\\
+u &=& \Lop\rho,\\
 L\rho &=& -\uinc|_{\Gamma},
 \end{array}\right.
 $$
-where the first line is the integral representation of $u$ and the second one, the integral equation to solve. In \mudiff, the operator $L$ as the quantity $\uinc|_{\Gamma}$ are ready to be used:
+where the first line is the integral equation representation of the exterior wavefield $u$ and the second one is  the surface 
+integral equation to solve. 
+
+\subsubsection{Dense storage}
+
+In \mudiff, the surface single-layer operator $L$ and the incident plane wave field $\uinc|_{\Gamma}$ are  predefined quantities.
+If the full storage of the integral equation is used, then the direct solution of the resulting linear system can be
+obtained by the standard backslash Matlab operator $\backslash$ 
 \begin{lstlisting}
-%Right hand side
+%Right-hand side
 Uinc = PlaneWave(O, a, M_modes, k, beta_inc);
 %% Assembling
 %Matrix of the system (the two following lines are the same)
@@ -46,40 +74,47 @@ L = SingleLayer(O, a, M_modes, k);
 %% Solving (here, direct)
 rho = L \ Uinc;
 \end{lstlisting}
+\medskip
 
-Now, if the user needs to check the radar cross section (RCS) of the scattered field, using the single-layer representation of $u$:
+Once the surface wavefield has been computed, the RCS can be calculated by the following $\mu$-diff  commands
 \begin{lstlisting}
-%% Post processing
-%Angles of reception
+%% Post-processing
+%Scattering angles 
 theta_RCS = 0:360;
 theta_RCS_rad = theta_RCS*2*pi/360;
-%Radar Cross Section of the single-layer potential (<-> [1,0])
+%Radar Cross Section for the single-layer representation (<-> [1,0])
 myRCS = RCS(O, a, M_modes, k, theta_RCS_rad, rho, [1,0]);
 plot(theta_RCS, myRCS, 'k');
 \end{lstlisting}
 
 \subsubsection{Sparse storage}
 
-For the sparse storage version, only the assembling of the matrix and the resolution is modified (no direct solver possible), as follows:
+For the sparse storage version, only the assembly process of the single-layer matrix and the system solution
+need to be modified as follows
 \begin{lstlisting}
 %Matrix of the system (the two following lines are the same)
 SpL = SpSingleLayer(O, a, M_modes, k);
 %% Solving (here, direct)
 rho = gmres(@(X)SpMatVec(X, M_modes, SpL), Uinc);
 \end{lstlisting}
+\medskip
 
-\subsection{Using the MFIE}
+\subsection{The case of the MFIE}
 
-\subsubsection{Dense storage}
 
-The MFIE reads as
+The resolution of the scattering problem by the MFIE (\ref{eq:MFIE}) leads to the integral equation representations
 $$
 \left\{\begin{array}{r c l}
-u &=& \Lop\rho\\
+u &=& \Lop\rho,\\
 \dsp \left(\frac{I}{2}+N\right)\rho &=& -\dn\uinc|_{\Gamma}.
 \end{array}\right.
 $$
-The operator $\left(\frac{I}{2}+N\right)$ can be computed in one line thanks to the frontal function \IntegralOperator, by giving it two arguments: the type of the operators (identity and $N$, see table \ref{table:IntOp}) and their weight ($0.5$ and $1$). 
+
+\subsubsection{Dense storage}
+
+The MFIE operator $$\left(\frac{I}{2}+N\right)$$ can be computed  thanks to the frontal function \IntegralOperator with two
+ arguments: the type of the operators (for the identity operator and the double-layer potential operator $N$, see
+  Table \ref{table:IntOp}) and their associated weights ($0.5$ and $1$). 
 \begin{lstlisting}
 %Right hand side
 DnUinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
@@ -89,35 +124,44 @@ A_MFIE = IntegralOperator(O, a, M_modes, k, [1, 4], [0.5, 1]);
 %% Solving (here, direct)
 rho = A_MFIE \ DnUinc;
 \end{lstlisting}
+\medskip
 
-The post-processing part is exactly the same as for the EFIE, since the integral representation is the same.
+The post-processing part is exactly the same as for the EFIE since the surface equation is based on the 
+volume single-layer integral representation.
 
 \subsubsection{Sparse storage}
 
-The sparse storage version is almost the same except for the assembling of the matrix and the resolution. Indeed, the matrix $I$ and $N$ cannot be computed in the same function, the sparse equivalent function \SpIntegralOperator to \IntegralOperator is not able to sum different operators. It is however possible to add the identity to a ``sparse operator'' thanks to \SpAddIdentity:
+The sparse storage version is almost the same as for the dense storage except for  assembling  the matrix and solving the linear system. Indeed, the matrices
+ $I$ and $N$ cannot be computed by the same function since the sparse  function representations \SpIntegralOperator and
+  \IntegralOperator cannot be  summed together. It is however possible to add the identity to a ''sparse operator'' thanks to \SpAddIdentity
 \begin{lstlisting}
 SpN = SpDnSingleLayer(O, a, M_modes, k);
 %Add I/2 to N:
 SpA_MFIE = SpAddIdentity(SpN, 0.5, M_modes)
 rho = gmres(@(X)SpMatVec(X, M_modes, SpA_MFIE), DnUinc);
 \end{lstlisting}
+\medskip
 
+\subsection{The case of the CFIE}
 
-\subsection{Using the CFIE}
-
-For a collection of sound-soft obstacles (Dirichlet boundary value problem), a possibility is to apply the Combined Field Integral Equation (CFIE, (\ref{eq:cfie})). This integral equation is well posed and well conditioned. It reads as
+Let us now consider  the well-posed and well-conditioned CFIE (see also Eq. (\ref{eq:CFIE}))
 $$
 \left\{\begin{array}{r c l}
-u &=& \Lop\rho\\
-\dsp \left[\alpha\eta L  + (1-\alpha)\left(\frac{I}{2}+N\right)\right]\rho &=& -\alpha\eta\uinc|_{\Gamma} - (1-\alpha) \dn\uinc|_{\Gamma},
+u &=& \Lop\rho,\\
+\dsp \left[\alpha\eta L  + (1-\alpha)\left(\frac{I}{2}+N\right)\right]\rho &=& -\alpha\eta\uinc|_{\Gamma} - (1-\alpha) \dn\uinc|_{\Gamma}.
 \end{array}\right.
 $$
-The parameters are here set to $\alpha=0.5$ and $\eta = i/k$. Again, $(1-\alpha)\left(\frac{I}{2}+N\right) + \alpha\eta$ is computed in one line in \mudiff using \IntegralOperator function, and the post-processing is unchanged:
+Here, we fix the parameters  to $\alpha=0.5$ and $\eta = i/k$. 
+
+\subsubsection{Dense storage}
+
+The operator $$(1-\alpha)\left(\frac{I}{2}+N\right) + \alpha\eta$$ is computed in \mudiff by
+using the \IntegralOperator function,  the post-processing remaining  unchanged,
 \begin{lstlisting}
 %CFIE
 alpha = 0.5;
 eta = i/k;
-%Right hand side
+%Right-hand side
 Uinc = PlaneWave(O, a, M_modes, k, beta_inc);
 DnUinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
 BCFIE = alpha*eta*Uinc + (1-alpha)*DnUinc;
@@ -127,10 +171,11 @@ ACFIE = IntegralOperator(O, a, M_modes, k, [2, 1, 4], [alpha*eta, 0.5*(1-alpha),
 %% Solving (here, direct)
 rho = ACFIE \ BCFIE;
 \end{lstlisting}
+\medskip
 
 \subsubsection{Sparse storage}
 
-The sparse storage version changes compared to the dense one: the operators $I/2 + N$ and $L$ are computed separately and merged during the matrix-vector products. This is done in the \SpMatVec function:
+The sparse storage version changes compared to the dense one: the operators $I/2 + N$ and $L$ are computed separately and merged during the matrix-vector products. This is done in the \SpMatVec function
 \begin{lstlisting}
 SpL = SpSingleLayer(O, a, M_modes, k);
 SpN = SpDnSingleLayer(O, a, M_modes, k);
@@ -138,21 +183,26 @@ SpA_MFIE = SpAddIdentity(SpN, 0.5, M_modes)
 %% Solving and combining operators:
 rho = gmres(@(X)SpMatVec(X,M_modes,{SpL, SpA_MFIE}, [alpha*eta, 1-alpha]), B_CFIE);
 \end{lstlisting}
+\medskip
 
-
-\subsection{Using the single scattering preconditioned integral equation}
+\subsection{The case of the single-scattering preconditioned integral equation}
 \label{secEx:PrecondD}
-The authors strongly suggest to use the single scattering preconditioned version of the EFIE, which is the same as the MFIE and CFIE and, up to an invertible operator, to every other boundary integral equation (see Proposition \ref{prop:SingleScat}). The EFIE version is available in \mudiff and is represented as
+We strongly recommend
+ to use the single-scattering preconditioned version of the EFIE, which is rigorously the same as the MFIE and CFIE and, up to an invertible operator, 
+ to any other boundary integral equation (see Proposition \ref{prop:SingleScat}). The EFIE version is available in \mudiff and is represented as
 $$
 \begin{cases}
-u = \Lop\rho.\\
-\Lsgl L \rho = -\Lsgl\uinc.
+u = \Lop\rho,\\
+\Lsgl^{-1} L \rho = -\Lsgl^{-1}\uinc.
 \end{cases}
 $$
-In \mudiff, the quantity $-\Lsgl\uinc|_{\Gamma}$ is provided by \PlaneWavePrecond whereas $\Lsgl L$ is obtained with \PrecondDirichlet. The syntax is then the following, for the dense version and for three unit circular obstacles:
+
+\subsubsection{Dense storage}
+
+In \mudiff, the quantity $-\Lsgl^{-1}\uinc|_{\Gamma}$ is provided by \PlaneWavePrecond whereas $\Lsgl^{-1} L$ is obtained with \PrecondDirichlet. The syntax for the dense version is then the following
 \begin{lstlisting}
 [...]
-%Right hand side
+%Right-hand side
 UincPrecond = PlaneWavePrecond(O, a, M_modes, k, beta_inc);
 %Matrix of the system (the two following lines are the same)
 APrecond = PrecondDirichlet(O, a, M_modes, k);
@@ -160,23 +210,39 @@ APrecond = PrecondDirichlet(O, a, M_modes, k);
 rho = APrecond \ UincPrecond;
 [...]
 \end{lstlisting}
-
+\medskip
 
 \subsubsection{Sparse storage}
 
-The sparse storage is here almost the same as the dense one, thanks to \SpPrecondDirichlet:
+The sparse storage is here almost the same as for the dense version thanks to \SpPrecondDirichlet
 \begin{lstlisting}
 SpPrecond = SpPrecondDirichlet(O, a, M_modes, k);
 %% Solving and combining operators:
 rho = gmres(@(X)SpMatVec(X,M_modes, SpPrecond), UincPrecond);
 \end{lstlisting}
+\medskip
 
+\section{The Neumann boundary-value problem}
 
-\section{Neumann boundary value problem}
-
-When the obstacles are all sound-hard (Neumann boundary value problem), the advice is the same as for Dirichlet, but using the preconditioned version for sound-hard obstacles. Two quantities must then be changed: \PrecondDirichlet by \PrecondNeumann and the right-hand side \PlaneWavePrecond by \DnPlaneWavePrecond. Note that for the Neumann case, the preconditioned boundary integral equation is based on the double-layer representation
+Let us now consider the sound-hard scattering problem
 $$
-u = \Mop\lambda.
+\left\{\begin{array}{r c l l}
+(\Delta +k^2)u & = & 0, & \text{ in }\Omegaps,\\
+\dn u & = & -\dn \uinc, & \text{ on }\Gamma,\\
+\multicolumn{4}{l}{\qquad \qquad u \text{ outgoing}.}
+\end{array}\right.
+$$
+
+An efficient solution to this problem is given for example by a preconditioned integral equation for sound-hard obstacles.
+Here, we only present this solution but the extension to other kinds of integral equations is direct.
+ The $\mu$-diff script is close to the one developed for the Dirichlet problem, only the two following functions must
+  be modified: \PrecondDirichlet is replaced by \PrecondNeumann and the right-hand side \PlaneWavePrecond is now given by
+   \DnPlaneWavePrecond. For the Neumann problem, the preconditioned boundary integral equation is based on the double-layer representation
+$$
+\begin{cases}
+u = \Mop\lambda,\\
+\widehat{D}^{-1} D \lambda = -\widehat{D}^{-1}\dn\uinc.
+\end{cases}
 $$
 \begin{lstlisting}
 % Three unit disks 
@@ -185,29 +251,45 @@ a = [1, 1, 1];
 %Set the parameters...
 k = 1; %wavenumber
 beta_inc = 0; %incident angle
-%Fourier truncation parameter
+%Fourier series truncation parameter
 M_modes = FourierTruncation(a, k, 'Min', 1);
-%Right hand side
+%Right-hand side
 DnUincPrecond = DnPlaneWavePrecond(O, a, M_modes, k, beta_inc);
 %Matrix of the system (the two following lines are the same)
 APrecond = PrecondNeumann(O, a, M_modes, k);
 %Solving (here, direct)
 lambda = APrecond \ DnUincPrecond;
 \end{lstlisting}
+\medskip
 
-The post-processing is after based on the double-layer potential only (compared to Dirichlet, the change is located in \RCS function, the last argument \code{[1,0]} becomes \code{[0,1]}):
+The post-processing is based on the double-layer potential (compared to Dirichlet, the modification is realized in the \RCS function, the
+ last argument \code{[1,0]} is then replaced by  \code{[0,1]})
 \begin{lstlisting}
-%Angles of reception
+%Scattering angles
 theta_RCS = 0:360;
 theta_RCS_rad = theta_RCS*2*pi/360;
-%Radar Cross Section of the single-layer potential
+%Radar Cross Section associated with the double-layer potential
 myRCS = RCS(O, a, M_modes, k, theta_RCS_rad, lambda, [0,1]);
 plot(theta_RCS, myRCS, 'k');
 \end{lstlisting}
+\medskip
 
-\section{Mixte of sound-soft and sound-hard obstacles (Dirichlet and Neumann)}
+\section{Mixing Dirichlet and Neumann boundary conditions}
 
-For these kind of collection, the preconditioned version is no more useable as-is. An efficient possibility is to apply the Combined Field Integral Equation for mixte problem, given by equation (\ref{eq:CFIEMixte2}), written as $(I/2 +A)\varphi = b$, where the the matrix $A$, given by  (\ref{eq:CFIEMixteApq}), is recalled to have the following coefficients
+Let us consider the following situation where we mix Dirichlet and Neumann boundary conditions. The scatterer is composed of
+ $M_D$ sound-soft and  $M_N = M-M_D$ sound-hard obstacles, leading to the scattering problem
+$$
+\left\{\begin{array}{r c l l}
+(\Delta +k^2)u & = & 0, & \text{ in }\Omegaps,\\
+u & = & -\uinc, & \text{ on }\Gamma_p,\quad p=1,\ldots, M_D,\\
+\dn u & = & -\dn \uinc, & \text{ on }\Gamma_p,\quad p=M_D+1,\ldots, M,\\
+\multicolumn{4}{l}{\qquad \qquad u \text{ outgoing}.}
+\end{array}\right.
+$$
+For this problem, the  preconditioned integral is not directly available. We can apply a Combined Field Integral Equation for the mixed problem
+ (see equation (\ref{eq:CFIEMixte2})) and written as $$(\frac{I}{2} +A)\varphi = b,$$ where
+  the matrix $A$ is
+  given by  (\ref{eq:CFIEMixteApq}). We have
 $$
 A(p,q) = 
 \begin{cases}
@@ -215,7 +297,8 @@ A(p,q) =
 (1-\alpha) D^{p,q} + \alpha\eta M^{p,q}, & \text{ if } q > M_D.\\
 \end{cases}
 $$
-This is particularly easy to compute in \mudiff thanks to the frontal function \IntegralOperator. To do that, two three dimensional arrays, \code{Assembling} and \code{Weight}, will be built such that
+The  matrix is particularly easy to build  with \mudiff thanks to the frontal function \IntegralOperator. To this end, two
+ three-dimensional arrays, \code{Assembling} and \code{Weight}, are built such that
 $$
 \code{Assembling}(:, p,q) = 
 \begin{cases}
@@ -224,7 +307,7 @@ $$
 \end{cases}\qquad\text{and}\qquad
 \code{Weight}(:, p,q) = [(1-\alpha), \alpha\eta].
 $$
-The indices in \code{Assembling} corresponds to the indices of the boundary integral operators ($2=L^{p,q}$, $3=M^{p,q}$, $4=N^{p,q}$, $5=D^{p,q}$). The assembling will be taken cared of by \IntegralOperator.
+The indices in \code{Assembling} corresponds to the indices of the boundary integral operators ($2=L^{p,q}$, $3=M^{p,q}$, $4=N^{p,q}$, $5=D^{p,q}$). The assembling process is realized by \IntegralOperator.
 \begin{lstlisting}
 % Two Dirichlet obstacles (unit diks)
 OD = [-5, -5; -5, 5];
@@ -241,15 +324,15 @@ N_scat = N_scatD + N_scatN;
 %Set the parameters...
 k = 1; %wavenumber
 beta_inc = 0; %incident angle
-%Fourier truncation parameter (Dirichlet, Neumann, All)
+%Fourier series truncation parameter (Dirichlet, Neumann, All)
 M_modesD = FourierTruncation(aD, k, 'Min', 1);
 M_modesN = FourierTruncation(aN, k, 'Min', 1);
 M_modes = [M_modesD, M_modesN];
-%Right hand side
+%Right-hand side
 Uinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
 DnUinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
 B = alpha*eta*Uinc + (1-alpha)*DnUinc;
-%% ASSEMBLING
+%% Assembling
 Assembling = zeros(2, N_scat, N_scat);
 Weight = zeros(2, N_scat, N_scat);
 for p=1:N_scatD
@@ -269,15 +352,20 @@ A = IntegralOperator(O, a, M_modes, k, Assembling, Weight);
 %Solving (here, direct)
 density = A \ B;
 \end{lstlisting}
+\medskip
 
-The post processing is then done by specifying to \mudiff how the density must be used: for the first $M_D$ obstacles, a single-layer potential is used, then for the other ones, a double-layer potential is required. The \RCS function can simply do that, it just needs an array \code{TypeOfOp} of size $\code{N\_scat}\times 2$ such that
+The post-processing is then done by specifying to \mudiff how the density must be used: for the first $M_D$ obstacles, a single-layer potential is used,
+while for the others, a double-layer potential is required. The \RCS function can simply do that. It just needs an array \code{TypeOfOp} of size
+ $\code{N\_scat}\times 2$ such that
 $$
 \code{TypeOfOp}(p,:) = \begin{cases}
 [1,0], &\text{ if } p \leq M_D,\\
 [0,1], &\text{ if } p > M_D.
 \end{cases}
 $$
-In \mudiff language, this will mean ``Apply the single-layer potential (multiplied by $1$) for the first $M_D$ part of the density and a double layer potential (multiplied by $1$) for the other ones.''
+In a \mudiff script, this  means ''Apply the single-layer potential (multiplied by $1$) for the first $M_D$ part of the density and a double-layer potential
+ (multiplied by $1$) for the others''.
+ \newpage
 \begin{lstlisting}
 %Preparing TypeOfOp
 TypeOfOp = zeros(N_scat, 2);
@@ -288,10 +376,10 @@ for p =1:N_scat
 		TypeOfOp(p,2) = 1;
 	end
 end
-%Angles of reception
+%Scattering angles
 theta_RCS = 0:360;
 theta_RCS_rad = theta_RCS*2*pi/360;
-%Radar Cross Section of the single-layer potential
+%Radar Cross Section computation
 myRCS = RCS(O, a, M_modes, k, theta_RCS_rad, density, TypeOfOp);
 plot(theta_RCS, myRCS, 'k');
 \end{lstlisting}
