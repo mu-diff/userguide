@@ -181,6 +181,7 @@ A large number of arguments of the \mudiff functions are similar. For the sake o
 The pre-processing in \mudiff consists in defining the right-hand side (or the incident wave) and the geometry (the obstacles). The associated functions are located respectively in the folders \folder{mudiff/PreProcessing/IncidentWave} and in \folder{mudiff/PreProcessing/Geometry}.
 
 \subsection{Geometry: creating the obstacles}
+\label{sec:placementObstacles}
 
 The obstacles are stored in memory as a row vector \code{a} containing the radii of the disks and a [$2\times\code{N\_scat}$] matrix \code{O} with the centers of the disks (\code{O(1,p}=$x$- and \code{O(2,p}=$y$- coordinates of the center of the $p^{th}$ disk). These two arrays can be created either manually or by
 using some built-in functions.
@@ -219,8 +220,10 @@ a = ones(size(O,2));
 
 The available options are (same for \RectangularLattice and \TriangularLattice)
 \begin{itemize}
-\item \code{RectangularLattice(..., 'Center', Ostart)}
+\item \code{RectangularLattice(..., 'Origin', Ostart)}
 places the first disk at \code{Ostart} position, \code{Ostart} being a [2x1] vector. (Default: $[0;0]$).
+\item \code{RectangularLattice(..., 'Centered', Ocenter)}
+center the collection on the point \code{Ocenter}, \code{Ocenter} being a [2x1] vector. (Default: none but replace Ostart value).
  \item \code{RectangularLattice(..., 'Direction', DIR)}
 places the row in the increasing  (\code{DIR}Ê= +1) or decreasing $x_{2}$-direction (\code{DIR}Ê= -1). The default value is: \code{DIR} = +1.
 \end{itemize}
@@ -340,12 +343,12 @@ Tolerance used for the conditional statement (default $10^{-10}$).
 \begin{lstlisting}
 bx = 3; by = 3;
 Nx = 11; Ny = 11;
-O = RectangularLattice(bx, by, Nx, Ny, 'Center', [-15,-15]);
+O = RectangularLattice(bx, by, Nx, Ny, 'Centered', [0,0]);
 a = ones(1, size(O, 2));
 [O, a] = RemoveDisk(O, a, 'X', 0, 'Y', 0);
 \end{lstlisting}
 
-\begin{figure}
+\begin{figure}[h!]
 \centering
 \begin{tikzpicture}
  \pgftext{\includegraphics[width=0.45\textwidth]{./img/obstacles/removeDisks.png}}
@@ -399,7 +402,7 @@ As explained in section \ref{secEqInt:SecondMembre}, a right-hand side $b$ is de
 function \BlockIncidentWave which computes the vector $b_p$. According to the input data, the function builds
  one of the available right-hand sides described in Table \ref{table:Uinc}.
 
-On the other hand, the frontal function \IncidentWave computes the whole vector $b$. For all obstacles $p$, the function
+On the other hand, the common function \IncidentWave computes the whole vector $b$. For all obstacles $p$, the function
  \BlockIncidentWave is called and the whole vector is assembled. 
 
 In addition, for all the incident waves, an interface function is available. These easy-to-use interfaces build
@@ -582,7 +585,7 @@ Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, [2, 3, 4, 5],
 \subsubsection{Assembling the matrix $\Ab$}
 \label{secFun:IntegralOperator}
 
-Now that the construction of an elementary block matrix is well-understood, building a global matrix is  easy thanks to the frontal function
+Now that the construction of an elementary block matrix is well-understood, building a global matrix is  easy thanks to the common function
 \begin{lstlisting}
 A = IntegralOperator(O, a, M_modes, k, TypeOfOperator, Weight);
 \end{lstlisting}
@@ -807,7 +810,7 @@ can be done with the  commands
 \begin{lstlisting}
 TypeOfOp = zeros(2,2); Weight = zeros(2,2);
 TypeOfOp(1,1) = [3]; Weight(1,1) = [1]; %block A_{1,1}
-TypeOfOp(1,2) = [2,]; Weight(1,2) = [0.5]; %block A_{1,2}
+TypeOfOp(1,2) = [2]; Weight(1,2) = [0.5]; %block A_{1,2}
 TypeOfOp(2,1) = [5]; Weight(2,1) = [1.5]; %block A_{2,1}
 TypeOfOp(2,2) = [4]; Weight(2,2) = [2.5]; %block A_{2,2}
 A = SpIntegralOperator(O, a, M_modes, k, TypeOfOp, Weight);
@@ -885,13 +888,16 @@ rho = gmres(@(X)SpMatVec(X, M_modes, SpAMFIE), DnUinc);
 \end{lstlisting}
 %\paragraph{Example 3: ...for the Dirichlet BWIE  (\ref{eqEqInt:BW})}
 \paragraph{Example 3: ...for the Dirichlet BWIE (\ref{eqEqInt:BW})}: 
+The operators $L$ and $M$ must be computed separately and $0.5I$ can be added to $-M$ directly:
 \begin{lstlisting}
 k = 1;
 beta_inc = pi;
 eta = i/k;
 Uinc = PlaneWave(O, a, M_modes, k, beta_inc);
-SpA = SpIntegralOperator(O, a, M_modes, k, [1, 2, 3], [0.5, -eta_BW, -1]);
-psi = gmres(@(X)SpMatVec(X, M_modes, SpA), Uinc);
+SpL = SpSingleLayer(O, a, M_modes, k);
+SpM = - SpDoubleLayer(O, a, M_modes, k);
+SpIminusM = SpAddIdentity(SpM,0.5);
+psi = gmres(@(X)SpMatVec(X, M_modes, {SpL, SpIminusM}, [-eta_BW, 1]), Uinc);
 \end{lstlisting}
 
 
