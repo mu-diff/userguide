@@ -64,7 +64,7 @@ obtained by the standard backslash Matlab operator $\backslash$
 %Right-hand side (plane wave)
 Uinc = PlaneWave(O, a, M_modes, k, beta_inc);
 %% Assembling
-%Matrix of the system (the two following lines are the same)
+%Matrix of the system
 L = SingleLayer(O, a, M_modes, k);
 %% Solving (here, direct)
 rho = L \ Uinc;
@@ -76,7 +76,7 @@ rho = L \ Uinc;
 For the sparse storage version, only the assembly process of the single-layer matrix and the system solution
 need to be modified as follows
 \begin{lstlisting}
-%Matrix of the system (the two following lines are the same)
+%Matrix of the system
 SpL = SpSingleLayer(O, a, M_modes, k);
 %% Solving (here, direct)
 rho = gmres(@(X)SpMatVec(X, M_modes, SpL), Uinc);
@@ -103,8 +103,8 @@ The MFIE operator $$\left(\frac{I}{2}+N\right)$$ can be computed  thanks to the 
 %Right hand side
 DnUinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
 %% Assembling
-%Matrix of the system (the two following lines are the same)
-A_MFIE = IntegralOperator(O, a, M_modes, k, [1, 4], [0.5, 1]);
+%Matrix of the system
+A_MFIE = IntegralOperator(O, a, M_modes, k, ['I', 'N'], [0.5, 1]);
 %% Solving (here, direct)
 rho = A_MFIE \ DnUinc;
 \end{lstlisting}
@@ -150,8 +150,8 @@ Uinc = PlaneWave(O, a, M_modes, k, beta_inc);
 DnUinc = DnPlaneWave(O, a, M_modes, k, beta_inc);
 BCFIE = alpha*eta*Uinc + (1-alpha)*DnUinc;
 %% Assembling
-%Matrix of the system (the two following lines are the same)
-ACFIE = IntegralOperator(O, a, M_modes, k, [2, 1, 4], [alpha*eta, 0.5*(1-alpha), 1-alpha]);
+%Matrix of the system
+ACFIE = IntegralOperator(O, a, M_modes, k, ['L', 'I', 'N'], [alpha*eta, 0.5*(1-alpha), 1-alpha]);
 %% Solving (here, direct)
 rho = ACFIE \ BCFIE;
 \end{lstlisting}
@@ -188,7 +188,7 @@ In \mudiff, the quantity $-\Lsgl^{-1}\uinc|_{\Gamma}$ is provided by \PlaneWaveP
 [...]
 %Right-hand side
 UincPrecond = PlaneWavePrecond(O, a, M_modes, k, beta_inc);
-%Matrix of the system (the two following lines are the same)
+%Matrix of the system
 APrecond = PrecondDirichlet(O, a, M_modes, k);
 %Solving (here, directly)
 rho = APrecond \ UincPrecond;
@@ -226,8 +226,8 @@ As in the previous chapter, we make here use of the common function \IntegralOpe
 eta_BW = i/k;
 %Right-hand side
 Uinc = PlaneWave(O, a, M_modes, k, beta_inc);
-%Matrix of the system (the two following lines are the same)
-A = IntegralOperator(O, a, M_modes, k, [1, 2, 3], [0.5, -eta_BW, -1]);
+%Matrix of the system
+A = IntegralOperator(O, a, M_modes, k, ['I', 'L', 'M'], [0.5, -eta_BW, -1]);
 %Solving (here, directly)
 rho = APrecond \ UincPrecond;
 [...]
@@ -511,13 +511,13 @@ Assembling = zeros(2, N_scat, N_scat);
 Weight = zeros(2, N_scat, N_scat);
 for p=1:N_scatD
 	for q=1:N_scat
-		Assembling(:,p,q) = [4;2];
+		Assembling(:,p,q) = [4;2]; %4=N, 2=L
 		Weight(:,p,q) = [1-alpha; alpha*eta];
 	end
 end
 for p=N_scatD+1:N_scat
 	for q=1:N_scat
-		Assembling(:,p,q) = [5;3];
+		Assembling(:,p,q) = [5;3];%5=D, 3=M
 		Weight(:,p,q) = [1-alpha; alpha*eta];
 	end
 end

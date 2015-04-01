@@ -162,16 +162,17 @@ A large number of arguments of the \mudiff functions are similar. For the sake o
 
 \paragraph{Integral operators (see chapter \ref{chap:math})}
 \begin{center}
-\begin{tabular}{|c |c | c | p{9cm}|}
-\hline Index & Letter & \mudiff abbreviation & Operator \\\hline\hline
-0 & - & - & null operator \\[0.2cm]\hline
-1 & $I$ & \tabcode{Identity} & identity\\[0.2cm]\hline
-2 & $L$ & \tabcode{SingleLayer} & $\dsp L\rho = \int_{\Gamma}G(\xx,\yy)\rho(\yy)\;\dd\yy$\\[0.2cm]\hline
-3 & $M$ & \tabcode{DoubleLayer} & $\dsp M\lambda = -\int_{\Gamma}\dny G(\xx,\yy)\lambda(\yy)\;\dd\yy$\\[0.2cm]\hline
-4 & $N$  & \tabcode{DnSingleLayer}& $\dsp N\rho = \dnx\int_{\Gamma}G(\xx,\yy)\rho(\yy)\;\dd\yy$\\[0.2cm]\hline
-5 & $D$  & \tabcode{DnDoubleLayer}&$\dsp D\lambda = -\dnx\int_{\Gamma}\dny G(\xx,\yy)\lambda(\yy)\;\dd\yy$\\[0.2cm] \hline
-6 & $\hat{L}^{-1}L$  & \tabcode{PrecondDirichlet}& single-scattering preconditioned trace of the single-layer operator (see \S\ref{sec:SingleScat})\\[0.2cm]\hline
-7 & $\hat{D}^{-1}D$  & \tabcode{PrecondNeumann}& single-scattering preconditioned normal derivative trace of the double-layer operator (see \S\ref{sec:SingleScat})\\ \hline
+\begin{tabular}{|c |c | c || p{7cm}|}
+\hline\multicolumn{3}{|c||}{\mudiff} & {\centering Mathematics} \\
+ index  &  char or \{cell string\} & abbreviation &  \\\hline\hline
+0  & 'Z' &- & null operator \\[0.2cm]\hline
+1  &'I'& \tabcode{Identity} & identity\\[0.2cm]\hline
+2  &'L'& \tabcode{SingleLayer} & $\dsp L\rho = \int_{\Gamma}G(\xx,\yy)\rho(\yy)\;\dd\yy$\\[0.2cm]\hline
+3  &'M'& \tabcode{DoubleLayer} & $\dsp M\lambda = -\int_{\Gamma}\dny G(\xx,\yy)\lambda(\yy)\;\dd\yy$\\[0.2cm]\hline
+4   &'N'& \tabcode{DnSingleLayer}& $\dsp N\rho = \dnx\int_{\Gamma}G(\xx,\yy)\rho(\yy)\;\dd\yy$\\[0.2cm]\hline
+5   &'D'& \tabcode{DnDoubleLayer}&$\dsp D\lambda = -\dnx\int_{\Gamma}\dny G(\xx,\yy)\lambda(\yy)\;\dd\yy$\\[0.2cm] \hline
+6 & 'P' or \{'Lprec'\} & \tabcode{PrecondDirichlet}& $\hat{L}^{-1}L$: single-scattering preconditioned trace of the single-layer operator (see \S\ref{sec:SingleScat})\\[0.2cm]\hline
+7  & 'Q' or \{'Dprec'\} & \tabcode{PrecondNeumann}&  $\hat{D}^{-1}D$: single-scattering preconditioned normal derivative trace of the double-layer operator (see \S\ref{sec:SingleScat})\\ \hline
 \end{tabular}
 \end{center}
 
@@ -528,22 +529,21 @@ This is essentially a suitable strategy  when a sufficiently high number of mode
 \label{secFun:Identity}
 
 As for the incident wave, for each operator, there exists a function that builds the whole operator for the multiple scattering problem, both for the
- dense and sparse storages. The available operators are listed in Table \ref{table:IntOp}, with their unique identifier (integer), their associated
-  name in \mudiff (useful to get their interface functions) and their definitions.
+ dense and sparse storages. The available operators are listed in Table \ref{table:IntOp}, with their unique identifier (integer), their unique char representation and string (if needed), their associated  name in \mudiff (useful to get their interface functions) and their definitions. It is more readable and convenient to use either the char or the string representation than the scalar one. 
 
 \begin{table}
-\begin{center}\begin{tabular}{|c| c| c|c|}
-\hline Int. Op. & Identifier & Function & Definition for $\xx\in\Gamma$\\\hline\hline
-- & 0 & - & zero operator (null matrix)\\\hline
-$I$ & 1 & \tabcode{Identity} & identity\\\hline
-$L$ & 2 & \tabcode{SingleLayer} & $\dsp L\rho(\xx) = \int_{\Gamma} G(\xx,\yy) \rho(\yy)\dd\yy$\\[0.25cm]\hline
-$M$ & 3 & \tabcode{DoubleLayer} & $\dsp M\lambda(\xx) = -\int_{\Gamma} \dny G(\xx,\yy) \lambda(\yy)\dd\yy$\\[0.25cm]\hline
-$N$ & 4 & \tabcode{DnSingleLayer} & $\dsp N\rho(\xx) = \dnx\int_{\Gamma} G(\xx,\yy) \rho(\yy)\dd\yy$\\[0.25cm]\hline
-$D$ & 5 & \tabcode{DnDoubleLayer} & $\dsp D\lambda(\xx) = -\dnx\int_{\Gamma} \dny G(\xx,\yy) \lambda(\yy)\dd\yy$\\[0.25cm]\hline
-$\hat{L}^{-1}L$ & 6 & \tabcode{PrecondDirichlet} & single-layer preconditioned by its diagonal\\[0.25cm]\hline
-$\hat{D}^{-1}D$& 7 & \tabcode{PrecondNeumann} & double-layer preconditioned by its diagonal\\[0.25cm]\hline
+\begin{center}\begin{tabular}{|c| c|c| c|c|}
+\hline Int. Op. & Id & Char or \{String\}& Function & Definition for $\xx\in\Gamma$\\\hline\hline
+- & 0 & 'Z'&- & zero operator (null matrix)\\\hline
+$I$ & 1& 'I' & \tabcode{Identity} & identity\\\hline
+$L$ & 2 & 'L'& \tabcode{SingleLayer} & $\dsp L\rho(\xx) = \int_{\Gamma} G(\xx,\yy) \rho(\yy)\dd\yy$\\[0.25cm]\hline
+$M$ & 3 & 'M'& \tabcode{DoubleLayer} & $\dsp M\lambda(\xx) = -\int_{\Gamma} \dny G(\xx,\yy) \lambda(\yy)\dd\yy$\\[0.25cm]\hline
+$N$ & 4 & 'N'& \tabcode{DnSingleLayer} & $\dsp N\rho(\xx) = \dnx\int_{\Gamma} G(\xx,\yy) \rho(\yy)\dd\yy$\\[0.25cm]\hline
+$D$ & 5 & 'D'& \tabcode{DnDoubleLayer} & $\dsp D\lambda(\xx) = -\dnx\int_{\Gamma} \dny G(\xx,\yy) \lambda(\yy)\dd\yy$\\[0.25cm]\hline
+$\hat{L}^{-1}L$ & 6 & 'P' or \{'Lprec'\}& \tabcode{PrecondDirichlet} & single-layer preconditioned by its diagonal\\[0.25cm]\hline
+$\hat{D}^{-1}D$& 7 & 'Q'or \{'Dprec'\}& \tabcode{PrecondNeumann} & double-layer preconditioned by its diagonal\\[0.25cm]\hline
 \end{tabular}\end{center}
-\caption{Available integral operators in $\mu$-diff, their (unique) identifier, function name (interface) and the mathematical definition. 
+\caption{Available integral operators in $\mu$-diff, their (unique) identifier, char name and string name (for cell array), function name (interface) and the mathematical definition. 
 The zero operator function does not have an interface function and the sparse version is obtained by adding the prefix
  \code{Sp} (\SpSingleLayer, \SpDnDoubleLayer,\ldots). The block interface functions are also prefixed by ''\code{Block}'' (\SpBlockSingleLayer, \BlockSingleLayer,\ldots).}
 \label{table:IntOp}
@@ -558,8 +558,8 @@ An elementary block matrix in a global matrix can be created by using the follow
 \begin{lstlisting}
 Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, TypeOfOperator, Weight);
 \end{lstlisting}
-The \code{Weight} argument is optional and set to $1$ by default. The quantity \code{TypeOfOperator} specifies the integral operator to compute, thanks to the numbering of Table \ref{table:IntOp}. If \code{TypeOfOperator} is a scalar (e.g. $=2$), then the resulting matrix \code{Apq} is the elementary
-matrix of the associated operator (e.g. $\Lbpq$). If \code{TypeOfOperator} is a row (e.g. \code{[1,3]}),  the sum of the
+The \code{Weight} argument is optional and set to $1$ by default. The quantity \code{TypeOfOperator} specifies the integral operator to compute, thanks to the numbering of Table \ref{table:IntOp}. If \code{TypeOfOperator} is a unique value (scalar (e.g. =\code{2}), char (e.g. \code{'L'})), then the resulting matrix \code{Apq} is the elementary
+matrix of the associated operator (e.g. $\Lbpq$). If \code{TypeOfOperator} is a row (e.g. \code{[1,3]}, \code{['I', 'M']} or cell \code{\{'I', 'M'\}}),  the sum of the
 two operators is computed (e.g. $\Ibpq+\Mbpq$). Finally, the \code{Weight} quantity (of the same size as \code{TypeOfOperator})
  is the constant that is used to multiply the block and hence
 $$
@@ -567,17 +567,51 @@ $$
 $$
 where \code{Operator}$(\ell)$ is one of the integral operators.
 
+\begin{remark}
+The difference between the char and the string is purely computational: the char can be stored in an array or a cell whereas the string must be stored in a cell (due to possibly different size). The string representation only changes for $\hat{L}L$ and $\hat{D}D$, which can be written as respectively \code{'Lprec'} and \code{'Dprec'}. If a user wants to use \code{'Dprec'} instead of \code{'Q'}, (s)he must enclosed it into a cell \{\ldots\} instead of an array [\ldots]. That's all (see example below).
+\end{remark}
+
+\begin{remark}
+As the char or string representation is way more readable than the scalar one, in the next sections, examples will be based on this representation.
+\end{remark}
+
 \paragraph{Example 1:} Build the single-layer block $\Lbpq$
 \begin{lstlisting}
+%scalar representation
 Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, 1);
+%char representation
+Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, 'L');
+%string representation (cell array)
+Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, {'L'});
 \end{lstlisting}
-\paragraph{Example 2:} Build the whole matrix $0.5\times \Ibpq + \Nbpq$, appearing in the MFIE (\ref{eq:MFIE})
+\paragraph{Example 2:} Build the block $(\hat{\Lb}^{-1}\Lb)_{p,q}$
 \begin{lstlisting}
+%scalar representation
+Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, 6);
+%char representation
+Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, 'P');
+%string representation (cell array)
+Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, {'Lprec'});
+\end{lstlisting}
+\paragraph{Example 3:} Build the block $0.5\times \Ibpq + \Nbpq$, appearing in the MFIE (\ref{eq:MFIE})
+\begin{lstlisting}
+%scalar representation
 Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, [1, 4], [0.5, 1]);
+%char representation
+Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, ['I', 'N'], [0.5, 1]);
+%string representation (cell array)
+Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, {'I', 'N'}, [0.5, 1]);
 \end{lstlisting}
-\paragraph{Example 3:} Compute the sum of the four blocks: $0.5\times \Lbpq + 1.5 \times  \Mbpq + 2.5 \times  \Nbpq + 3.5 \times  \Dbpq$
+\paragraph{Example 4:} Compute the sum of the four blocks: $0.5\times \Lbpq + 1.5 \times  \Mbpq + 2.5 \times  \Nbpq + 3.5 \times  \Dbpq$. \\
 \begin{lstlisting}
+%scalar representation
 Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, [2, 3, 4, 5], 
+                         [0.5, 1.5, 2.5, 3.5]);
+%char representation
+Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, ['L', 'M', 'N', 'D'], 
+                         [0.5, 1.5, 2.5, 3.5]);
+%string representation (cell array)
+Apq = BlockIntegralOperator(Op, ap, Np, Oq, aq, Nq, k, {'L', 'M', 'N', 'D'}, 
                          [0.5, 1.5, 2.5, 3.5]);
 \end{lstlisting}
 
@@ -597,7 +631,7 @@ Apq = BlockIntegralOperator(O(:,p), a(p), M_modes(p), O(:,q), a(q), M_modes(q),
 \end{lstlisting}
 and places \code{Apq} in the expected elementary block matrix of the global matrix. The quantities \code{Tpq} and \code{Wpq} are given by \code{TypeOfOperator} and \code{Weight} such that (\code{Weight} is of the same size as \code{TypeOfOperator} and so \code{Wpq} follows the same rules as \code{Tpq})
 \begin{itemize}
-\item If \code{TypeOfOperator} is a scalar then \code{Tpq} = \code{TypeOfOperator}. 
+\item If \code{TypeOfOperator} is one value then \code{Tpq} = \code{TypeOfOperator}. 
 \item If \code{TypeOfOperator} is a row or a column vector then \code{Tpq} is an array given by \code{Tpq} = \code{TypeOfOperator}. 
 \item If \code{TypeOfOperator} is a matrix then \code{Tpq} = \code{TypeOfOperator(p,q)}. 
 \item If \code{TypeOfOperator} is a three-dimensional array, then \code{Tpq} is an array  given by \code{Tpq(:)} = \code{TypeOfOperator(p,q,:)}. 
@@ -623,7 +657,7 @@ L = IntegralOperator(O, a, M_modes, k, 2);
 \end{lstlisting}
 \paragraph{Example 2:} The MFIE operator  $0.5 \times I + N$ for a Dirichlet boundary condition (\ref{eq:MFIE}) is
 \begin{lstlisting}
-A_MFIE = IntegralOperator(O, a, M_modes, k, [1,4], [0.5,1]);
+A_MFIE = IntegralOperator(O, a, M_modes, k, ['I','N'], [0.5,1]);
 \end{lstlisting}
 \paragraph{Example 3:} The following two-obstacles operator  is
 $$
@@ -634,11 +668,11 @@ D_{2,1} & 0.5 \times I_{2,2}+N_{2,2}
 $$
 can be computed by using a three-dimensional array and the null operator
 \begin{lstlisting}
-TypeOfOp = zeros(2,2,2); Weight = zeros(2,2,2);
-TypeOfOp(:, 1,1) = [1, 3]; Weight(:, 1,1) = [0.5, 1]; %block A_{1,1}
-TypeOfOp(:, 1,2) = [2, 0]; Weight(:, 1,2) = [1, 0]; %block A_{1,2}
-TypeOfOp(:, 2,1) = [5, 0]; Weight(:, 2,1) = [1, 0]; %block A_{2,1}
-TypeOfOp(:, 2,2) = [1, 4]; Weight(:, 2,2) = [0.5, 1]; %block A_{2,2}
+Weight = zeros(2,2,2);
+TypeOfOp(:, 1,1) = ['I', 'M']; Weight(:, 1,1) = [0.5, 1]; %block A_{1,1}
+TypeOfOp(:, 1,2) = ['L', 'Z']; Weight(:, 1,2) = [1, 0]; %block A_{1,2}
+TypeOfOp(:, 2,1) = ['D', 'Z']; Weight(:, 2,1) = [1, 0]; %block A_{2,1}
+TypeOfOp(:, 2,2) = ['I', 'N']; Weight(:, 2,2) = [0.5, 1]; %block A_{2,2}
 A = IntegralOperator(O, a, M_modes, k, TypeOfOp, Weight);
 \end{lstlisting}
 \paragraph{Example 4:} The Brakhage-Werner Integral Equation (BWIE) for a Dirichlet problem (\ref{eqEqInt:BW}) is solved by writing
@@ -647,7 +681,7 @@ k = 1;
 beta_inc = pi;
 eta = i/k;
 Uinc = PlaneWave(O, a, M_modes, k, beta_inc);
-A = IntegralOperator(O, a, M_modes, k, [1, 2, 3], [0.5, -eta_BW, -1]);
+A = IntegralOperator(O, a, M_modes, k, ['I', 'L', 'M'], [0.5, -eta_BW, -1]);
 psi = A \ Uinc;
 \end{lstlisting}
 
@@ -809,10 +843,10 @@ $$
 can be done with the  commands
 \begin{lstlisting}
 TypeOfOp = zeros(2,2); Weight = zeros(2,2);
-TypeOfOp(1,1) = [3]; Weight(1,1) = [1]; %block A_{1,1}
-TypeOfOp(1,2) = [2]; Weight(1,2) = [0.5]; %block A_{1,2}
-TypeOfOp(2,1) = [5]; Weight(2,1) = [1.5]; %block A_{2,1}
-TypeOfOp(2,2) = [4]; Weight(2,2) = [2.5]; %block A_{2,2}
+TypeOfOp(1,1) = ['M']; Weight(1,1) = [1]; %block A_{1,1}
+TypeOfOp(1,2) = ['L']; Weight(1,2) = [0.5]; %block A_{1,2}
+TypeOfOp(2,1) = ['D']; Weight(2,1) = [1.5]; %block A_{2,1}
+TypeOfOp(2,2) = ['N']; Weight(2,2) = [2.5]; %block A_{2,2}
 A = SpIntegralOperator(O, a, M_modes, k, TypeOfOp, Weight);
 \end{lstlisting}
 

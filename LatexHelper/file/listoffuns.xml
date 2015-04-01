@@ -18,6 +18,13 @@
 <folder>Common</folder>
 <summary>Angle with horizontal axis</summary>
 </fun>
+
+<fun>
+<name>Parser.m</name>
+<folder>Common</folder>
+<summary>Parse TypeOfOperator (from char to double)</summary>
+</fun>
+ 
 <fun>
 <name>repeat_horiz.m</name>
 <folder>Common</folder>
