@@ -1,113 +1,114 @@
 \NewFolder{Common}
-\funByFolderEven{\repeathoriz}{Copy/paste a row vector to build a matrix}
+\funByFolderEven{\repeatvert}{Copy/paste a column vector to build a matrix}
+\funByFolderUneven{\repeathoriz}{Copy/paste a row vector to build a matrix}
+\funByFolderEven{\Parser}{Parse an array of char (or cell of string)  to scalar array (used by IntegralOperator for example)}
 \funByFolderUneven{\fangle}{Angle with horizontal axis}
-\funByFolderEven{\dbesselj}{First derivative of Bessel function}
-\funByFolderUneven{\dbessely}{First derivative of Newton function}
+\funByFolderEven{\dbessely}{First derivative of Newton function}
+\funByFolderUneven{\dbesselj}{First derivative of Bessel function}
 \funByFolderEven{\dbesselh}{First derivative of first kind Hankel function}
-\funByFolderUneven{\repeatvert}{Copy/paste a column vector to build a matrix}
 \NewFolder{Examples/Benchmark}
-\funByFolderEven{\BenchmarkCalderon}{Example of solution of penetrable scattering using Calderon projectors}
 \funByFolderUneven{\BenchmarkDirichlet}{Example of solution of sound soft scattering using different integral equations}
 \funByFolderEven{\BenchmarkNeumann}{Example of solution of sound hard scattering using different integral equations}
 \funByFolderUneven{\BenchmarkPenetrable}{Example of solution of penetrable scattering using single layer potential}
+\funByFolderEven{\BenchmarkCalderon}{Example of solution of penetrable scattering using Calderon projectors}
 \NewFolder{Examples/TimeReversal/FarField/Common}
-\funByFolderEven{\HerglotzWave}{Compute an Herglotz wave (linear combination of plane waves)}
 \funByFolderUneven{\TimeReversalOperator}{Time reversal matrix in acoustic and far field context}
+\funByFolderEven{\HerglotzWave}{Compute an Herglotz wave (linear combination of plane waves)}
 \NewFolder{Examples/TimeReversal/FarField/NonPenetrable}
-\funByFolderEven{\DORTdielectric}{DORT for penetrable obstacles (far field)}
 \funByFolderUneven{\DORTNonPenetrable}{DORT for acoustic sound soft obstacles (far field)}
+\funByFolderEven{\DORTdielectric}{DORT for penetrable obstacles (far field)}
 \NewFolder{IntOperators/Dense}
-\funByFolderEven{\BlockIntegralOperator}{Generic dense block of an integral operator}
 \funByFolderUneven{\IntegralOperator}{Generic integral operator dense matrix (full)}
+\funByFolderEven{\BlockIntegralOperator}{Generic dense block of an integral operator}
 \NewFolder{IntOperators/Dense/Interface/Block}
+\funByFolderUneven{\BlockCalderonProjector}{Calderon projector block}
 \funByFolderEven{\BlockDnSingleLayer}{Block of the normal derivative of the single layer integral operator}
-\funByFolderUneven{\BlockDoubleLayer}{Block of the double layer integral operator}
-\funByFolderEven{\BlockIdentity}{Block of the identity integral operator}
 \funByFolderUneven{\BlockPrecondDirichlet}{Block of the preconditioned integral operator (sound soft case)}
 \funByFolderEven{\BlockPrecondNeumann}{Block of the preconditioned integral operator (sound hard case)}
 \funByFolderUneven{\BlockSingleLayer}{Block of the single layer integral operator}
 \funByFolderEven{\BlockDnDoubleLayer}{Block of the normal derivative of the double layer integral operator}
-\funByFolderUneven{\BlockCalderonProjector}{Calderon projector block}
+\funByFolderUneven{\BlockIdentity}{Block of the identity integral operator}
+\funByFolderEven{\BlockDoubleLayer}{Block of the double layer integral operator}
 \NewFolder{IntOperators/Dense/Interface/Full}
-\funByFolderEven{\DnDoubleLayer}{Full dense matrix of the normal derivative of the double layer integral operator}
-\funByFolderUneven{\DnSingleLayer}{Full dense matrix of the normal derivative of the single layer integral operator}
-\funByFolderEven{\DoubleLayer}{Full dense matrix of the double layer integral operator}
+\funByFolderUneven{\DnDoubleLayer}{Full dense matrix of the normal derivative of the double layer integral operator}
+\funByFolderEven{\Identity}{Full dense matrix of the identity operator}
+\funByFolderUneven{\DoubleLayer}{Full dense matrix of the double layer integral operator}
+\funByFolderEven{\DnSingleLayer}{Full dense matrix of the normal derivative of the single layer integral operator}
 \funByFolderUneven{\SingleLayer}{Full dense matrix of the single layer integral operator}
 \funByFolderEven{\CalderonProjector}{Full dense matrix of the Calderon projector}
-\funByFolderUneven{\PrecondNeumann}{Full dense matrix of the preconditioned integral operator (sound hard case)}
-\funByFolderEven{\PrecondDirichlet}{Full dense matrix of the preconditioned integral operator (sound soft case)}
-\funByFolderUneven{\Identity}{Full dense matrix of the identity operator}
+\funByFolderUneven{\PrecondDirichlet}{Full dense matrix of the preconditioned integral operator (sound soft case)}
+\funByFolderEven{\PrecondNeumann}{Full dense matrix of the preconditioned integral operator (sound hard case)}
 \NewFolder{IntOperators/Sparse}
-\funByFolderEven{\SpBlockIntegralOperator}{Generic sparse block of an integral operator}
 \funByFolderUneven{\SpIntegralOperator}{Generic integral operator sparse matrix (full)}
+\funByFolderEven{\SpBlockIntegralOperator}{Generic sparse block of an integral operator}
 \NewFolder{IntOperators/Sparse/Functions}
-\funByFolderEven{\SpAddIdentity}{Sparse function: add identity to a sparse operator}
-\funByFolderUneven{\SpMatVec}{Sparse function: sparse matrix - vector product (possibly multiples)}
-\funByFolderEven{\SpSingleMatVec}{Sparse function: sparse matrix - (only one) vector product}
+\funByFolderUneven{\SpAddIdentity}{Sparse function: add identity to a sparse operator}
+\funByFolderEven{\SpMatVec}{Sparse function: sparse matrix - vector product (possibly multiples)}
+\funByFolderUneven{\SpSingleMatVec}{Sparse function: sparse matrix - (only one) vector product}
 \NewFolder{IntOperators/Sparse/Interface/Block}
-\funByFolderUneven{\SpBlockDoubleLayer}{Sparse block of the double layer integral operator}
-\funByFolderEven{\SpBlockPrecondNeumann}{Sparse block of the preconditioned integral operator (sound hard case)}
-\funByFolderUneven{\SpBlockPrecondDirichlet}{Sparse block of the preconditioned integral operator (sound soft case)}
+\funByFolderEven{\SpBlockDnDoubleLayer}{Sparse block of the normal derivative of the double layer integral operator}
+\funByFolderUneven{\SpBlockPrecondNeumann}{Sparse block of the preconditioned integral operator (sound hard case)}
 \funByFolderEven{\SpBlockDnSingleLayer}{Sparse block of the normal derivative of the single layer integral operator}
-\funByFolderUneven{\SpBlockDnDoubleLayer}{Sparse block of the normal derivative of the double layer integral operator}
+\funByFolderUneven{\SpBlockDoubleLayer}{Sparse block of the double layer integral operator}
+\funByFolderEven{\SpBlockIdentity}{Sparse block of the identity operator}
+\funByFolderUneven{\SpBlockPrecondDirichlet}{Sparse block of the preconditioned integral operator (sound soft case)}
 \funByFolderEven{\SpBlockSingleLayer}{Sparse block of the single layer integral operator}
-\funByFolderUneven{\SpBlockIdentity}{Sparse block of the identity operator}
 \NewFolder{IntOperators/Sparse/Interface/Full}
-\funByFolderEven{\SpSingleLayer}{Sparse matrix of the single layer integral operator}
-\funByFolderUneven{\SpDnDoubleLayer}{Sparse matrix of the normal derivative of the double layer integral operator}
-\funByFolderEven{\SpDnSingleLayer}{Sparse matrix of the normal derivative of the single layer integral operator}
-\funByFolderUneven{\SpDoubleLayer}{Sparse matrix of the double layer integral operator}
+\funByFolderUneven{\SpSingleLayer}{Sparse matrix of the single layer integral operator}
+\funByFolderEven{\SpDnDoubleLayer}{Sparse matrix of the normal derivative of the double layer integral operator}
+\funByFolderUneven{\SpDnSingleLayer}{Sparse matrix of the normal derivative of the single layer integral operator}
+\funByFolderEven{\SpDoubleLayer}{Sparse matrix of the double layer integral operator}
+\funByFolderUneven{\SpPrecondNeumann}{Sparse matrix of the preconditioned integral operator (sound hard case)}
 \funByFolderEven{\SpIdentity}{Sparse matrix of the identity operator}
 \funByFolderUneven{\SpPrecondDirichlet}{Sparse matrix of the preconditioned integral operator (sound soft case)}
-\funByFolderEven{\SpPrecondNeumann}{Sparse matrix of the preconditioned integral operator (sound hard case)}
 \NewFolder{PostProcessing/FarField}
-\funByFolderUneven{\FarFieldtoRCS}{Radar Cross Section (RCS) from far field}
-\funByFolderEven{\FarField}{Generic far field computation from densities}
-\funByFolderUneven{\RCS}{Generic Radar Cross Section (RCS) computation from densities}
+\funByFolderEven{\FarFieldtoRCS}{Radar Cross Section (RCS) from far field}
+\funByFolderUneven{\FarField}{Generic far field computation from densities}
+\funByFolderEven{\RCS}{Generic Radar Cross Section (RCS) computation from densities}
 \NewFolder{PostProcessing/FarField/Interface}
+\funByFolderUneven{\FarFieldDoubleLayer}{Far field of the double layer potential only}
 \funByFolderEven{\RCSDoubleLayer}{Radar Cross Section (RCS) of the double layer potential only}
 \funByFolderUneven{\RCSSingleLayer}{Radar Cross Section (RCS) of the single layer potential only}
 \funByFolderEven{\FarFieldSingleLayer}{Far field of the single layer potential only}
-\funByFolderUneven{\FarFieldDoubleLayer}{Far field of the double layer potential only}
 \NewFolder{PostProcessing/Geometry}
-\funByFolderEven{\MaskMatrixObstacles}{Matrix with boolean values inside or outside obstacles}
-\funByFolderUneven{\BoundaryOfObstacles}{Extract the boundary of the obstacle}
-\funByFolderEven{\PlotCircles}{Display obstacles on figure}
+\funByFolderUneven{\PlotCircles}{Display obstacles on figure}
+\funByFolderEven{\BoundaryOfObstacles}{Extract the boundary of the obstacle}
+\funByFolderUneven{\MaskMatrixObstacles}{Matrix with boolean values inside or outside obstacles}
 \NewFolder{PostProcessing/IncidentWave}
-\funByFolderUneven{\IncidentWaveOnGrid}{Compute incident wave on a (Matlab) meshgrid}
+\funByFolderEven{\IncidentWaveOnGrid}{Compute incident wave on a (Matlab) meshgrid}
 \NewFolder{PostProcessing/NearField}
-\funByFolderEven{\InternalPotential}{Compute potentials (single, double or linear combination) on a (Matlab) meshgrid and inside the obstacles}
-\funByFolderUneven{\ExternalPotential}{Compute potentials (single, double or linear combination) on a (Matlab) meshgrid and outside the obstacles}
+\funByFolderUneven{\InternalPotential}{Compute potentials (single, double or linear combination) on a (Matlab) meshgrid and inside the obstacles}
+\funByFolderEven{\ExternalPotential}{Compute potentials (single, double or linear combination) on a (Matlab) meshgrid and outside the obstacles}
 \NewFolder{PostProcessing/NearField/Functions}
-\funByFolderEven{\BlockPotential}{Generic block potential matrix used to compute external or internal potentials}
-\funByFolderUneven{\GetPotentialOptions}{Options for potential computations are condensed here}
+\funByFolderUneven{\BlockPotential}{Generic block potential matrix used to compute external or internal potentials}
+\funByFolderEven{\GetPotentialOptions}{Options for potential computations are condensed here}
 \NewFolder{PostProcessing/NearField/Interface}
+\funByFolderUneven{\ExternalDoubleLayerPotential}{External potential of double layer potential only}
 \funByFolderEven{\InternalSingleLayerPotential}{Internal potential of single layer potential only}
-\funByFolderUneven{\ExternalSingleLayerPotential}{External potential of single layer potential only}
-\funByFolderEven{\ExternalDoubleLayerPotential}{External potential of double layer potential only}
 \funByFolderUneven{\InternalDoubleLayerPotential}{Internal potential of double layer potential only}
+\funByFolderEven{\ExternalSingleLayerPotential}{External potential of single layer potential only}
 \NewFolder{PreProcessing/Fourier}
-\funByFolderEven{\FourierTruncation}{Provide the number of mode to kept in the Fourier series}
+\funByFolderUneven{\FourierTruncation}{Provide the number of mode to kept in the Fourier series}
 \NewFolder{PreProcessing/Geometry}
+\funByFolderEven{\RectangularLattice}{Build a rectangular lattice of disks}
 \funByFolderUneven{\TriangularLattice}{Build a triangular lattice of disks}
 \funByFolderEven{\CheckPlacement}{Verify if the obstacles are satisfying the condition (overlapping, \ldots)}
-\funByFolderUneven{\RectangularLattice}{Build a rectangular lattice of disks}
-\funByFolderEven{\RemoveDisk}{Remove some disks}
 \funByFolderUneven{\CreateRandomDisks}{Place randomly random disks in a box}
+\funByFolderEven{\RemoveDisk}{Remove some disks}
 \NewFolder{PreProcessing/IncidentWave}
-\funByFolderEven{\IncidentWave}{Full vector of a generic incident wave (right hand side)}
-\funByFolderUneven{\BlockIncidentWave}{Block vector of a generic incident wave (right hand side, block=1 obstacle)}
+\funByFolderUneven{\IncidentWave}{Full vector of a generic incident wave (right hand side)}
+\funByFolderEven{\BlockIncidentWave}{Block vector of a generic incident wave (right hand side, block=1 obstacle)}
 \NewFolder{PreProcessing/IncidentWave/Block}
+\funByFolderUneven{\BlockDnPointSource}{Block vector (=1 obstacle) of a the right hand side of the normal derivative of a point source wave}
+\funByFolderEven{\BlockDnPlaneWavePrecond}{Block vector (=1 obstacle) of a the right hand side of the normal derivative of a plane wave for the preconditioned problem of sound-hard scattering}
+\funByFolderUneven{\BlockDnPlaneWave}{Block vector (=1 obstacle) of a the right hand side of the normal derivative of a plane wave}
 \funByFolderEven{\BlockPointSource}{Block vector (=1 obstacle) of a the right hand side of the trace of a point source wave}
 \funByFolderUneven{\BlockPlaneWavePrecond}{Block vector (=1 obstacle) of a the right hand side of the trace of a plane wave for the preconditioned problem of sound-soft scattering}
-\funByFolderEven{\BlockDnPlaneWave}{Block vector (=1 obstacle) of a the right hand side of the normal derivative of a plane wave}
-\funByFolderUneven{\BlockPlaneWave}{Block vector (=1 obstacle) of a the right hand side of the trace of a plane wave}
-\funByFolderEven{\BlockDnPointSource}{Block vector (=1 obstacle) of a the right hand side of the normal derivative of a point source wave}
-\funByFolderUneven{\BlockDnPlaneWavePrecond}{Block vector (=1 obstacle) of a the right hand side of the normal derivative of a plane wave for the preconditioned problem of sound-hard scattering}
+\funByFolderEven{\BlockPlaneWave}{Block vector (=1 obstacle) of a the right hand side of the trace of a plane wave}
 \NewFolder{PreProcessing/IncidentWave/Full}
-\funByFolderEven{\PlaneWavePrecond}{Full vector (=all obstacle) of a the right hand side of the trace of a plane wave for the preconditioned problem of sound-soft scattering}
 \funByFolderUneven{\PlaneWave}{Full vector (=all obstacle) of a the right hand side of the trace of a plane wave}
-\funByFolderEven{\DnPlaneWave}{Full vector (=all obstacle) of a the right hand side of the normal derivative of a plane wave}
-\funByFolderUneven{\DnPointSource}{Full vector (=all obstacle) of a the right hand side of the normal derivative of a point source wave}
-\funByFolderEven{\PointSource}{Full vector (=all obstacle) of a the right hand side of the trace of a point source wave}
+\funByFolderEven{\DnPointSource}{Full vector (=all obstacle) of a the right hand side of the normal derivative of a point source wave}
 \funByFolderUneven{\DnPlaneWavePrecond}{Full vector (=all obstacle) of a the right hand side of the normal derivative of a plane wave for the preconditioned problem of sound-hard scattering}
+\funByFolderEven{\DnPlaneWave}{Full vector (=all obstacle) of a the right hand side of the normal derivative of a plane wave}
+\funByFolderUneven{\PlaneWavePrecond}{Full vector (=all obstacle) of a the right hand side of the trace of a plane wave for the preconditioned problem of sound-soft scattering}
+\funByFolderEven{\PointSource}{Full vector (=all obstacle) of a the right hand side of the trace of a point source wave}

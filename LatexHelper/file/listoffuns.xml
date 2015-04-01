@@ -22,7 +22,7 @@
 <fun>
 <name>Parser.m</name>
 <folder>Common</folder>
-<summary>Parse TypeOfOperator (from char to double)</summary>
+<summary>Parse an array of char (or cell of string)  to scalar array (used by IntegralOperator for example)</summary>
 </fun>
  
 <fun>

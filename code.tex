@@ -568,7 +568,7 @@ $$
 where \code{Operator}$(\ell)$ is one of the integral operators.
 
 \begin{remark}
-The difference between the char and the string is purely computational: the char can be stored in an array or a cell whereas the string must be stored in a cell (due to possibly different size). The string representation only changes for $\hat{L}L$ and $\hat{D}D$, which can be written as respectively \code{'Lprec'} and \code{'Dprec'}. If a user wants to use \code{'Dprec'} instead of \code{'Q'}, (s)he must enclosed it into a cell \{\ldots\} instead of an array [\ldots]. That's all (see example below).
+The difference between the char and the string is purely computational: the char can be stored in an array or a cell whereas the string must be stored in a cell (due to possibly different size). The string representation only changes for $\hat{L}L$ and $\hat{D}D$, which can be written as respectively \code{'Lprec'} and \code{'Dprec'}. If a user wants to use \code{'Dprec'} instead of \code{'Q'}, (s)he must enclosed it into a cell \{\ldots\} instead of an array [\ldots]. The translation from char to scalar is done through the \Parser function. That's all (see example below).
 \end{remark}
 
 \begin{remark}
