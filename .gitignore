@@ -1,0 +1,16 @@
+*.pdf
+*.aux
+*.pdfsync
+*.pdf
+*.log
+*.synctex.gz
+*.toc
+*~
+*.maf
+*.mtc*
+*.blg
+*.out
+*.sh
+*DS_Store
+*.bbl
+LatexHelper/bin/*

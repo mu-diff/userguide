@@ -1,0 +1,106 @@
+\mtcaddchapter[\mudiff as a solver]                          % solution pour minitoc
+\markboth{\uppercase{\mudiff as a solver}}{\uppercase{\mudiff as a solver}} 
+\label{chap:Solver}
+Some user do not want to learn about boundary integral equation theory but needs a fast solver for the multiple scattering problem by disks. A good solution is the \mudiff \code{Solver} modules. Each of these module consists of ready-to-use functions to solve either Dirichlet, Neumann or penetrable scattering. The major point is that everything related to integral equations is hidden and parameters are automatically chosen.
+
+The functions of the \code{Solver} module are located in \code{Solver/Dirichlet}, \code{Solver/Neumann} and \code{Solver/Penetrable}. As for the previous case, the geometry must be described as some other parameters (wavenumber, parameter of the incident wave, \ldots), see for example \S\ref{sec:PreProcessing}. The result is however easy to use.
+
+Every \code{Solver} module contains four functions: one to solve, two for the far field/radar cross section and the last one to compute the field on a grid (near field). They are very similar between penetrable and non-penetrable (Dirichlet/Neumann) but we however describe them separately. The common parameters are assumed to be initialized (\code{O}, \code{a}, \ldots).
+
+\section{Functions}
+\subsection{Non-penetrable solvers: \DirichletSolver and \NeumannSolver}
+\label{secFun:DirichletSolver}
+\label{secFun:NeumannSolver}
+
+\begin{lstlisting}
+Solution = DirichletSolver(O, a, k, TypeOfWave, ParamWave);
+Solution = NeumannSolver(O, a, k, TypeOfWave, ParamWave);
+\end{lstlisting}
+The quantity \code{TypeOfWave} is either \code{'PlaneWave'} or \code{'PointSource'} and \code{ParamWave} is then either the incident angle (plane wave) or the coordinates of the point source. The \code{Solution} is a Matlab cell containing every useful information such as the coordinates and radii of the disks, the wavenumber and obviously the solution of the boundary integral equation. There is no need for the user to check inside \code{Solution}, however, here is its composition:
+\begin{lstlisting}
+Solution{1} = O
+Solution{2} = a
+Solution{3} = k
+Solution{4} = M_modes (Truncation index in the Fourier series of obstacles)
+Solution{5} = TypeOfWave
+Solution{6} = ParamOfWave (beta_inc or OS)
+Solution{7} = rho, the solution
+\end{lstlisting}
+Few options are available:
+\begin{itemize}
+\item
+\begin{lstlisting}
+Solution = DirichletSolver(..., 'Sparse')
+Solution = NeumannSolver(..., 'Sparse')
+\end{lstlisting}
+Force the Solver to use the sparse storage instead of the full one (useful if the problem is too large)
+\item
+\begin{lstlisting}
+Solution = DirichletSolver(..., 'Iterative')
+Solution = NeumannSolver(..., 'Iterative')
+\end{lstlisting}
+Use GMRES iterativ solver instead of direct solving (useful if the problem is too large)
+\item \begin{lstlisting}
+Solution = DirichletSolver(..., 'Tol', TOL)
+Solution = NeumannSolver(..., 'Tol', TOL)
+\end{lstlisting}
+Set the tolerance of the iterative solver to \code{TOL}.
+\end{itemize}
+
+\subsection{Penetrable solver: \PenetrableSolver}
+\label{secFun:PenetrableSolver}
+
+\begin{lstlisting}
+Solution = PenetrableSolver(O, a, k, k_int, TypeOfWave, ParamWave);
+\end{lstlisting}
+The only difference with the non-penetrable case is the quantity \code{k\_int} which is an array of the interior wavenumbers. The \code{Solution} variable also changes as follows (again, useless for classical user):
+\begin{lstlisting}
+Solution{1} = O
+Solution{2} = a
+Solution{3} = k
+Solution{4} = k_int
+Solution{5} = M_modes (Truncation index in the Fourier series of obstacles)
+Solution{6} = TypeOfWave
+Solution{7} = ParamOfWave (beta_inc or OS)
+Solution{8} = rho_plus, the solution for the outer field
+Solution{9} = rho_minus, the solution for the inner field
+\end{lstlisting}
+The options are the same as for the \DirichletSolver and \NeumannSolver except that there is no sparse storage.
+
+\subsection{Far field and RCS}
+\label{secFun:DirichletFarField}
+\label{secFun:NeumannFarField}
+\label{secFun:PenetrableFarField}
+\label{secFun:DirichletRCS}
+\label{secFun:NeumannRCS}
+\label{secFun:PenetrableRCS}
+
+\begin{lstlisting}
+F = DirichletFarField(Solution, theta);
+F = NeumannFarField(Solution, theta);
+F = PenetrableFarField(Solution, theta);
+\end{lstlisting}
+The \code{theta} is the array of angles of observation and \code{Solution} is the same quantity as above, computed by \DirichletSolver, \NeumannSolver or \PenetrableSolver. The Radar Cross Section (RCS) is computed as follows:
+\begin{lstlisting}
+F = DirichletRCS(Solution, theta);
+F = NeumannRCS(Solution, theta);
+F = PenetrableRCS(Solution, theta);
+\end{lstlisting}
+
+\subsection{Near field}
+\label{secFun:DirichletNearField}
+\label{secFun:NeumannNearField}
+\label{secFun:PenetrableNearField}
+
+The waves can be computed on a Matlab \code{meshgrid} using the dedicated functions \DirichletNearField, \NeumannNearField and \PenetrableNearField as follows:
+\begin{lstlisting}
+[U_tot, U, UincOnMesh] = DirichletNearField(Solution, X, Y);
+[U_tot, U, UincOnMesh] = NeumannNearField(Solution, X, Y);
+[U_tot, U, UincOnMesh] = PenetrableNearField(Solution, X, Y);
+\end{lstlisting}
+where \code{X} and \code{Y} are obtained by the Matlab \code{meshgid} function. The ouput quantities are respectively the total field, the scattered field and the incident field. See Remark \ref{rem:plotNearField} for displaying them properly.
+
+
+\section{Examples}
+
+Two examples are provided in the \code{Examples/Solver} folder.

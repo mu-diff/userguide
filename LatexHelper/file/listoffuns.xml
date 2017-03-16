@@ -24,7 +24,92 @@
 <folder>Common</folder>
 <summary>Parse an array of char (or cell of string)  to scalar array (used by IntegralOperator for example)</summary>
 </fun>
+
+<fun>
+<name>ParserIncidentWave.m</name>
+<folder>Common</folder>
+<summary>Parse a cell of string or  a string to scalar array (used by IncidentWave for example)</summary>
+</fun>
+
+<fun>
+<name>DirichletSolver.m</name>
+<folder>Solver/Dirichlet</folder>
+<summary>Solve the Dirichlet problem</summary>
+</fun>
+<fun>
+<name>DirichletRCS.m</name>
+<folder>Solver/Dirichlet</folder>
+<summary>Compute the RCS of a Dirichlet solution</summary>
+</fun>
+<fun>
+<name>DirichletFarField.m</name>
+<folder>Solver/Dirichlet</folder>
+<summary>Compute the far field of a Dirichlet solution</summary>
+</fun>
+<fun>
+<name>DirichletNearField.m</name>
+<folder>Solver/Dirichlet</folder>
+<summary>Compute the near field of a Dirichlet solution</summary>
+</fun>
+
+<fun>
+<name>NeumannSolver.m</name>
+<folder>Solver/Neumann</folder>
+<summary>Solve the Neumann problem</summary>
+</fun>
+<fun>
+<name>NeumannRCS.m</name>
+<folder>Solver/Neumann</folder>
+<summary>Compute the RCS of a Neumann solution</summary>
+</fun>
+<fun>
+<name>NeumannFarField.m</name>
+<folder>Solver/Neumann</folder>
+<summary>Compute the far field of a Neumann solution</summary>
+</fun>
+<fun>
+<name>NeumannNearField.m</name>
+<folder>Solver/Neumann</folder>
+<summary>Compute the near field of a Neumann solution</summary>
+</fun>
+
+<fun>
+<name>PenetrableSolver.m</name>
+<folder>Solver/Penetrable</folder>
+<summary>Solve the Penetrable problem</summary>
+</fun>
+<fun>
+<name>PenetrableRCS.m</name>
+<folder>Solver/Penetrable</folder>
+<summary>Compute the RCS of a Penetrable solution</summary>
+</fun>
+<fun>
+<name>PenetrableFarField.m</name>
+<folder>Solver/Penetrable</folder>
+<summary>Compute the far field of a Penetrable solution</summary>
+</fun>
+<fun>
+<name>PenetrableNearField.m</name>
+<folder>Solver/Penetrable</folder>
+<summary>Compute the near field of a Penetrable solution</summary>
+</fun>
+
  
+<fun>
+<name>ExNonPentrable.m</name>
+<folder>Examples/Solver</folder>
+<summary>Example of solving the non penetrable multiple scattering
+problem using Solver module</summary>
+</fun>
+<fun>
+<name>ExPentrable.m</name>
+<folder>Examples/Solver</folder>
+<summary>Example of solving the penetrable multiple scattering
+problem using Solver module</summary>
+</fun>
+
+
+
 <fun>
 <name>repeat_horiz.m</name>
 <folder>Common</folder>

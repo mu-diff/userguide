@@ -308,7 +308,8 @@ U_tot = U + UincOnMesh;
 UBWIE_tot = UBWIE + UincOnMesh;
 \end{lstlisting}
 
-Note that, to display the near field, we suggest to use the following script, where the white artefacts are removed thanks to \code{set(gcf,'Renderer','Zbuffer');} and the circles are also displayed, using a high \code{zdata} (here, displaying a value called \code{U_tot}).
+\begin{remark}\label{rem:plotNearField}
+To display the near field properly, we suggest to use the following script, where the white artefacts are removed thanks to \code{set(gcf,'Renderer','Zbuffer');} and the circles are also displayed, using a high \code{zdata} (here, displaying a value called \code{U_tot}).
 
 \begin{lstlisting}
 ind_fig = 1;
@@ -321,7 +322,7 @@ PlotCircles(O, a, ind_fig, 'Color', 'k', 'LineWidth', 2, 'zdata', max(max(abs(U_
 set(gcf,'Renderer','Zbuffer');
 hold off
 \end{lstlisting}
-
+\end{remark}
 \subsection{Results}
 
 The figure \ref{fig:exampleDirichlet} presents the results obtained with the considered configuration, that is $3$ unit disks placed on $(-5,-2)$, $(0,0)$ and $(5,2)$ with $k=1$ and an incident plane wave of direction $0$. On the figure is shown the obstacles, the history of convergence of the GMRES for the $5$ integral equations for their dense and sparse storage, the radar cross section and also the near-fields.

@@ -13,7 +13,7 @@ Concerning the geometrical configurations, any deterministic or random distribut
 \mudiff includes post-processing facilities like e.g.: surface and far-fields computations, total and scattered exterior (near-field)
 visualization\ldots
 
-We now introduce the \mudiff  toolbox based on Matlab  by explaining the main predefined functions and their relations
+We now introduce the \mudiff  toolbox based on Matlab by explaining the main predefined functions and their relations
 with the previous mathematical derivations. Section \ref{presentationnotation} gives a presentation and introduces the notations.
 Section \ref{sec:PreProcessing}  shows how to define the scattering configuration (geometry and physical parameters). Section
  \ref{sec:ResolutionMuDiff}  presents the way the integral equations must be defined and solved.
@@ -31,6 +31,7 @@ at some points of the spatial domain or on a grid, far-field and RCS)
 \item \texttt{mudiff/Common/}: this directory includes functions that are used in \mudiff but which does not need to be known
 from the standard user point of view.
 \item \texttt{mudiff/Examples/}: various scripts are presented for the user in standard configurations.
+\item \texttt{mudiff/Solver/}: Module to solve the multiple scattering problem directly (the integral equation is build and solved automatically). See chapter \ref{chap:solver} for more information.
 \end{itemize}
 In addition, the \mudiff user guide, license and credits can be found under the directory \texttt{mudiff/Doc/}.
 
@@ -120,7 +121,9 @@ In addition, the \mudiff user guide, license and credits can be found under the 
 \label{fig:arbo}
 \end{figure}
 
-
+\begin{center}
+\dirtree{.1 spam. .2 ham. .2 eggs. .3 more spam. .3 dead parrots.}
+\end{center}
 \section{Common argument and notations\label{presentationnotation}}
 
 A large number of arguments of the \mudiff functions are similar. For the sake of conciseness and if nothing is specified, the following arguments refer to
@@ -128,6 +131,7 @@ A large number of arguments of the \mudiff functions are similar. For the sake o
   function or value specific to \mudiff is written with the following \code{font}. 
 
 \paragraph{Geometry}
+\label{sec:geometry}
 
 \begin{center}
 %\rowcolors{1}{white}{gray}
