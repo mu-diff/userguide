@@ -1,4 +1,16 @@
+===================
+ Mu-Diff Userguide
+===================
+
+How to compile the userguide
+============================
+
+The file to compile using pdflatex is:
+  mu-diff-user-guide.tex
+
+
 How to contibute to this userguide, written in LaTeX.
+======================================================
 
 1- Commands
 
@@ -39,4 +51,6 @@ There is also
 \funByFolderEven{Name}{Summary}
 \funByFolderUneven{Name}{Summary}
 they are exactly as \funByFolder but one is grayed and the other one is whited
+
+
 
